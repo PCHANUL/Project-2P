@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
 
-function Signup() {
-  return <div></div>
+class Signup extends Component {
+  
+  render(){
+    return(
+      <div>{this.props.email}</div>
+    )
+  }
 }
 
-export default withRouter(Signup)
+export default Signup
