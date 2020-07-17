@@ -1,20 +1,68 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { Button } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import LockIcon from '@material-ui/icons/Lock';
 
 class Signin extends Component {
-  state = {email:''}
+  state = {
+    username: '',
+    password: '',
+  };
 
   render() {
     return (
-      <div>
-        <input type="text" value={this.state.email} onChange={function(e){
-          this.setState({ email:e.target.value })
-        }.bind(this)}></input>
-        <input type="button" value="enter" onClick={function(){
-          this.props.onClick(this.state.email);
-        }.bind(this)}></input>
-      </div>
-    )
+      <form>
+        <div>
+          <TextField
+            id='input-with-icon-textfield'
+            label='Username'
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <AccountCircle />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
+        <div>
+          <TextField
+            id='input-with-icon-textfield'
+            label='Password'
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <LockIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
+        <div style={{ marginTop: '15px' }}>
+          <Button variant='contained' color='primary' onClick={() => console.log(123)}>
+            Sign In
+          </Button>
+        </div>
+      </form>
+    );
   }
 }
 
-export default Signin
+export default Signin;
+
+// <div>
+// <input
+//   type='text'
+//   value={this.state.username}
+//   onChange={(e) => this.setState({ username: e.target.value })}
+// />
+// </div>
+// <div>
+// <input
+//   type='password'
+//   value={this.state.password}
+//   onChange={(e) => this.setState({ password: e.target.value })}
+// />
+// </div>
