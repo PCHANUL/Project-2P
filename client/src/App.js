@@ -4,8 +4,6 @@ import Signin from './containers/Signin'
 import Signup from './containers/Signup'
 
 class App extends Component {
-
-
   render() {
     return (
       <div className='App'>
