@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Button, TextField, InputAdornment } from '@material-ui/core';
-// import TextField from '@material-ui/core/TextField';
-// import InputAdornment from '@material-ui/core/InputAdornment';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
 
