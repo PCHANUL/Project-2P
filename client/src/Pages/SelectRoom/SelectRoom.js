@@ -10,6 +10,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
+import RefreshIcon from '@material-ui/icons/Refresh';
+
 
 function createDate(roomName, isWait, isLocked, isFull) {
   return { roomName, isWait, isLocked, isFull };
@@ -33,8 +35,13 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(2),
     right: theme.spacing(3),
   },
+  refresh: {
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(11),
+  },
   section1: {
-    margin: theme.spacing(5, 2),
+    margin: theme.spacing(3, 2),
   },
 }));
 
@@ -76,6 +83,11 @@ export default function SelectRoom() {
       <Tooltip title="방만들기" aria-label="add">
         <Fab color="secondary" className={classes.absolute}>
           <AddIcon />
+        </Fab>
+      </Tooltip>
+      <Tooltip title="새로고침" aria-label="add">
+        <Fab color="primary" className={classes.refresh}>
+          <RefreshIcon />
         </Fab>
       </Tooltip>
     </div>

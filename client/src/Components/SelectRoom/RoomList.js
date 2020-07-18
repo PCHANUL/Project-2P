@@ -38,14 +38,14 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     maxWidth: 700,
     maxHeight: 200,
-    margin: theme.spacing(2, 2, 2),
+    margin: theme.spacing(0, 2, 2),
     backgroundColor: theme.palette.background.paper,
   },
   chip: {
     margin: theme.spacing(0.5),
   },
   section1: {
-    margin: theme.spacing(2, 2),
+    margin: theme.spacing(2, 3),
   },
   section2: {
     margin: theme.spacing(2),
@@ -77,7 +77,7 @@ export default function RoomList({ roomName, isWait, isLocked, isFull }) {
   return (
     
     <Grid container direction="column" justify="space-evenly" alignItems="center">
-    <Card className={classes.root}>
+    <Paper className={classes.root} elevation={2} >
       <div className={classes.section1}>
         <Grid container alignItems="center">
           <Grid>
@@ -124,7 +124,7 @@ export default function RoomList({ roomName, isWait, isLocked, isFull }) {
           </Grid>
         </Grid>
       </div>
-    </Card>
+    </Paper>
     </Grid>
   );
 }
