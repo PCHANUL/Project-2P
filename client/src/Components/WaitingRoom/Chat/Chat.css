@@ -1,8 +1,8 @@
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  background: #f9f9f9;
+  justify-content: space-between;
+  background: #ccc;
   border-radius: 1%;
   height: 60%;
   width: 45%;
