@@ -1,4 +1,5 @@
 import React from 'react'
+import { useHistory } from 'react-router-dom'
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -63,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RoomList({ roomName, isWait, isLocked, isFull }) {
   const classes = useStyles();
+  const history = useHistory();
   const [spacing, setSpacing] = React.useState(2);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
@@ -111,7 +113,7 @@ export default function RoomList({ roomName, isWait, isLocked, isFull }) {
                       <EmojiPeopleIcon />
                       1/2
                     </Typography>
-                    <Button  variant="contained" color="primary" >
+                    <Button  variant="contained" color="primary" onClick={() => history.push('/waitingroom')}>
                       입장하기
                     </Button>
                   </div>
