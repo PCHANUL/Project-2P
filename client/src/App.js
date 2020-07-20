@@ -7,7 +7,7 @@ import SelectGame from './Pages/SelectGame/SelectGame';
 import WaitingRoom from './Pages/WaitingRoom/WaitingRoom';
 import Signin from './containers/Signin';
 import Signup from './containers/Signup';
-import Nav from './Components/Nav/Nav';
+import Nav from './containers/Nav';
 import SelectRoom from './Pages/SelectRoom/SelectRoom';
 import MakeGame from './Components/SelectRoom/MakeGame';
 
@@ -15,8 +15,7 @@ class App extends Component {
   render() {
     return (
       <div className='App'>
-        <Nav></Nav>
-
+        <Nav />
         <Switch>
           <Route exact path='/'>
             <Login />

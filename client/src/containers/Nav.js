@@ -1,4 +1,4 @@
-import Signin from '../Components/Login/Signin';
+import Nav from '../Components/Nav/Nav';
 import { connect } from 'react-redux';
 import * as actionTypes from '../store/actions';
 
@@ -16,18 +16,4 @@ function mapReduxDispatchToReactProps(dispatch) {
     signin: () => dispatch({ type: actionTypes.LOGIN }),
   };
 }
-export default connect(mapReduxStateToReactProps, mapReduxDispatchToReactProps)(Signin);
-
-/*
-import React, { Component } from "react";
-import store from '../store'
- 
-export default class extends Component {
-  
-  render() {
-    return <Signin onClick={function(email){
-      store.dispatch({type:'INCREMENT', email:email})
-    }.bind(this)}></Signin>
-  }
-}
-*/
+export default connect(mapReduxStateToReactProps, mapReduxDispatchToReactProps)(Nav);
