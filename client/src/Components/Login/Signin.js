@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter, useHistory } from 'react-router-dom'
 import { Button, TextField, InputAdornment } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
@@ -10,6 +11,7 @@ class Signin extends Component {
   };
 
   render() {
+
     return (
       <form>
         <div>
@@ -42,8 +44,8 @@ class Signin extends Component {
             onChange={(e) => this.setState({ password: e.target.value })}
           />
         </div>
-        <div style={{ marginTop: '15px' }}>
-          <Button variant='contained' color='primary' onClick={() => console.log(123)}>
+        <div style={{ marginTop: '15px' }}> 
+          <Button variant='contained' color='primary' onClick={() => this.props.history.push('/selectgame')}>
             Sign In
           </Button>
         </div>
@@ -52,4 +54,4 @@ class Signin extends Component {
   }
 }
 
-export default Signin;
+export default withRouter(Signin);

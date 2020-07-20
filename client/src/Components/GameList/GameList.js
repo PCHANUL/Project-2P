@@ -1,5 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { withRouter, useHistory } from 'react-router-dom'
+
 import {
   Card,
   CardActionArea,
@@ -25,6 +27,7 @@ const gameDescription = {
 
 const GameList = ({ image, gameName }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   return (
     <Card className={classes.root}>
@@ -46,7 +49,7 @@ const GameList = ({ image, gameName }) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size='small' color='primary'>
+        <Button size='small' color='primary' onClick={() => history.push('/selectroom')}>
           게임 하기!
         </Button>
       </CardActions>
@@ -54,4 +57,4 @@ const GameList = ({ image, gameName }) => {
   );
 };
 
-export default GameList;
+export default withRouter(GameList);
