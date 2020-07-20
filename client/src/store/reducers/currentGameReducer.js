@@ -1,12 +1,12 @@
 import * as actionTypes from '../actions';
 
 const initialState = {
-  isLogin: false,
+  currentGame: '',
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.LOGIN:
+    case actionTypes.SELECT_GAME:
       // action.payload 에 있는 정보로 로그인을 할수 있늕지 확인한 후, 로그인 스테이트를 바꿔준다.
       // 로그인 실패시
       // axios.post('login주소', {action.payload정보}, {withCredentials: true}, (result) => {
@@ -15,13 +15,12 @@ const reducer = (state = initialState, action) => {
       // })
       return {
         ...state,
-        isLogin: true,
+        currentGame: action.payload,
       };
-    case actionTypes.LOGOUT:
-      // 현재 가지고 있는 세션을 session.destroy할수있게 api요청
+    case actionTypes.RESELECT_GAME:
       return {
         ...state,
-        isLogin: false,
+        currentGame: '',
       };
     default:
       return state;

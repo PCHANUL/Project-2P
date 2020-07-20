@@ -17,17 +17,3 @@ function mapReduxDispatchToReactProps(dispatch) {
   };
 }
 export default connect(mapReduxStateToReactProps, mapReduxDispatchToReactProps)(Signin);
-
-/*
-import React, { Component } from "react";
-import store from '../store'
- 
-export default class extends Component {
-  
-  render() {
-    return <Signin onClick={function(email){
-      store.dispatch({type:'INCREMENT', email:email})
-    }.bind(this)}></Signin>
-  }
-}
-*/

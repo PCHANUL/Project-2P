@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { withRouter, useHistory } from 'react-router-dom'
+import { withRouter, useHistory } from 'react-router-dom';
 
 import {
   Card,
@@ -25,10 +25,10 @@ const gameDescription = {
   FlipCard: '사천성! 같은 카드를 뒤집어라!',
 };
 
-const GameList = ({ image, gameName }) => {
+const GameList = (props) => {
+  const { image, gameName } = props;
   const classes = useStyles();
   const history = useHistory();
-
   return (
     <Card className={classes.root}>
       <CardActionArea>
@@ -49,7 +49,14 @@ const GameList = ({ image, gameName }) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size='small' color='primary' onClick={() => history.push('/selectroom')}>
+        <Button
+          size='small'
+          color='primary'
+          onClick={() => {
+            props.selectGame(gameName);
+            history.push('/selectroom');
+          }}
+        >
           게임 하기!
         </Button>
       </CardActions>
