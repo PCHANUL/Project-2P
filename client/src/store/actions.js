@@ -1,5 +1,6 @@
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
+export const SIGN_UP = 'SIGN_UP';
 export const SELECT_GAME = 'SELECT_GAME';
 export const RESELECT_GAME = 'RESELECT_GAME';
 export const CHAT_LOG = 'CHAT_LOG';

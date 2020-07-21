@@ -4,7 +4,7 @@ import Messages from '../Messages/Messages';
 
 const Chat = ({ chat }) => {
   return (
-    <div>
+    <div style={{ height: '400px', width: '100%' }}>
       <Messages chat={chat} />
     </div>
   );

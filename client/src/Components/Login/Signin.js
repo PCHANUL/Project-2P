@@ -45,12 +45,17 @@ class Signin extends Component {
                 </InputAdornment>
               ),
             }}
+            type='password'
             value={this.state.password}
             onChange={(e) => this.setState({ password: e.target.value })}
           />
         </div>
         <div style={{ marginTop: '15px' }}>
-          <Button variant='contained' color='primary' onClick={() => this.props.signin()}>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() => this.props.signin(this.state.username, this.state.password)}
+          >
             Sign In
           </Button>
         </div>

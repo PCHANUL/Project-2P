@@ -13,15 +13,27 @@ const reducer = (state = initialState, action) => {
       // if (result.stauts === 200) return {...state, isLogin: true}
       // else return state
       // })
+
+      // 여기에 로그인했을때 받는 유저이름과 아바타를 state에 추가
       return {
         ...state,
         isLogin: true,
+        username: 'Current User nickname',
+        avatar: 'Current User Avatar',
       };
     case actionTypes.LOGOUT:
       // 현재 가지고 있는 세션을 session.destroy할수있게 api요청
       return {
-        ...state,
         isLogin: false,
+      };
+    case actionTypes.SIGN_UP:
+      // sign up 할수 있는 아이디인지 서버에 확인하고 **payload: { username, password} **
+      // username, default avatar를 돌려받는다
+      return {
+        ...state,
+        isLogin: true,
+        username: 'default nickname',
+        avatar: 'default Avatar',
       };
     default:
       return state;
