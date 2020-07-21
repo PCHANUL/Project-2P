@@ -1,5 +1,5 @@
 import React from 'react';
-import GameList from '../../Components/GameList/GameList';
+import GameList from '../../containers/GameList';
 
 import WhackAMole from '../../Components/GameList/img/WhackAMole.jpg';
 import Pong from '../../Components/GameList/img/Pong.jpg';

@@ -32,15 +32,21 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 
 import Badge from '@material-ui/core/Badge';
 
-
+import Collapse from '@material-ui/core/Collapse';
+import { TextField } from '@material-ui/core';
+import { NaturePeopleOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     maxWidth: 700,
-    maxHeight: 200,
+    maxHeight: 300,
     margin: theme.spacing(0, 2, 2),
     backgroundColor: theme.palette.background.paper,
+  },
+  paper: {
+    height: 40,
+    padding: theme.spacing(2, 3.5),
   },
   chip: {
     margin: theme.spacing(0.5),
@@ -62,37 +68,48 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RoomList({ roomName, isWait, isLocked, isFull }) {
+export default function RoomList({ roomName, isWait, isLocked, isFull, selectRoom, selected }) {
   const classes = useStyles();
   const history = useHistory();
   const [spacing, setSpacing] = React.useState(2);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = React.useState();
+  const [expanded, setExpanded] = React.useState(false);
 
   const handleClick = (newPlacement) => (event) => {
     setAnchorEl(event.currentTarget);
     setOpen((prev) => placement !== newPlacement || !prev);
     setPlacement(newPlacement);
   };
+  
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
 
   return (
     
     <Grid container direction="column" justify="space-evenly" alignItems="center">
+
+
     <Paper className={classes.root} elevation={2} >
       <div className={classes.section1}>
         <Grid container alignItems="center">
           <Grid>
-            <Chip label={ isWait ? "Waiting" : "Playing"} variant="outlined" color={ isWait ? "primary" : "secondary"} />
+            {
+              isWait
+              ? <Chip label={ "Waiting" } variant="outlined" color={ "primary" } />
+              : <Chip label={ "Playing" }  color={ "secondary" } />
+            }
           </Grid>
           <Grid item xs>
-            <Typography gutterBottom variant="h4">
-              { roomName }
               {
                 isLocked
                 ? <LockIcon style={{ fontSize: 30 }} />
                 : <LockOpenIcon style={{ fontSize: 30 }} />
               }
+            <Typography gutterBottom variant="h4">
+              { roomName }
             </Typography>
           </Grid>
           <Grid item>
@@ -113,19 +130,58 @@ export default function RoomList({ roomName, isWait, isLocked, isFull }) {
                       <EmojiPeopleIcon />
                       1/2
                     </Typography>
-                    <Button  variant="contained" color="primary" onClick={() => history.push('/waitingroom')}>
-                      입장하기
-                    </Button>
+                    {
+                      expanded
+                      ? <Button  variant="contained" color="secondary" onClick={
+                          () => { 
+                            selectRoom(roomName) 
+                            handleExpandClick()
+                            // history.push('./waitingroom')
+                          }}>
+                          취소
+                        </Button>
+                      : <Button  variant="contained" color="primary" onClick={
+                          () => { 
+                            selectRoom(roomName) 
+                            if(isLocked) {
+                              handleExpandClick()
+                            }
+                            // history.push('./waitingroom')
+                          }}>
+                          입장하기
+                        </Button>
+                    }
                   </div>
               }
-              
-              {/* <Button  variant="contained" color="primary" >
-                입장하기
-              </Button> */}
             </Grid>
           </Grid>
         </Grid>
       </div>
+        <Collapse in={expanded} timeout={100} unmountOnExit>
+          <Paper className={classes.paper}>
+            <Grid container direction="row" justify="flex-end" alignItems="center" spacing={2}>
+              <Grid item>
+                <TextField
+                  id="standard-password-input"
+                  label="방 비밀번호를 입력하세요"
+                  type="password"
+                  autoComplete="current-password"
+                  variant="outlined"
+                  size="small"
+                />
+              </Grid>
+              <Grid item>
+                <Button  variant="contained" color="primary" onClick={
+                  () => { 
+                    selectRoom(roomName) 
+                    // history.push('./waitingroom')
+                  }}>
+                  확인
+                </Button>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Collapse>
     </Paper>
     </Grid>
   );

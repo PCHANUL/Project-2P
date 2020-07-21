@@ -1,5 +1,6 @@
 import React from 'react';
-import RoomList from '../../Components/SelectRoom/RoomList'
+import RoomList from '../../containers/RoomList'
+import { useHistory } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -11,23 +12,13 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { Typography } from '@material-ui/core';
+
+import Grid from '@material-ui/core/Grid';
 
 
-function createDate(roomName, isWait, isLocked, isFull) {
-  return { roomName, isWait, isLocked, isFull };
-}
 
-const rows = [
-  createDate('드루와', true, false, false),
-  createDate('드루와라', false, true, true),
-  createDate('야!타', true, true, true),
-  createDate('늬 내가누군지아니?', false, false, true),
-  createDate('매너겜좀합시다', true, false, false),
-  createDate('6학녕1반', true, true, false),
-  createDate('드루와', true, false, false),
-  createDate('드루와', true, false, false),
-  createDate('드루와', true, false, false),
-]; 
+let rows = []; 
 
 const useStyles = makeStyles((theme) => ({
   absolute: {
@@ -43,16 +34,39 @@ const useStyles = makeStyles((theme) => ({
   section1: {
     margin: theme.spacing(3, 2),
   },
+  emptyAlert: {
+    width: '700px',
+    height: '700px',
+  },
+  alertText: {
+    margin: theme.spacing(30, 0, 10, 0)
+  }
 }));
 
-export default function SelectRoom() {
+function SelectRoom({ roomList, getRooms, makeRooms, isMaking, changeCurrentGame }) {
   const classes = useStyles();
+  const history = useHistory();
   const [value, setValue] = React.useState(0);
+  const [rows, getRows] = React.useState([{}]);
+
+  React.useEffect(() => {
+
+    // 대기방이 없는 경우 계속 요청을 보낸다.
+    if(roomList.length === 0) {
+      getRooms()
+    }
+    getRows(roomList)
+
+    console.log(rows)
+    console.log(isMaking)
+  })
 
   const handleChange = (event, newValue) => {
+    console.log(newValue)
     setValue(newValue);
+    changeCurrentGame(newValue);
   };
-
+  
   return (
     <div>
       <Paper className={classes.root}>
@@ -68,29 +82,64 @@ export default function SelectRoom() {
           <Tab label="Game Three" />
         </Tabs>
       </Paper>
-      <div className={classes.section1}>
+      
+      
       {
-        rows.map((row) => (
-          <RoomList 
-            roomName={row.roomName} 
-            isWait={row.isWait}
-            isLocked={row.isLocked}
-            isFull={row.isFull}
-          />
-        ))
+        rows.length === 0
+        ? <Grid container container direction="column" justify="space-evenly" alignItems="center" className={classes.section1}>
+          <Paper className={classes.emptyAlert}>
+              <Grid item>
+                <Typography variant="h4" className={classes.alertText}>
+                  대기중인 방이 없습니다.<br />
+                  방을 생성해보세요
+                </Typography>
+              </Grid>
+              <Grid container direction="row" justify="space-evenly" alignItems="center">
+                <Tooltip title="방만들기" aria-label="add" onClick={() => { makeRooms() }}>
+                  <Fab color="secondary">
+                    <AddIcon />
+                  </Fab>
+                </Tooltip>
+                <Tooltip title="새로고침" aria-label="add" onClick={() => { getRooms() }}>
+                  <Fab color="primary">
+                    <RefreshIcon />
+                  </Fab>
+                </Tooltip>
+              </Grid>
+          </Paper>
+        </Grid>
+        : <div>
+            <div className={classes.section1}>
+              {
+                rows.map((row) => (
+                  <RoomList 
+                    roomName={row.roomName} 
+                    isWait={row.isWait}
+                    isLocked={row.isLocked}
+                    isFull={row.isFull}
+                  />
+                ))
+              }
+              </div>
+              <Tooltip title="방만들기" aria-label="add" onClick={() => {
+                makeRooms()
+              }}>
+                <Fab color="secondary" className={classes.absolute}>
+                  <AddIcon />
+                </Fab>
+              </Tooltip>
+              <Tooltip title="새로고침" aria-label="add" onClick={() => {
+                getRooms()
+              }}>
+                <Fab color="primary" className={classes.refresh}>
+                  <RefreshIcon />
+                </Fab>
+              </Tooltip>
+          </div>
       }
-      </div>
-      <Tooltip title="방만들기" aria-label="add">
-        <Fab color="secondary" className={classes.absolute}>
-          <AddIcon />
-        </Fab>
-      </Tooltip>
-      <Tooltip title="새로고침" aria-label="add">
-        <Fab color="primary" className={classes.refresh}>
-          <RefreshIcon />
-        </Fab>
-      </Tooltip>
     </div>
   );
 };
+
+export default SelectRoom
 

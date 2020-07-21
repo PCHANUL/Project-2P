@@ -25,7 +25,7 @@ const gameDescription = {
   FlipCard: '사천성! 같은 카드를 뒤집어라!',
 };
 
-const GameList = ({ image, gameName }) => {
+const GameList = ({ image, gameName, getRooms }) => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -49,7 +49,10 @@ const GameList = ({ image, gameName }) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size='small' color='primary' onClick={() => history.push('/selectroom')}>
+        <Button size='small' color='primary' onClick={() => {
+          getRooms()
+          history.push('/selectroom')
+        }}>
           게임 하기!
         </Button>
       </CardActions>

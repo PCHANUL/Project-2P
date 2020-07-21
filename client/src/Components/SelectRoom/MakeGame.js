@@ -16,8 +16,10 @@ import Input from '@material-ui/core/Input';
 import Grid from '@material-ui/core/Grid';
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,12 +42,15 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: theme.spacing(2,2,0,0)
+  },
+  closeButton: {
+    margin: theme.spacing(10, 5)
   }
 }));
 
-export default function MakeGame() {
+export default function MakeGame({ isMaking, makeRoomsClose }) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const [state, setState] = React.useState({
     age: '',
     name: 'hai',
@@ -58,6 +63,10 @@ export default function MakeGame() {
     showPassword: false,
   });
 
+  React.useEffect(() => {
+    setOpen(isMaking)
+  })
+  
   const handleOpen = () => {
     setOpen(true);
   };
@@ -87,9 +96,6 @@ export default function MakeGame() {
 
   return (
     <div>
-      <button type="button" onClick={handleOpen}>
-        react-transition-group
-      </button>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -105,9 +111,14 @@ export default function MakeGame() {
         <Fade in={open}>
           <Paper className={classes.paper}>
             <Grid item container direction="row" justify="center" alignItems="center">
-            <Grid item xs>
-              <h2 id="transition-modal-title">방만들기</h2>
-            </Grid>
+                <Grid item xs>
+                  <h2 id="transition-modal-title">방만들기</h2>
+                </Grid>
+                <Grid>
+                  <IconButton aria-label="취소">
+                    <CancelIcon onClick={ () => makeRoomsClose() }/>
+                  </IconButton>
+                </Grid>
             </Grid>
             <FormControl className={classes.formControl}>
               <InputLabel htmlFor="age-native-helper">Game</InputLabel>

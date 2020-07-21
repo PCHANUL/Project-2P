@@ -4,7 +4,7 @@ import { AppBar, Toolbar, Typography, Button, IconButton } from '@material-ui/co
 import { ArrowBack, ContactSupport, Menu } from '@material-ui/icons';
 
 import { Modal } from '@material-ui/core';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import Mypage from './Mypage';
 
@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Nav(props) {
   const classes = useStyles();
+  const history = useHistory();
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = () => {
@@ -37,7 +38,7 @@ export default function Nav(props) {
     <div className={classes.root}>
       <AppBar position='static'>
         <Toolbar>
-          <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu'>
+          <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' onClick={() => history.goBack()}>
             <ArrowBack />
           </IconButton>
           <Typography variant='h6' className={classes.title}></Typography>
@@ -50,7 +51,6 @@ export default function Nav(props) {
           <IconButton color='inherit'>
             <ContactSupport />
           </IconButton>
-
           <Modal open={open} onClose={handleClose}>
             <Mypage></Mypage>
           </Modal>
