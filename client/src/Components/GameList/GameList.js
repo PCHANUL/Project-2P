@@ -10,14 +10,33 @@ import {
   CardMedia,
   Button,
   Typography,
+  Popover,
+  Paper,
+  Grow,
+  Grid,
 } from '@material-ui/core';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 345,
-    margin: 'auto',
+    width: 600,
+    // margin: 'auto',
   },
-});
+  popover: {
+    pointerEvents: 'none',
+  },
+  paper: {
+    padding: theme.spacing(1),
+  },
+  mouseOverPaper: {
+    width: '600px',
+    height: '300px',
+  },
+  button: {
+    width: '200px',
+    height: '200px',
+    margin: theme.spacing(1)
+  },
+}));
 
 const gameDescription = {
   WhackAMole: '두더지를 잡아라!',
@@ -28,35 +47,95 @@ const gameDescription = {
 const GameList = ({ image, gameName, getRooms }) => {
   const classes = useStyles();
   const history = useHistory();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handlePopoverOpen = (event) => {
+    console.log('enter')
+    setAnchorEl(event.currentTarget);
+  }
+  const handlePopoverClose = (event) => {
+    setAnchorEl(null);
+  }
+
+  const open = Boolean(anchorEl);
 
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      {
+        open
+        ? 
+        <Grow in={open}>
+          <Paper 
+            elevation={4}
+            className={classes.mouseOverPaper}
+            onMouseEnter={handlePopoverOpen}
+            onMouseLeave={handlePopoverClose}
+          >
+            <Typography variant='h3'>
+              {gameName}
+            </Typography>
+            <Typography variant='body' color='textSecondary' component='p'>
+              {gameDescription[gameName]}
+            </Typography>
+            <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={3}>
+              <Grid item>
+                <Button color="primary" disableElevation className={classes.button} variant="outlined" onClick={() => {
+                  getRooms()
+                  history.push('/selectroom')
+                }}>
+                  <Typography variant='h6'>
+                    참가하기
+                  </Typography>
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button color="secondary" disableElevation className={classes.button} variant="outlined">
+                  <Typography variant='h6'>
+                    방 만들기
+                  </Typography>
+                </Button>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grow>
+        :
         <CardMedia
           component='img'
           alt='gameImg'
-          height='140'
+          height='300'
           image={image}
           title={`${gameName} game`}
+          onMouseEnter={handlePopoverOpen}
+          onMouseLeave={handlePopoverClose}
         />
-        <CardContent>
-          <Typography gutterBottom variant='h5' component='h2'>
-            {gameName}
-          </Typography>
-          <Typography variant='body2' color='textSecondary' component='p'>
-            {gameDescription[gameName]}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions>
-        <Button size='small' color='primary' onClick={() => {
-          getRooms()
-          history.push('/selectroom')
-        }}>
-          게임 하기!
-        </Button>
-      </CardActions>
+      }
+      
+
+      
+
+      
+
+    
     </Card>
+
+      //   {/* <CardContent>
+      //     <Typography gutterBottom variant='h5' component='h2'>
+      //       {gameName}
+      //     </Typography>
+      //     <Typography variant='body2' color='textSecondary' component='p'>
+      //       {gameDescription[gameName]}
+      //     </Typography>
+      //   </CardContent> */}
+      
+      // {/* <CardActions> */}
+      //   {/* <Button size='small' color='primary' onClick={() => {
+      //     getRooms()
+      //     history.push('/selectroom')
+      //   }}>
+      //     게임 하기!
+      //   </Button> */}
+      // {/* </CardActions> */}
+    
   );
 };
 
