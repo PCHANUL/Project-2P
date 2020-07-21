@@ -50,14 +50,7 @@ class Signin extends Component {
           />
         </div>
         <div style={{ marginTop: '15px' }}>
-          <Button
-            variant='contained'
-            color='primary'
-            onClick={
-              () => this.props.signin()
-              // () => this.props.history.push('/selectgame')
-            }
-          >
+          <Button variant='contained' color='primary' onClick={() => this.props.signin()}>
             Sign In
           </Button>
         </div>

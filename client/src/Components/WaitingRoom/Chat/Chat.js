@@ -2,11 +2,10 @@ import React from 'react';
 import './Chat.css';
 import Messages from '../Messages/Messages';
 
-const Chat = () => {
+const Chat = ({ chat }) => {
   return (
-    // <div className='container'>
     <div>
-      <Messages />
+      <Messages chat={chat} />
     </div>
   );
 };
