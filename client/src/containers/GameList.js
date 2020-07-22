@@ -13,6 +13,9 @@ function mapReduxDispatchToReactProps(dispatch) {
   return {
     selectGame: (gameName) => dispatch({ type: actionTypes.SELECT_GAME, payload: gameName }),
     reselectGame: () => dispatch({ type: actionTypes.RESELECT_GAME }),
+    getRooms: function () {
+      dispatch({ type: 'GET_ROOMS' });
+    },
   };
 }
 export default connect(mapReduxStateToReactProps, mapReduxDispatchToReactProps)(GameList);
