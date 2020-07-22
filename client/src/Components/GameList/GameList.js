@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { withRouter, useHistory } from 'react-router-dom'
+import { withRouter, useHistory } from 'react-router-dom';
 
 import {
   Card,
@@ -58,7 +58,6 @@ const GameList = ({ image, gameName, getRooms }) => {
   }
 
   const open = Boolean(anchorEl);
-
   return (
     <Card className={classes.root}>
       {
@@ -109,13 +108,6 @@ const GameList = ({ image, gameName, getRooms }) => {
           onMouseLeave={handlePopoverClose}
         />
       }
-      
-
-      
-
-      
-
-    
     </Card>
 
       //   {/* <CardContent>

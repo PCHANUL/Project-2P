@@ -24,27 +24,21 @@ const readyTheme = {
   boxShadow: '0 3px 5px 2px rgba(33, 203, 243, .3)',
 };
 
-const BtnContent = ({ setIsReady, isReady }) => {
+const BtnContent = ({ readyHandler, isReady, username }) => {
   const classes = useStyles();
 
   return (
-    <button
-      type='button'
-      onClick={() => setIsReady((prevState) => !prevState)}
-      className={classes.root}
-    >
+    <button type='button' onClick={() => readyHandler(username)} className={classes.root}>
       {isReady ? '가즈아ㅏ' : '준비하세요'}
     </button>
   );
 };
 
-const ReadyBtn = () => {
-  const [isReady, setIsReady] = useState(false);
-
+const ReadyBtn = ({ isReady, readyHandler, username }) => {
   return (
     <div style={{ marginBottom: '15px' }}>
       <ThemeProvider theme={isReady ? readyTheme : getReadyTheme}>
-        <BtnContent setIsReady={setIsReady} isReady={isReady} />
+        <BtnContent readyHandler={readyHandler} isReady={isReady} username={username} />
       </ThemeProvider>
     </div>
   );

@@ -4,9 +4,7 @@ import './App.css';
 
 import Login from './Pages/Login/Login';
 import SelectGame from './Pages/SelectGame/SelectGame';
-import WaitingRoom from './Pages/WaitingRoom/WaitingRoom';
-import Signin from './containers/Signin';
-import Signup from './containers/Signup';
+import WaitingRoom from './containers/WaitingRoom';
 import Nav from './containers/Nav';
 import SelectRoom from './containers/SelectRoom';
 import MakeGame from './containers/MakeGame';
