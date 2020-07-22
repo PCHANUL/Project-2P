@@ -2,5 +2,7 @@
   padding: 5% 0;
   overflow: auto;
   flex: auto;
+  width: 100%;
+  height: 85%;
 }
 
