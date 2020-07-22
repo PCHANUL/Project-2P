@@ -6,11 +6,13 @@ import Login from './Pages/Login/Login';
 import SelectGame from './Pages/SelectGame/SelectGame';
 import WaitingRoom from './containers/WaitingRoom';
 import Nav from './containers/Nav';
-import SelectRoom from './Pages/SelectRoom/SelectRoom';
-import MakeGame from './Components/SelectRoom/MakeGame';
+import SelectRoom from './containers/SelectRoom';
+import MakeGame from './containers/MakeGame';
+import PlayGame from './Pages/PlayGame/PlayGame'
 
 class App extends Component {
   render() {
+    console.log(this.props.isMaking)
     return (
       <div className='App'>
         <Nav />
@@ -27,11 +29,12 @@ class App extends Component {
           <Route path='/waitingroom'>
             <WaitingRoom />
           </Route>
+          <Route path='/playgame'>
+            <PlayGame />
+          </Route>
         </Switch>
 
-        <Route path='/makegame'>
-          <MakeGame />
-        </Route>
+        <MakeGame />
       </div>
     );
   }

@@ -24,7 +24,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
-import avatar from './avatar.png'
+import avatar from '../../images/avatar.png'
 
 
 function getModalStyle() {
