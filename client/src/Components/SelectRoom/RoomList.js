@@ -145,8 +145,9 @@ export default function RoomList({ roomName, isWait, isLocked, isFull, selectRoo
                             selectRoom(roomName) 
                             if(isLocked) {
                               handleExpandClick()
+                            } else {
+                              history.push('./waitingroom')
                             }
-                            history.push('./waitingroom')
                           }}>
                           입장하기
                         </Button>
