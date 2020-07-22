@@ -91,7 +91,6 @@ export default function RoomList({ roomName, isWait, isLocked, isFull, selectRoo
     
     <Grid container direction="column" justify="space-evenly" alignItems="center">
 
-
     <Paper className={classes.root} elevation={2} >
       <div className={classes.section1}>
         <Grid container alignItems="center">
@@ -143,10 +142,13 @@ export default function RoomList({ roomName, isWait, isLocked, isFull, selectRoo
                       : <Button  variant="contained" color="primary" onClick={
                           () => { 
                             selectRoom(roomName) 
+
+                            // 비밀번호가 있다면 구역이 확장된다
                             if(isLocked) {
                               handleExpandClick()
+                            } else {
+                              history.push('./waitingroom')
                             }
-                            history.push('./waitingroom')
                           }}>
                           입장하기
                         </Button>
