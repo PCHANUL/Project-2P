@@ -1,5 +1,5 @@
-import React from 'react'
-import { useHistory } from 'react-router-dom'
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 1, 1),
   },
   enter: {
-    margin: '10px'
+    margin: '10px',
   },
   count: {
     padding: theme.spacing(0, 2, 0, 0),
@@ -82,108 +82,114 @@ export default function RoomList({ roomName, isWait, isLocked, isFull, selectRoo
     setOpen((prev) => placement !== newPlacement || !prev);
     setPlacement(newPlacement);
   };
-  
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   return (
-    
-    <Grid container direction="column" justify="space-evenly" alignItems="center">
-
-
-    <Paper className={classes.root} elevation={2} >
-      <div className={classes.section1}>
-        <Grid container alignItems="center">
-          <Grid>
-            {
-              isWait
-              ? <Chip label={ "Waiting" } variant="outlined" color={ "primary" } />
-              : <Chip label={ "Playing" }  color={ "secondary" } />
-            }
-          </Grid>
-          <Grid item xs>
-              {
-                isLocked
-                ? <LockIcon style={{ fontSize: 30 }} />
-                : <LockOpenIcon style={{ fontSize: 30 }} />
-              }
-            <Typography gutterBottom variant="h4">
-              { roomName }
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Grid item container direction="row" justify="center" alignItems="center">
-              {
-                isFull
-                ? <div>
-                    <Typography className={classes.count} variant="h5">
+    <Grid container direction='column' justify='space-evenly' alignItems='center'>
+      <Paper className={classes.root} elevation={2}>
+        <div className={classes.section1}>
+          <Grid container alignItems='center'>
+            <Grid>
+              {isWait ? (
+                <Chip label={'Waiting'} variant='outlined' color={'primary'} />
+              ) : (
+                <Chip label={'Playing'} color={'secondary'} />
+              )}
+            </Grid>
+            <Grid item xs>
+              {isLocked ? (
+                <LockIcon style={{ fontSize: 30 }} />
+              ) : (
+                <LockOpenIcon style={{ fontSize: 30 }} />
+              )}
+              <Typography gutterBottom variant='h4'>
+                {roomName}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Grid item container direction='row' justify='center' alignItems='center'>
+                {isFull ? (
+                  <div>
+                    <Typography className={classes.count} variant='h5'>
                       <HowToRegIcon />
                       2/2
                     </Typography>
-                    <Button  variant="contained" color="primary" disabled>
+                    <Button variant='contained' color='primary' disabled>
                       입장하기
                     </Button>
                   </div>
-                : <div>
-                    <Typography className={classes.count} variant="h5">
+                ) : (
+                  <div>
+                    <Typography className={classes.count} variant='h5'>
                       <EmojiPeopleIcon />
                       1/2
                     </Typography>
-                    {
-                      expanded
-                      ? <Button  variant="contained" color="secondary" onClick={
-                          () => { 
-                            selectRoom(roomName) 
-                            handleExpandClick()
-                            // history.push('./waitingroom')
-                          }}>
-                          취소
-                        </Button>
-                      : <Button  variant="contained" color="primary" onClick={
-                          () => { 
-                            selectRoom(roomName) 
-                            if(isLocked) {
-                              handleExpandClick()
-                            }
-                            // history.push('./waitingroom')
-                          }}>
-                          입장하기
-                        </Button>
-                    }
+                    {expanded ? (
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => {
+                          selectRoom(roomName);
+                          handleExpandClick();
+                          history.push('./waitingroom');
+                        }}
+                      >
+                        취소
+                      </Button>
+                    ) : (
+                      <Button
+                        variant='contained'
+                        color='primary'
+                        onClick={() => {
+                          selectRoom(roomName);
+                          if (isLocked) {
+                            handleExpandClick();
+                          } else {
+                            history.push('./waitingroom');
+                          }
+                        }}
+                      >
+                        입장하기
+                      </Button>
+                    )}
                   </div>
-              }
+                )}
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </div>
+        </div>
         <Collapse in={expanded} timeout={100} unmountOnExit>
           <Paper className={classes.paper}>
-            <Grid container direction="row" justify="flex-end" alignItems="center" spacing={2}>
+            <Grid container direction='row' justify='flex-end' alignItems='center' spacing={2}>
               <Grid item>
                 <TextField
-                  id="standard-password-input"
-                  label="방 비밀번호를 입력하세요"
-                  type="password"
-                  autoComplete="current-password"
-                  variant="outlined"
-                  size="small"
+                  id='standard-password-input'
+                  label='방 비밀번호를 입력하세요'
+                  type='password'
+                  autoComplete='current-password'
+                  variant='outlined'
+                  size='small'
                 />
               </Grid>
               <Grid item>
-                <Button  variant="contained" color="primary" onClick={
-                  () => { 
-                    selectRoom(roomName) 
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={() => {
+                    selectRoom(roomName);
                     // history.push('./waitingroom')
-                  }}>
+                  }}
+                >
                   확인
                 </Button>
               </Grid>
             </Grid>
           </Paper>
         </Collapse>
-    </Paper>
+      </Paper>
     </Grid>
   );
 }
-

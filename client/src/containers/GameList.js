@@ -13,8 +13,13 @@ function mapReduxDispatchToReactProps(dispatch) {
   return {
     selectGame: (gameName) => dispatch({ type: actionTypes.SELECT_GAME, payload: gameName }),
     reselectGame: () => dispatch({ type: actionTypes.RESELECT_GAME }),
+<<<<<<< HEAD
     getRooms: function () {
       dispatch({ type: 'GET_ROOMS' });
+=======
+    getRooms: function() {
+      dispatch({type:"GET_ROOMS"})
+>>>>>>> fa24e3fd37b5258635578fff4bb8e7d5aac97fbb
     },
   };
 }

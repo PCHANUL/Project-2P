@@ -21,7 +21,7 @@ function mapReduxDispatchToReactProps(dispatch) {
       dispatch({type:"MAKE_ROOM"})
     },
     changeCurrentGame: function(currentGame) {
-      dispatch({type:"CHANGE_CURRENT_GAME", currentGame: currentGame})
+      dispatch({type:"SELECT_GAME", payload: currentGame + 1})
     },
   };
 }

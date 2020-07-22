@@ -8,11 +8,11 @@ import WaitingRoom from './containers/WaitingRoom';
 import Nav from './containers/Nav';
 import SelectRoom from './containers/SelectRoom';
 import MakeGame from './containers/MakeGame';
-import PlayGame from './Pages/PlayGame/PlayGame'
+import PlayGame from './Pages/PlayGame/PlayGame';
 
 class App extends Component {
   render() {
-    console.log(this.props.isMaking)
+    console.log(this.props.isMaking);
     return (
       <div className='App'>
         <Nav />
