@@ -4,7 +4,9 @@ import { AppBar, Toolbar, Typography, Button, IconButton } from '@material-ui/co
 import { ArrowBack, ContactSupport, Menu } from '@material-ui/icons';
 
 import { Modal } from '@material-ui/core';
-import { useHistory, withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+
 
 import Mypage from './Mypage';
 
@@ -12,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     // position: "fixed",
-    // width: "100%",
+    width: "100%",
   },
   menuButton: {
     marginRight: theme.spacing(2),
