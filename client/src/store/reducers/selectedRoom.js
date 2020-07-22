@@ -1,7 +1,6 @@
 import * as actionTypes from '../actions';
 
 const initialState = {
-  selected: '',
   roomList: [ ],
   isMaking: false,
   currentGame: 0,
@@ -9,11 +8,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.SELECTED_ROOM:
-      return {
-        ...state,
-        selected: action.selected,
-      };
+    
     case actionTypes.CHANGE_CURRENT_GAME:
       return {
         ...state,

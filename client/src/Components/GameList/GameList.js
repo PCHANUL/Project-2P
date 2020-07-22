@@ -15,6 +15,7 @@ import {
   Grow,
   Grid,
 } from '@material-ui/core';
+import SelectGame from '../../Pages/SelectGame/SelectGame';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,12 +40,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const gameDescription = {
-  WhackAMole: '두더지를 잡아라!',
-  Pong: '핑핑핑퐁퐁퐁',
-  FlipCard: '사천성! 같은 카드를 뒤집어라!',
+  WhackAMole: {
+    desc: '두더지를 잡아라!',
+    code: 1,
+  },
+  Pong: {
+    desc: '핑핑핑퐁퐁퐁',
+    code: 2,
+  },
+  FlipCard: {
+    desc: '사천성! 같은 카드를 뒤집어라!',
+    code: 3,
+  },
 };
 
-const GameList = ({ image, gameName, getRooms }) => {
+const GameList = ({ image, gameName, getRooms, selectGame }) => {
   const classes = useStyles();
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -56,8 +66,9 @@ const GameList = ({ image, gameName, getRooms }) => {
   const handlePopoverClose = (event) => {
     setAnchorEl(null);
   }
-
   const open = Boolean(anchorEl);
+
+
   return (
     <Card className={classes.root}>
       {
@@ -74,12 +85,13 @@ const GameList = ({ image, gameName, getRooms }) => {
               {gameName}
             </Typography>
             <Typography variant='body' color='textSecondary' component='p'>
-              {gameDescription[gameName]}
+              {gameDescription[gameName]['desc']}
             </Typography>
             <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={3}>
               <Grid item>
                 <Button color="primary" disableElevation className={classes.button} variant="outlined" onClick={() => {
                   getRooms()
+                  selectGame(gameDescription[gameName]['code'])
                   history.push('/selectroom')
                 }}>
                   <Typography variant='h6'>

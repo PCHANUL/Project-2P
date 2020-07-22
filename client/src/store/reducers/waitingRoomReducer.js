@@ -1,6 +1,7 @@
 import * as actionTypes from '../actions';
 
 const initialState = {
+  selectedRoom: 0,
   roomUsers: [
     { username: 'Opponent', avatar: 'smiley face', isReady: false },
     { username: 'Current', avatar: 'kissy face', isReady: false },
@@ -59,6 +60,11 @@ const reducer = (state = initialState, action) => {
       return {
         chat: [],
         roomUsers: [],
+      };
+    case actionTypes.SELECTED_ROOM:
+      return {
+        ...state,
+        selectedRoom: action.selected,
       };
     default:
       return state;
