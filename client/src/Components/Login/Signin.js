@@ -38,6 +38,7 @@ class Signin extends Component {
           <TextField
             id='input-with-icon-textfield'
             label='Password'
+            type="password"
             InputProps={{
               startAdornment: (
                 <InputAdornment position='start'>
