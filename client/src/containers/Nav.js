@@ -13,7 +13,7 @@ function mapReduxDispatchToReactProps(dispatch) {
   return {
     // onEmailType: (email) => dispatch({ type: actionTypes.EMAIL_INPUT, payload: email }),
     // onPasswordType: (password) => dispatch({ type: actionTypes.PASSWORD_INPUT, payload: password }),
-    signin: () => dispatch({ type: actionTypes.LOGIN }),
+    signout: () => dispatch({ type: actionTypes.LOGOUT }),
   };
 }
 export default connect(mapReduxStateToReactProps, mapReduxDispatchToReactProps)(Nav);

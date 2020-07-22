@@ -21,23 +21,20 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Users() {
+export default function Users({ user, readyHandler }) {
   const classes = useStyles();
 
   return (
     <Card className={classes.root} variant='outlined'>
       <CardContent>
         <Typography className={classes.title} color='textSecondary' gutterBottom>
-          플레이어 아이콘
+          {user.avatar}
         </Typography>
         <Typography className={classes.pos} variant='h5' component='h2'>
-          플레이어 이름
-        </Typography>
-        <Typography className={classes.pos} color='textSecondary'>
-          현재 게임 승/패
+          {user.username}
         </Typography>
       </CardContent>
-      <ReadyBtn />
+      <ReadyBtn isReady={user.isReady} readyHandler={readyHandler} username={user.username} />
     </Card>
   );
 }

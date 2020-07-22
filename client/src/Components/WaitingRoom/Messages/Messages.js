@@ -4,13 +4,16 @@ import OpponentMessage from './OpponentMessage';
 import CurrentUserMessage from './CurrentUserMessage';
 import './Messages.css';
 
-const Messages = () => {
+const Messages = ({ chat }) => {
   return (
     <ScrollToBottom className='messages'>
-      <OpponentMessage />
-      <OpponentMessage />
-      <CurrentUserMessage />
-      <CurrentUserMessage />
+      {chat.map((text, idx) => {
+        if (text.username === 'Opponent') {
+          return <OpponentMessage key={idx} chat={text} />;
+        } else {
+          return <CurrentUserMessage key={idx} chat={text} />;
+        }
+      })}
     </ScrollToBottom>
   );
 };

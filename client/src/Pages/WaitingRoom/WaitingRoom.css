@@ -5,5 +5,17 @@
   background: #f9f9f9;
   border-radius: 1%;
   height: 60%;
-  width: 45%;
+  width: 600px;
+}
+
+.centered {
+  z-index: 10;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 60px;
+  background: #2979FF;
+  border-radius: 15px;
+  opacity: 0.85;
 }

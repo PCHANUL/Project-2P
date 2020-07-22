@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Input.css';
 
-const Input = () => {
+const Input = ({ sendChat, username }) => {
   const [message, setMessage] = useState('');
 
   return (
@@ -12,9 +12,27 @@ const Input = () => {
         placeholder='메시지를 입력하세요'
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        onKeyPress={(e) => (e.key === 'Enter' ? console.log(1) : null)}
+        onKeyPress={(e) => {
+          // e.preventDefault();
+          if (message === '') return;
+          const text = { username, text: message };
+          if (e.key === 'Enter') {
+            sendChat(text);
+            setMessage('');
+          }
+        }}
       />
-      <button className='sendButton' onClick={() => console.log(1)}>
+      <button
+        className='sendButton'
+        type='submit'
+        onClick={(e) => {
+          e.preventDefault();
+          if (message === '') return;
+          const text = { username, text: message };
+          sendChat(text);
+          setMessage('');
+        }}
+      >
         Send
       </button>
     </form>
