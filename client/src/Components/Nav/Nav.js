@@ -7,6 +7,7 @@ import { Modal } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 
+
 import Mypage from './Mypage';
 
 const useStyles = makeStyles((theme) => ({
@@ -48,7 +49,17 @@ export default function Nav(props) {
               Mypage
             </Button>
           ) : null}
-          <Button color='inherit'>{props.login.isLogin ? 'Log Out' : 'Log In'}</Button>
+          <Button
+            color='inherit'
+            onClick={() => {
+              if (props.login.isLogin) {
+                props.signout();
+                history.push('/');
+              }
+            }}
+          >
+            {props.login.isLogin ? 'Log Out' : 'Log In'}
+          </Button>
           <IconButton color='inherit'>
             <ContactSupport />
           </IconButton>
