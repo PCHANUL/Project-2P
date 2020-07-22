@@ -1,5 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -68,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RoomList({ roomName, isWait, isLocked, isFull, selectRoom, selected }) {
+function RoomList({ login, roomName, isWait, isLocked, isFull, selectRoom, selected }) {
   const classes = useStyles();
   const history = useHistory();
   const [spacing, setSpacing] = React.useState(2);
@@ -193,3 +195,19 @@ export default function RoomList({ roomName, isWait, isLocked, isFull, selectRoo
     </Grid>
   );
 }
+
+const mapReduxStateToReactProps = (state) => {
+  return {
+    selected: state.selectedRoom,
+  };
+};
+
+const mapReduxDispatchToReactProps = (dispatch) => {
+  return {
+    selectRoom: function (roomName) {
+      dispatch({ type: 'SELECTED_ROOM', selected: roomName });
+    },
+  };
+};
+
+export default connect(mapReduxStateToReactProps, mapReduxDispatchToReactProps)(RoomList);

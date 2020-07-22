@@ -1,4 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
+
 import Users from '../../Components/WaitingRoom/Users/Users';
 import Chat from '../../Components/WaitingRoom/Chat/Chat';
 import Input from '../../Components/WaitingRoom/Input/Input';
@@ -27,4 +30,22 @@ const WaitingRoom = (props) => {
   );
 };
 
-export default WaitingRoom;
+const mapReduxStateToReactProps = (state) => {
+  return {
+    waitingRoom: state.waitingRoom,
+  };
+};
+
+const mapReduxDispatchToReactProps = (dispatch) => {
+  // socketSubscribe(dispatch);
+  return {
+    chatHandler: (chat) => dispatch({ type: actionTypes.CHAT_LOG, payload: chat }),
+
+    // (chat) => {
+    //   socket.emit('send message', { type });
+    // },
+
+    readyHandler: (username) => dispatch({ type: actionTypes.READY, payload: username }),
+  };
+};
+export default connect(mapReduxStateToReactProps, mapReduxDispatchToReactProps)(WaitingRoom);
