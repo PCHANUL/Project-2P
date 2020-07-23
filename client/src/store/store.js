@@ -1,8 +1,16 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddlewar, compose } from 'redux';
 import currentGameReducer from './reducers/currentGameReducer';
 import waitingRoomReducer from './reducers/waitingRoomReducer';
 import isLoginReducer from './reducers/isLoginReducer';
 import selectedRoom from './reducers/selectedRoom';
+
+import axios from 'axios';
+import axiosMiddleware from 'redux-axios-middleware';
+
+const client = axios.create({
+  baseURL: 'http://localhost:3001',
+  responseType: 'json',
+});
 
 const rootReducer = combineReducers({
   login: isLoginReducer,

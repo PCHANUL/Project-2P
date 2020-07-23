@@ -4,15 +4,37 @@ import { Button, TextField, InputAdornment } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
 
+const axios = require('axios')
+
 class Signin extends Component {
   state = {
     username: '',
     password: '',
   };
 
+  componentDidMount() {
+    if (this.props.login.isLogin === false) {
+      console.log('awefawefawef')
+      this.Mypage()
+    }
+  }
   componentDidUpdate() {
     if (this.props.login.isLogin === true) {
       this.props.history.push('/selectgame');
+    }
+  }
+
+  async Mypage() {
+    try {
+      const response = await axios({
+        method: 'get',
+        url: 'http://localhost:3001/users/mypage',
+        withCredentials: true,
+      })
+      console.log(response)
+      return response
+    } catch (error) {
+      alert(error)
     }
   }
 
@@ -55,7 +77,7 @@ class Signin extends Component {
           <Button
             variant='contained'
             color='primary'
-            onClick={() => this.props.signin(this.state.username, this.state.password)}
+            onClick={ () => this.props.signin(this.state.username, this.state.password) }
           >
             Sign In
           </Button>
