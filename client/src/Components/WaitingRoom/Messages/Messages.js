@@ -1,14 +1,16 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 import ScrollToBottom from 'react-scroll-to-bottom';
 import OpponentMessage from './OpponentMessage';
 import CurrentUserMessage from './CurrentUserMessage';
 import './Messages.css';
 
-const Messages = ({ chat }) => {
+const Messages = (props) => {
   return (
     <ScrollToBottom className='messages'>
-      {chat.map((text, idx) => {
-        if (text.username === 'Opponent') {
+      {props.waitingRoom.chat.map((text, idx) => {
+        if (text.username !== props.login.username) {
           return <OpponentMessage key={idx} chat={text} />;
         } else {
           return <CurrentUserMessage key={idx} chat={text} />;
@@ -18,4 +20,11 @@ const Messages = ({ chat }) => {
   );
 };
 
-export default Messages;
+const mapReduxStateToReactProps = (state) => {
+  return {
+    waitingRoom: state.waitingRoom,
+    login: state.login,
+  };
+};
+
+export default connect(mapReduxStateToReactProps)(Messages);

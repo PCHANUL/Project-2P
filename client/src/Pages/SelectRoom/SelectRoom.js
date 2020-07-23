@@ -59,7 +59,7 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking, changeCurr
 
     console.log(rows);
     console.log(isMaking);
-  });
+  }, []);
 
   const handleChange = (event, newValue) => {
     console.log(newValue);

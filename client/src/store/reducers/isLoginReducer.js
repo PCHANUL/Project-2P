@@ -18,7 +18,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isLogin: true,
-        username: 'Current User nickname',
+        username: action.payload.username,
         avatar: 'Current User Avatar',
       };
     case actionTypes.LOGOUT:
@@ -32,7 +32,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isLogin: true,
-        username: 'default nickname',
+        username: action.payload.username,
         avatar: 'default Avatar',
       };
     default:

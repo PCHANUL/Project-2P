@@ -6,12 +6,7 @@ const initialState = {
     { username: 'Opponent', avatar: 'smiley face', isReady: false },
     { username: 'Current', avatar: 'kissy face', isReady: false },
   ],
-  chat: [
-    { username: 'Opponent', text: 'hello' },
-    { username: 'Current', text: 'wassup' },
-    { username: 'Current', text: 'R u ready?' },
-    { username: 'Opponent', text: 'Yeah lets go' },
-  ],
+  chat: [],
 };
 
 const reducer = (state = initialState, action) => {
