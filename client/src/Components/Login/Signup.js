@@ -13,7 +13,9 @@ class Signup extends Component {
   state = {
     open: false,
     username: '',
+    nickname: '',
     password: '',
+
   };
 
   render() {
@@ -41,13 +43,23 @@ class Signup extends Component {
               fullWidth
             />
             <TextField
+              value={this.state.nickname}
+              onChange={(e) => this.setState({ nickname: e.target.value })}
+              autoFocus
+              margin='dense'
+              id='name'
+              label='nickname'
+              type='text'
+              fullWidth
+            />
+            <TextField
               value={this.state.password}
               onChange={(e) => this.setState({ password: e.target.value })}
               autoFocus
               margin='dense'
               id='name'
               label='Password'
-              type='text'
+              type='password'
               fullWidth
             />
           </DialogContent>
@@ -58,7 +70,7 @@ class Signup extends Component {
             <Button
               onClick={() => {
                 this.setState({ open: false });
-                this.props.signup(this.state.username, this.state.password);
+                this.props.signup(this.state.username, this.state.nickname, this.state.password);
                 // signup 성공시 history.push('/selectGame') 이동하게 콜백 넘겨주기
                 // 실패시 콜백으로 localhost:3000 창과 함께 실패했습니다 모달 창 띄워주기
               }}

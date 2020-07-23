@@ -6,6 +6,7 @@ import * as actionTypes from '../store/actions';
 function mapReduxStateToReactProps(state) {
   return {
     waitingRoom: state.waitingRoom,
+    
   };
 }
 
