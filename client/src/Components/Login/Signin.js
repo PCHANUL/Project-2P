@@ -23,6 +23,9 @@ class Signin extends Component {
       this.props.history.push('/selectgame');
     }
   }
+  componentWillUnmount() {
+    console.log('awefawef')
+  }
 
   async Mypage() {
     try {
@@ -76,7 +79,7 @@ class Signin extends Component {
         <div style={{ marginTop: '15px' }}>
           <Button
             variant='contained'
-            color='primary'
+            color='secondary'
             onClick={ () => this.props.signin(this.state.username, this.state.password) }
           >
             Sign In
