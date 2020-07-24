@@ -90,35 +90,32 @@ function RoomList({ login, roomName, isWait, isLocked, isFull, selectRoom, selec
   };
 
   return (
-    
-    <Grid container direction="column" justify="space-evenly" alignItems="center">
-
-    <Paper className={classes.root} elevation={2} >
-      <div className={classes.section1}>
-        <Grid container alignItems="center">
-          <Grid>
-            {
-              isWait
-              ? <Chip label={ "Waiting" } variant="outlined" color={ "primary" } />
-              : <Chip label={ "Playing" }  color={ "secondary" } />
-            }
-          </Grid>
-          <Grid item xs>
-              {
-                isLocked
-                ? <LockIcon style={{ fontSize: 30 }} />
-                : <LockOpenIcon style={{ fontSize: 30 }} />
-              }
-            <Typography gutterBottom variant="h4">
-              { roomName }
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Grid item container direction="row" justify="center" alignItems="center">
-              {
-                isFull
-                ? <div>
-                    <Typography className={classes.count} variant="h5">
+    <Grid container direction='column' justify='space-evenly' alignItems='center'>
+      <Paper className={classes.root} elevation={2}>
+        <div className={classes.section1}>
+          <Grid container alignItems='center'>
+            <Grid>
+              {isWait ? (
+                <Chip label={'Waiting'} variant='outlined' color={'primary'} />
+              ) : (
+                <Chip label={'Playing'} color={'secondary'} />
+              )}
+            </Grid>
+            <Grid item xs>
+              {isLocked ? (
+                <LockIcon style={{ fontSize: 30 }} />
+              ) : (
+                <LockOpenIcon style={{ fontSize: 30 }} />
+              )}
+              <Typography gutterBottom variant='h4'>
+                {roomName}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Grid item container direction='row' justify='center' alignItems='center'>
+                {isFull ? (
+                  <div>
+                    <Typography className={classes.count} variant='h5'>
                       <HowToRegIcon />
                       2/2
                     </Typography>
@@ -132,30 +129,36 @@ function RoomList({ login, roomName, isWait, isLocked, isFull, selectRoom, selec
                       <EmojiPeopleIcon />
                       1/2
                     </Typography>
-                    {
-                      expanded
-                      ? <Button  variant="contained" color="secondary" onClick={
-                          () => { 
-                            selectRoom(roomName) 
-                            handleExpandClick()
-                            // history.push('./waitingroom')
-                          }}>
-                          취소
-                        </Button>
-                      : <Button  variant="contained" color="primary" onClick={
-                          () => { 
-                            selectRoom(roomName) 
+                    {expanded ? (
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => {
+                          selectRoom(roomName);
+                          handleExpandClick();
+                          // history.push('./waitingroom')
+                        }}
+                      >
+                        취소
+                      </Button>
+                    ) : (
+                      <Button
+                        variant='contained'
+                        color='primary'
+                        onClick={() => {
+                          selectRoom(roomName);
 
-                            // 비밀번호가 있다면 구역이 확장된다
-                            if(isLocked) {
-                              handleExpandClick()
-                            } else {
-                              history.push('./waitingroom')
-                            }
-                          }}>
-                          입장하기
-                        </Button>
-                    }
+                          // 비밀번호가 있다면 구역이 확장된다
+                          if (isLocked) {
+                            handleExpandClick();
+                          } else {
+                            history.push('./waitingroom');
+                          }
+                        }}
+                      >
+                        입장하기
+                      </Button>
+                    )}
                   </div>
                 )}
               </Grid>

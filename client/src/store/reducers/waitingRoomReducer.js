@@ -2,10 +2,7 @@ import * as actionTypes from '../actions';
 
 const initialState = {
   selectedRoom: 0,
-  roomUsers: [
-    { username: 'Opponent', avatar: 'smiley face', isReady: false },
-    { username: 'Current', avatar: 'kissy face', isReady: false },
-  ],
+  roomUsers: [],
   chat: [],
 };
 
@@ -16,7 +13,8 @@ const reducer = (state = initialState, action) => {
         return { ...el };
       });
       return {
-        roomUsers: [{ ...state.roomUsers[0] }, { ...state.roomUsers[1] }],
+        // roomUsers: [{ ...state.roomUsers[0] }, { ...state.roomUsers[1] }],
+        roomUsers: [...state.roomUsers],
         chat: [...chatCopy, action.payload],
       };
     case actionTypes.READY:
@@ -53,6 +51,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.LEAVE_ROOM:
       // 소켓으로 방에서 나갔음을 전달함
       return {
+        ...state,
         chat: [],
         roomUsers: [],
       };
@@ -60,6 +59,16 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         selectedRoom: action.selected,
+      };
+    case actionTypes.LOAD_USER:
+      // action.payload >> { username, avatar, isLogin: false}
+      const newUser = state.roomUsers.map((user) => {
+        return { ...user };
+      });
+      newUser.push(action.payload);
+      return {
+        ...state,
+        roomUsers: newUser,
       };
     default:
       return state;

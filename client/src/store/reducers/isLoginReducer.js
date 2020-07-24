@@ -20,7 +20,8 @@ const reducer = (state = initialState, action) => {
         ...state,
         isLogin: true,
         username: action.payload.username,
-        avatar: action.payload.avatar,
+        // avatar: action.payload.avatar,
+        avatar: 'helllllllo',
       };
 
     case actionTypes.LOGOUT:

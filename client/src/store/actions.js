@@ -14,3 +14,5 @@ export const SIGN_UP = 'SIGN_UP';
 export const SELECT_GAME = 'SELECT_GAME';
 export const RESELECT_GAME = 'RESELECT_GAME';
 export const CHAT_LOG = 'CHAT_LOG';
+export const LOAD_USER = 'LOAD_USER';
+export const REFRESH_USER = 'REFRESH_USER';
