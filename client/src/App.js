@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 
-import Login from './Pages/Login/Login';
+import Login from './containers/Login';
 import SelectGame from './Pages/SelectGame/SelectGame';
 import WaitingRoom from './containers/WaitingRoom';
 import Nav from './containers/Nav';
