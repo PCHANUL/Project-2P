@@ -60,7 +60,6 @@ const GameList = ({ image, gameName, getRooms, selectGame }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handlePopoverOpen = (event) => {
-    console.log('enter')
     setAnchorEl(event.currentTarget);
   }
   const handlePopoverClose = (event) => {

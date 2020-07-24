@@ -25,6 +25,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
 import avatar from '../../images/avatar.png'
+import cookie from 'react-cookies'
 
 
 function getModalStyle() {
@@ -104,7 +105,7 @@ function Mypage() {
       <Card style={modalStyle} className={classes.paper}>
         <CardHeader
           title="Mypage"
-          subheader="오마이갇"
+          subheader={cookie.load('username')}
         />
         <CardMedia
           className={classes.media}

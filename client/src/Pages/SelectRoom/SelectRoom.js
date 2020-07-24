@@ -1,6 +1,7 @@
 import React from 'react';
 import RoomList from '../../containers/RoomList'
 import { useHistory } from 'react-router-dom'
+import cookie from 'react-cookies'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -43,22 +44,22 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function SelectRoom({ roomList, getRooms, makeRooms, isMaking, changeCurrentGame }) {
+function SelectRoom({ roomList, getRooms, makeRooms, isMaking, changeCurrentGame, isLogin }) {
   const classes = useStyles();
   const history = useHistory();
   const [value, setValue] = React.useState(0);
   const [rows, getRows] = React.useState([{}]);
 
   React.useEffect(() => {
+    if(!cookie.load('username')){
+      history.push('/')
+    }
 
     // 대기방이 없는 경우 계속 요청을 보낸다.
     if(roomList.length === 0) {
       getRooms()
     }
     getRows(roomList)
-
-    console.log(rows)
-    console.log(isMaking)
   })
 
   const handleChange = (event, newValue) => {

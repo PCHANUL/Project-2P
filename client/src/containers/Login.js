@@ -1,6 +1,7 @@
 import Login from '../Pages/Login/Login';
 import { connect } from 'react-redux';
 import * as actionTypes from '../store/actions';
+import cookie from 'react-cookies'
 
 const axios = require('axios')
 
@@ -22,9 +23,9 @@ function mapReduxDispatchToReactProps(dispatch) {
       let result = await socialSignin(userId, socialId, nickname)
       if(result.data.message) {
         let userData = await Mypage()
-        let username = userData.data.nickname
-        let avatar = userData.data.avatarId
-        dispatch({ type: actionTypes.LOGIN, payload: { username, avatar } })
+        cookie.save('username', userData.data.nickname, { path: '/' })
+        cookie.save('avatarId', userData.data.avatarId, { path: '/' })
+        window.location.reload();
       } else {
         alert(result.data.error)
       }
