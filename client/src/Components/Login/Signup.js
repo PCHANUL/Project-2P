@@ -10,6 +10,39 @@ import {
   makeStyles,
 } from '@material-ui/core';
 
+import cookie from 'react-cookies'
+const axios = require('axios')
+
+  const userSignup = async (username, nickname, password) => {
+    let result = await requestSignup(username, nickname, password)
+    if(result.data.message) {
+      cookie.save('username', nickname, { path: '/' })
+      cookie.save('avatarId', null, { path: '/' })
+      window.location.reload();
+    }
+  }
+
+  const requestSignup = async (userId, nickname, password) => {
+    try {
+      const response = await axios({
+        method: 'post',
+        url: 'http://localhost:3001/users/signup',
+        data: {
+          userId: userId,
+          nickname: nickname,
+          password: password,
+        },
+        withCredentials: true,
+      })
+      response.data.error
+      ? alert(response.data.error)
+      : alert(`환영합니다 ${nickname}님`)
+      return response
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
 
 
   const useStyles = makeStyles((theme) => ({
@@ -19,7 +52,7 @@ import {
   }))
 
 
-  const Signup = ({ signup }) => {
+  const Signup = () => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [username, inputUsername] = React.useState('');
@@ -34,7 +67,7 @@ import {
         </Button>
         <Dialog
           open={open}
-          onClose={() => setOpen(true)}
+          // onClose={() => setOpen(true)}
           aria-labelledby='form-dialog-title'
         >
           <DialogTitle id='form-dialog-title'>Sign Up</DialogTitle>
@@ -77,8 +110,7 @@ import {
             </Button>
             <Button
               onClick={() => {
-                setOpen(false);
-                signup(username, nickname, password);
+                userSignup(username, nickname, password);
                 // signup 성공시 history.push('/selectGame') 이동하게 콜백 넘겨주기
                 // 실패시 콜백으로 localhost:3000 창과 함께 실패했습니다 모달 창 띄워주기
               }}

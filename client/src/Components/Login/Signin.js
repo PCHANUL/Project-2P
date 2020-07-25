@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter, useHistory } from 'react-router-dom';
+import cookie from 'react-cookies'
+
 import { Button, TextField, InputAdornment } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
+
 
 const axios = require('axios')
 
@@ -13,33 +16,56 @@ class Signin extends Component {
   };
 
   componentDidMount() {
-    if (this.props.login.isLogin === false) {
-      console.log('awefawefawef')
-      this.Mypage()
-    }
-  }
-  componentDidUpdate() {
-    if (this.props.login.isLogin === true) {
+    if (cookie.load('username')) {
       this.props.history.push('/selectgame');
     }
   }
-  componentWillUnmount() {
-    console.log('awefawef')
+
+  signin = async () => {
+    let result = await this.Login(this.state.username, this.state.password)
+    if(result.data.message) {
+      let userData = await this.Mypage()
+      cookie.save('username', userData.data.nickname, { path: '/' })
+      cookie.save('avatarId', userData.data.avatarId, { path: '/' })
+      window.location.reload();
+    } else {
+      alert(result.data.error)
+    }
   }
 
-  async Mypage() {
+
+  // LOGIN (post)
+  Login = async(userId, password) => {
+    try {
+      const response = await axios({
+        method: 'post',
+        url: 'http://localhost:3001/users/signin',
+        data: {
+          userId: userId,
+          password: password,
+        },
+        withCredentials: true,
+      })
+      return response
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // MYPAGE (get)
+  Mypage = async() => {
     try {
       const response = await axios({
         method: 'get',
         url: 'http://localhost:3001/users/mypage',
         withCredentials: true,
       })
-      console.log(response)
       return response
     } catch (error) {
-      alert(error)
+      return error
     }
   }
+
 
   render() {
     return (
@@ -74,13 +100,14 @@ class Signin extends Component {
             type='password'
             value={this.state.password}
             onChange={(e) => this.setState({ password: e.target.value })}
+            onKeyDown={(e) => { if(e.keyCode === 13) this.signin() }}
           />
         </div>
         <div style={{ marginTop: '15px' }}>
           <Button
             variant='contained'
             color='secondary'
-            onClick={ () => this.props.signin(this.state.username, this.state.password) }
+            onClick={ () => this.signin() }
           >
             Sign In
           </Button>

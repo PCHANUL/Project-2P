@@ -1,6 +1,6 @@
 import React from 'react';
-import Signin from '../../containers/Signin';
-import Signup from '../../containers/Signup';
+import Signin from '../../Components/Login/Signin';
+import Signup from '../../Components/Login/Signup';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { GoogleLogin } from 'react-google-login';
@@ -31,6 +31,7 @@ const Login = ({ socialLogin }) => {
   
   // 구글 로그인 응답함수
   function responseGoogle  (response) {
+    console.log('response: ', response);
     console.log(response.Pt.zu)
     console.log(response.Pt.Cd);
     console.log(response.googleId);
