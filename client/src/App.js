@@ -12,7 +12,6 @@ import PlayGame from './Pages/PlayGame/PlayGame';
 
 class App extends Component {
   render() {
-    console.log(this.props.isMaking);
     return (
       <div className='App'>
         <Nav />

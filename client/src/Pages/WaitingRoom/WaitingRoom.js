@@ -13,10 +13,17 @@ let socket = io.connect('http://localhost:3002');
 
 const WaitingRoom = (props) => {
   const { roomUsers, chat } = props.waitingRoom;
-  const bothPlayersReady = roomUsers.filter((user) => user.isReady).length === 2;
+  const bothPlayersReady = roomUsers.filter((user) => user.userInfo.isReady).length === 2;
 
   useEffect(() => {
-    props.enterChatroom(props.waitingRoom.selectedRoom, props.login.username, props.login.avatar);
+    // roomname, username, avatar, isReady, gameCode
+    props.enterChatroom(
+      props.waitingRoom.selectedRoom,
+      props.login.username,
+      props.login.avatar,
+      false,
+      props.currentGame.currentGame
+    );
     return () => {
       props.leaveRoomHandler();
     };
@@ -29,8 +36,6 @@ const WaitingRoom = (props) => {
         {roomUsers.map((user, idx) => {
           return <Users key={idx} user={user} readyHandler={props.readyHandler} />;
         })}
-        {/* <Users user={roomUsers[0]} readyHandler={props.readyHandler} />
-        <Users user={roomUsers[1]} readyHandler={props.readyHandler} /> */}
       </div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <div className='container'>
@@ -46,17 +51,14 @@ const socketSubscribe = (dispatch) => {
   socket.on('systemMessage', (data) => {
     dispatch({ type: actionTypes.CHAT_LOG, payload: data });
   });
-
-  socket.on('sendMessage', (data) => {
-    dispatch({ type: actionTypes.CHAT_LOG, payload: data });
-  });
-
-  socket.on('loadUser', (data) => {
+  socket.on('loadUsers', (data) => {
     dispatch({ type: actionTypes.LOAD_USER, payload: data });
   });
-
-  socket.on('refreshUser', (data) => {
-    dispatch({ type: actionTypes.REFRESH_USER, payload: data });
+  socket.on('receiveMessage', (data) => {
+    dispatch({ type: actionTypes.CHAT_LOG, payload: data });
+  });
+  socket.on('readyState', (data) => {
+    dispatch({ type: actionTypes.READY, payload: data });
   });
 };
 
@@ -64,27 +66,31 @@ const mapReduxStateToReactProps = (state) => {
   return {
     waitingRoom: state.waitingRoom,
     login: state.login,
+    currentGame: state.currentGame,
   };
 };
 
 const mapReduxDispatchToReactProps = (dispatch) => {
   socketSubscribe(dispatch);
   return {
-    enterChatroom: async (roomname, username, avatar) => {
-      // socket = await io.connect('http://localhost:3002');
-      socket.emit('joinRoom', { roomname, username, avatar });
+    readyHandler: (username) => {
+      socket.emit('ready', username);
+      dispatch({ type: actionTypes.READY, payload: username });
     },
-    chatHandler: (chat) => {
-      // dispatch({ type: actionTypes.CHAT_LOG, payload: chat });
-      socket.emit('sendMessage', chat.text);
+    chatHandler: (msg, username) => {
+      socket.emit('sendMessage', msg, username);
+      dispatch({ type: actionTypes.CHAT_LOG, payload: msg });
+    },
+    enterChatroom: (roomname, username, avatar, isReady, gameCode) => {
+      const userInfo = { username, avatar, isReady };
+      const room = { gameCode, roomId: roomname };
+      socket.emit('joinRoom', { userInfo, room });
     },
     leaveRoomHandler: () => {
       socket.emit('leave');
       socket.removeAllListeners();
       dispatch({ type: actionTypes.LEAVE_ROOM });
     },
-
-    // readyHandler: (username) => dispatch({ type: actionTypes.READY, payload: username }),
   };
 };
 export default connect(mapReduxStateToReactProps, mapReduxDispatchToReactProps)(WaitingRoom);

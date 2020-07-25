@@ -26,13 +26,17 @@ export default function Users({ user, readyHandler }) {
     <Card className={classes.root} variant='outlined'>
       <CardContent>
         <Typography className={classes.title} color='textSecondary' gutterBottom>
-          {user.avatar}
+          {user.userInfo.avatar}
         </Typography>
         <Typography className={classes.pos} variant='h5' component='h2'>
-          {user.username}
+          {user.userInfo.username}
         </Typography>
       </CardContent>
-      <ReadyBtn isReady={user.isReady} readyHandler={readyHandler} username={user.username} />
+      <ReadyBtn
+        isReady={user.userInfo.isReady}
+        readyHandler={readyHandler}
+        username={user.userInfo.username}
+      />
     </Card>
   );
 }

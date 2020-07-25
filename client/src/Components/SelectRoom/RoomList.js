@@ -201,13 +201,14 @@ function RoomList({ login, roomName, isWait, isLocked, isFull, selectRoom, selec
 const mapReduxStateToReactProps = (state) => {
   return {
     selected: state.selectedRoom,
+    waitingRoom: state.waitingRoom,
   };
 };
 
 const mapReduxDispatchToReactProps = (dispatch) => {
   return {
     selectRoom: function (roomName) {
-      dispatch({ type: 'SELECTED_ROOM', selected: roomName });
+      dispatch({ type: actionTypes.SELECTED_ROOM, payload: roomName });
     },
   };
 };

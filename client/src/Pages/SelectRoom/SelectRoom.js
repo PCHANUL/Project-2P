@@ -129,8 +129,9 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking, changeCurr
       ) : (
         <div>
           <div className={classes.section1}>
-            {rows.map((row) => (
+            {rows.map((row, idx) => (
               <RoomList
+                key={idx}
                 roomName={row.roomName}
                 isWait={row.isWait}
                 isLocked={row.isLocked}

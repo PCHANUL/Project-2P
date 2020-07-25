@@ -17,7 +17,7 @@ const Input = ({ sendChat, username }) => {
           if (message === '') return;
           const text = { username, text: message };
           if (e.key === 'Enter') {
-            sendChat(text);
+            sendChat(text, username);
             setMessage('');
           }
         }}
@@ -29,7 +29,7 @@ const Input = ({ sendChat, username }) => {
           e.preventDefault();
           if (message === '') return;
           const text = { username, text: message };
-          sendChat(text);
+          sendChat(text, username);
           setMessage('');
         }}
       >
