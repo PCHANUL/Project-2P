@@ -35,31 +35,40 @@ class Game extends Component {
 
  
 
-    this.circle = {
-      x: 200,
-      y: 200,
-      size: 30,
-      dx: 5,
-      dy: 4,
-    }
-
-
-    this.drawCircle = this.drawCircle.bind(this);
-    this.block = new Block(400, 30, 100, 250);
+    // this.circle = {
+    //   x: 200,
+    //   y: 200,
+    //   size: 30,
+    //   dx: 5,
+    //   dy: 4,
+    // }
+    // this.drawCircle = this.drawCircle.bind(this);
     // this.ball = new Ball(400, 30, 60, 15);
 
+    this.canvas = document.createElement('canvas');
+    this.ctx = this.canvas.getContext('2d');
+
+    document.body.appendChild(this.canvas)
+
+
+    this.ball = new Ball(document.body.clientWidth / 1.5, document.body.clientHeight / 1.5, 60, 15)
+    this.block = new Block(400, 30, 100, 250);
+
+    window.requestAnimationFrame(this.animate.bind(this), false);
   }
   
 
    
   
   componentDidMount() {
-    this.canvas = document.getElementById('canvas');
-    this.ctx = this.canvas.getContext('2d');
+    // this.canvas = document.getElementById('canvas');
+    // this.ctx = this.canvas.getContext('2d');
 
+    
     // 화면크기 재설정 이벤트
-    window.addEventListener('resize', this.resize.bind(this), false);
+    // window.addEventListener('resize', this.resize.bind(this), false);
     this.resize();
+
 
     window.requestAnimationFrame(this.animate.bind(this));
   } 
@@ -68,38 +77,38 @@ class Game extends Component {
   resize() {
     this.stageWidth = document.body.clientWidth;
     this.stageHeight = document.body.clientHeight;
-
+ 
     this.canvas.width = this.stageWidth / 1.5;
     this.canvas.height = this.stageHeight / 1.5;
 
     this.setState({ width: this.canvas.width, height: this.canvas.height })
   }
 
-  drawCircle() {
-    this.ctx.beginPath();
-    this.ctx.arc(this.circle.x, this.circle.y, this.circle.size, 0, Math.PI * 2);
-    this.ctx.fillStyle = 'yellow';
-    this.ctx.fill();
-  }
+  // drawCircle() {
+  //   this.ctx.beginPath();
+  //   this.ctx.arc(this.circle.x, this.circle.y, this.circle.size, 0, Math.PI * 2);
+  //   this.ctx.fillStyle = 'yellow';
+  //   this.ctx.fill();
+  // }
   
   animate(t) {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.drawCircle();
+    // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // this.drawCircle();
 
-    this.circle.x += this.circle.dx;
-    this.circle.y += this.circle.dy;
+    // this.circle.x += this.circle.dx;
+    // this.circle.y += this.circle.dy;
 
-    this.block.draw(this.ctx)
-    // this.ball.draw(this.ctx, this.stageWidth, this.stageHeight)
+    // this.block.draw(this.ctx)
     window.requestAnimationFrame(this.animate.bind(this));
+    this.ball.draw(this.ctx, this.stageWidth, this.stageHeight) 
 
-    // Detect side walls
-    if(this.circle.x + this.circle.size > this.canvas.width || this.circle.x - this.circle.size < 0) {
-      this.circle.dx *= -1; // circle.dx = circle.dx * -1
-    } 
-    if(this.circle.y + this.circle.size > this.canvas.height || this.circle.y - this.circle.size < 0) {
-      this.circle.dy *= -1; // circle.dx = circle.dy * -1
-    } 
+    // // Detect side walls
+    // if(this.circle.x + this.circle.size > this.canvas.width || this.circle.x - this.circle.size < 0) {
+    //   this.circle.dx *= -1; // circle.dx = circle.dx * -1
+    // } 
+    // if(this.circle.y + this.circle.size > this.canvas.height || this.circle.y - this.circle.size < 0) {
+    //   this.circle.dy *= -1; // circle.dx = circle.dy * -1
+    // } 
 
     // Detect block
     // if(this.circle.x + this.circle.size > this.block.maxX) {

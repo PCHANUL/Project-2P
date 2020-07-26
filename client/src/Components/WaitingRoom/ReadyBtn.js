@@ -1,4 +1,5 @@
 import React from 'react';
+import cookie from 'react-cookies';
 import { connect } from 'react-redux';
 import { ThemeProvider, makeStyles } from '@material-ui/core/styles';
 
@@ -42,7 +43,7 @@ const BtnContent = ({ readyHandler, isReady, username, currentUsername }) => {
   );
 };
 
-const ReadyBtn = ({ isReady, readyHandler, username, login }) => {
+const ReadyBtn = ({ isReady, readyHandler, username }) => {
   return (
     <div style={{ marginBottom: '15px' }}>
       <ThemeProvider theme={isReady ? readyTheme : getReadyTheme}>
@@ -50,7 +51,7 @@ const ReadyBtn = ({ isReady, readyHandler, username, login }) => {
           readyHandler={readyHandler}
           isReady={isReady}
           username={username}
-          currentUsername={login.username}
+          currentUsername={cookie.load('username')}
         />
       </ThemeProvider>
     </div>

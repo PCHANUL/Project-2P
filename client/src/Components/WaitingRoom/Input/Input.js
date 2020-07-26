@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import cookie from 'react-cookies';
 import './Input.css';
 
-const Input = ({ sendChat, username }) => {
+const Input = ({ sendChat }) => {
   const [message, setMessage] = useState('');
 
   return (
@@ -15,9 +16,9 @@ const Input = ({ sendChat, username }) => {
         onKeyPress={(e) => {
           // e.preventDefault();
           if (message === '') return;
-          const text = { username, text: message };
+          const text = { username: cookie.load('username'), text: message };
           if (e.key === 'Enter') {
-            sendChat(text, username);
+            sendChat(text, cookie.load('username'));
             setMessage('');
           }
         }}
@@ -28,8 +29,8 @@ const Input = ({ sendChat, username }) => {
         onClick={(e) => {
           e.preventDefault();
           if (message === '') return;
-          const text = { username, text: message };
-          sendChat(text, username);
+          const text = { username: cookie.load('username'), text: message };
+          sendChat(text, cookie.load('username'));
           setMessage('');
         }}
       >

@@ -1,23 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as actionTypes from '../../store/actions';
-
-import RoomList from '../../Components/SelectRoom/RoomList';
+import cookie from 'react-cookies';
 import { useHistory } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-
 import Tooltip from '@material-ui/core/Tooltip';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { Typography } from '@material-ui/core';
-
 import Grid from '@material-ui/core/Grid';
+
+import * as actionTypes from '../../store/actions';
+import RoomList from '../../Components/SelectRoom/RoomList';
 
 let rows = [];
 
@@ -51,15 +49,16 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking, changeCurr
   const [rows, getRows] = React.useState([{}]);
 
   React.useEffect(() => {
+    if (!cookie.load('username')) {
+      history.push('/');
+    }
+
     // 대기방이 없는 경우 계속 요청을 보낸다.
     if (roomList.length === 0) {
       getRooms();
     }
     getRows(roomList);
-
-    console.log(rows);
-    console.log(isMaking);
-  }, []);
+  });
 
   const handleChange = (event, newValue) => {
     console.log(newValue);

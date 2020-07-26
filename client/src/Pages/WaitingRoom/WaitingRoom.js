@@ -7,6 +7,8 @@ import Users from '../../Components/WaitingRoom/Users/Users';
 import Chat from '../../Components/WaitingRoom/Chat/Chat';
 import Input from '../../Components/WaitingRoom/Input/Input';
 import ReadyProgress from '../../Components/WaitingRoom/ReadyProgress';
+import { useHistory } from 'react-router-dom';
+import cookie from 'react-cookies';
 
 import './WaitingRoom.css';
 let socket = io.connect('http://localhost:3002');
@@ -14,19 +16,26 @@ let socket = io.connect('http://localhost:3002');
 const WaitingRoom = (props) => {
   const { roomUsers, chat } = props.waitingRoom;
   const bothPlayersReady = roomUsers.filter((user) => user.userInfo.isReady).length === 2;
+  const history = useHistory();
 
   useEffect(() => {
     // roomname, username, avatar, isReady, gameCode
     props.enterChatroom(
       props.waitingRoom.selectedRoom,
-      props.login.username,
-      props.login.avatar,
+      cookie.load('username'),
+      cookie.load('avatarId'),
       false,
       props.currentGame.currentGame
     );
     return () => {
       props.leaveRoomHandler();
     };
+  }, []);
+
+  React.useEffect(() => {
+    if (!cookie.load('username')) {
+      history.push('/');
+    }
   }, []);
 
   return (
@@ -40,7 +49,7 @@ const WaitingRoom = (props) => {
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <div className='container'>
           <Chat chat={chat} />
-          <Input sendChat={props.chatHandler} username={props.login.username} />
+          <Input sendChat={props.chatHandler} username={cookie.load('username')} />
         </div>
       </div>
     </div>

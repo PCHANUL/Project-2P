@@ -7,34 +7,75 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  makeStyles,
 } from '@material-ui/core';
 
-class Signup extends Component {
-  state = {
-    open: false,
-    username: '',
-    nickname: '',
-    password: '',
+import cookie from 'react-cookies'
+const axios = require('axios')
 
-  };
+  const userSignup = async (username, nickname, password) => {
+    let result = await requestSignup(username, nickname, password)
+    if(result.data.message) {
+      cookie.save('username', nickname, { path: '/' })
+      cookie.save('avatarId', null, { path: '/' })
+      window.location.reload();
+    }
+  }
 
-  render() {
+  const requestSignup = async (userId, nickname, password) => {
+    try {
+      const response = await axios({
+        method: 'post',
+        url: 'http://localhost:3001/users/signup',
+        data: {
+          userId: userId,
+          nickname: nickname,
+          password: password,
+        },
+        withCredentials: true,
+      })
+      response.data.error
+      ? alert(response.data.error)
+      : alert(`환영합니다 ${nickname}님`)
+      return response
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+
+  const useStyles = makeStyles((theme) => ({
+    rootButton: {
+      width: 200
+    }
+  }))
+
+
+  const Signup = () => {
+    const classes = useStyles();
+    const [open, setOpen] = React.useState(false);
+    const [username, inputUsername] = React.useState('');
+    const [nickname, inputNickname] = React.useState('');
+    const [password, inputPassword] = React.useState('');
+
+
     return (
       <div style={{ marginTop: '15px' }}>
-        <Button variant='outlined' color='primary' onClick={() => this.setState({ open: true })}>
+        <Button variant='outlined' color='primary' className={classes.rootButton} onClick={() => setOpen(true)}>
           Sign Up to 2P!
         </Button>
         <Dialog
-          open={this.state.open}
-          onClose={() => this.setState({ open: false })}
+          open={open}
+          // onClose={() => setOpen(true)}
           aria-labelledby='form-dialog-title'
         >
           <DialogTitle id='form-dialog-title'>Sign Up</DialogTitle>
           <DialogContent>
             <DialogContentText>Please enter your desired username and password</DialogContentText>
             <TextField
-              value={this.state.username}
-              onChange={(e) => this.setState({ username: e.target.value })}
+              value={username}
+              onChange={(e) => inputUsername(e.target.value)}
               autoFocus
               margin='dense'
               id='name'
@@ -43,8 +84,8 @@ class Signup extends Component {
               fullWidth
             />
             <TextField
-              value={this.state.nickname}
-              onChange={(e) => this.setState({ nickname: e.target.value })}
+              value={nickname}
+              onChange={(e) => inputNickname(e.target.value)}
               autoFocus
               margin='dense'
               id='name'
@@ -53,8 +94,8 @@ class Signup extends Component {
               fullWidth
             />
             <TextField
-              value={this.state.password}
-              onChange={(e) => this.setState({ password: e.target.value })}
+              value={password}
+              onChange={(e) => inputPassword(e.target.value)}
               autoFocus
               margin='dense'
               id='name'
@@ -64,13 +105,12 @@ class Signup extends Component {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => this.setState({ open: false })} color='primary'>
+            <Button onClick={() => setOpen(false)} color='primary'>
               Cancel
             </Button>
             <Button
               onClick={() => {
-                this.setState({ open: false });
-                this.props.signup(this.state.username, this.state.nickname, this.state.password);
+                userSignup(username, nickname, password);
                 // signup 성공시 history.push('/selectGame') 이동하게 콜백 넘겨주기
                 // 실패시 콜백으로 localhost:3000 창과 함께 실패했습니다 모달 창 띄워주기
               }}
@@ -83,6 +123,6 @@ class Signup extends Component {
       </div>
     );
   }
-}
+
 
 export default Signup;

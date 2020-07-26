@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import OpponentMessage from './OpponentMessage';
 import CurrentUserMessage from './CurrentUserMessage';
+import cookie from 'react-cookies';
 import './Messages.css';
 
 const Messages = (props) => {
   return (
     <ScrollToBottom className='messages'>
       {props.waitingRoom.chat.map((text, idx) => {
-        if (text.username !== props.login.username) {
+        if (text.username !== cookie.load('username')) {
           return <OpponentMessage key={idx} chat={text} />;
         } else {
           return <CurrentUserMessage key={idx} chat={text} />;

@@ -1,5 +1,8 @@
 import React from 'react';
 import GameList from '../../containers/GameList';
+import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom'
+import cookie from 'react-cookies'
 
 import WhackAMole from '../../Components/GameList/img/WhackAMole.jpg';
 import Pong from '../../Components/GameList/img/Pong.jpg';
@@ -8,14 +11,22 @@ import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 
-const userStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   flexContainer: {
     margin: theme.spacing(2),
   }
 }))
 
-const SelectGame = () => {
-  const classes = userStyles();
+const SelectGame = ({ isLogin }) => {
+  const classes = useStyles();
+  const history = useHistory();
+
+  React.useEffect(() => {
+    if(!cookie.load('username')){
+      history.push('/')
+    }
+  })
+
 
   return (
       <Grid container direction="column" justify="space-evenly" alignItems="center">
@@ -34,4 +45,10 @@ const SelectGame = () => {
   );
 };
 
-export default SelectGame;
+function mapReduxStateToReactProps(state) {
+  return {
+    isLogin: state.login.isLogin
+  }
+}
+
+export default connect(mapReduxStateToReactProps)(SelectGame);
