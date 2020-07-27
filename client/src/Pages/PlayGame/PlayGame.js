@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Game from './Game';
+import Mole from './mole';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -68,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const PlayGame = () => {
+const PlayGame = ({ currentGame }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -83,9 +85,16 @@ const PlayGame = () => {
   return (
     <div className={classes.space}>
       <Paper style={{height: '1000px'}}>
-      
-        <Game />
-        <Grid container direction="row" justify="space-evenly" alignItems="center">
+          {
+            currentGame === 1
+            ? <Mole />
+            : <Game />
+              
+            
+          }
+
+        
+        {/* <Grid container direction="row" justify="space-evenly" alignItems="center">
           <Paper>
             <Grid item xs>
               <Typography variant="h1" color="primary">
@@ -172,10 +181,16 @@ const PlayGame = () => {
             </Grid>
           </Paper>
         </Fade>
-      </Modal>
+      </Modal> */}
       </Paper>
     </div>
   );
 };
 
-export default PlayGame;
+function mapReduxStateToReactProps(state) {
+  return {
+    currentGame: state.currentGame.currentGame,
+  };
+}
+
+export default connect(mapReduxStateToReactProps)(PlayGame);
