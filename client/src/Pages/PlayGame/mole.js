@@ -54,7 +54,6 @@ class Game extends Component {
     for(let i=0; i<16; i++){
       bubbles.push(new Bubble(document.body.clientWidth / 1.5, document.body.clientHeight / 1.5, 15, i))
     }
-    console.log(bubbles)
   }
   
   
@@ -67,13 +66,11 @@ class Game extends Component {
     this.gifitem = document.getElementById('gif')
     this.giftest = [];
 
-
+    // 분리된 gif의 png를 배열에 추가
     var req = require.context('../../images/gif', false, /.*\.png$/);
     req.keys().forEach(function(key) {
       gif.push(req(key))
     });
-    console.log(gif)
-
     
     // 화면크기 재설정 이벤트
     window.addEventListener('resize', this.resize.bind(this), false);
@@ -88,7 +85,6 @@ class Game extends Component {
     this.canvas.addEventListener('mouseup', (e) => {
       this.cursorClick = false;
     }, false)
-    
     
     this.canvas.addEventListener('mousemove', (e) => {
       this.cursorEnter = true;
@@ -135,15 +131,12 @@ class Game extends Component {
       bubbles[i].move()
     }
 
+    // gif 움직임 생성
     this.gifCount += 1
-    if(this.gifCount === 47){
-      this.gifCount = 0
-    }
+    if(this.gifCount === 47) this.gifCount = 0;
     let imgtest = new Image();
     imgtest.src = gif[this.gifCount]
     this.ctx.drawImage(imgtest, 10, this.canvas.height-50, 70, 50)
-
-
 
     if(this.cursorEnter){
       if(this.cursorClick){

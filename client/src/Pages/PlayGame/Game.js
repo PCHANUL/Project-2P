@@ -108,12 +108,6 @@ class Game extends Component {
 
 
   animate(t) {
-    // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    // this.drawCircle();
-
-    // this.circle.x += this.circle.dx;
-    // this.circle.y += this.circle.dy;
-
     if(blockX < 0){
       blockX = 0
     }
@@ -127,24 +121,6 @@ class Game extends Component {
     this.block.draw(this.ctx, blockX)
 
     this.ball.draw(this.ctx, this.canvas.width, this.canvas.height, blockX, this.blockY) 
-
-    // // Detect side walls
-    // if(this.circle.x + this.circle.size > this.canvas.width || this.circle.x - this.circle.size < 0) {
-    //   this.circle.dx *= -1; // circle.dx = circle.dx * -1
-    // } 
-    // if(this.circle.y + this.circle.size > this.canvas.height || this.circle.y - this.circle.size < 0) {
-    //   this.circle.dy *= -1; // circle.dx = circle.dy * -1
-    // } 
-
-    // Detect block
-    // if(this.circle.x + this.circle.size > this.block.maxX) {
-    //   this.circle.dx *= -1; // circle.dx = circle.dx * -1
-    // } 
-    // if(this.circle.y + this.circle.size > this.block.height || this.circle.y - this.circle.size < 0) {
-    //   this.circle.dy *= -1; // circle.dx = circle.dy * -1
-    // } 
-
-
   }
 
   render() {
