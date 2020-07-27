@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import cookie from 'react-cookies';
 import './Input.css';
 
+
 const Input = ({ sendChat }) => {
   const [message, setMessage] = useState('');
 

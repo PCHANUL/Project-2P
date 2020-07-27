@@ -24,31 +24,7 @@ let blockX
 let dx = 10
 let preKey
 
-document.addEventListener('keydown', (e) => {
-  // dx까지의 모든 수를 더해줍니다.
-  if(e.keyCode === 39){
-    dx += 15
-    blockX += dx
-    
-  } else if(e.keyCode === 37){
-    blockX -= dx
-    dx += 15
-  }
-})
 
-document.addEventListener('keyup', (e) => {
-  if(e.keyCode === 39 ){
-    console.log('blockX: ', dx, blockX);
-    for(let i; i<dx; i++){
-      blockX += i
-    }
-    
-    console.log('blockX: ', dx, blockX);
-    dx = 10;
-  } else if(e.keyCode === 37){
-    dx = 10;
-  }
-})
 
 
 
@@ -80,14 +56,41 @@ class Game extends Component {
     this.ctx = this.canvas.getContext('2d');
 
     // 화면크기 재설정 이벤트
-    window.addEventListener('resize', this.resize.bind(this), false);
+    // window.addEventListener('resize', this.resize.bind(this), false);
     this.resize();
     window.requestAnimationFrame(this.animate.bind(this));
 
 
-    document.addEventListener('mousedown', (e) => {
-      this.mousePressed(e.pageX/1.5 , e.pageY/1.5, blockX, this.blockY)
-    }, false)
+    // document.addEventListener('mousedown', (e) => {
+    //   this.mousePressed(e.pageX/1.5 , e.pageY/1.5, blockX, this.blockY)
+    // }, false)
+    
+    document.addEventListener('keydown', (e) => {
+      console.log('down')
+      // dx까지의 모든 수를 더해줍니다.
+      if(e.keyCode === 39){
+        dx += 15
+        blockX += dx
+        
+      } else if(e.keyCode === 37){
+        blockX -= dx
+        dx += 15
+      }
+    })
+    
+    document.addEventListener('keyup', (e) => {
+      if(e.keyCode === 39 ){
+        console.log('blockX: ', dx, blockX);
+        for(let i; i<dx; i++){
+          blockX += i
+        }
+        
+        console.log('blockX: ', dx, blockX);
+        dx = 10;
+      } else if(e.keyCode === 37){
+        dx = 10;
+      }
+    })
   } 
  
   // 화면크기 재설정 함수

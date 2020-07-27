@@ -65,7 +65,7 @@ export default function MakeGame({ isMaking, makeRoomsClose }) {
 
   React.useEffect(() => {
     setOpen(isMaking)
-  })
+  },[])
   
   const handleOpen = () => {
     setOpen(true);

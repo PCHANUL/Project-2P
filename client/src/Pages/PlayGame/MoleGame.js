@@ -7,7 +7,7 @@ import { Block } from './Block';
 import { Ball } from './Ball'
 import { isDeleteExpression } from 'typescript';
 
-import { Mole } from './Mole'
+import { Mole } from './mole'
 import hemmer from '../../images/hemmer.png'
 import clicked from '../../images/clicked.png'
 
@@ -71,7 +71,7 @@ class MoleGame extends Component {
     });
     
     // 화면크기 재설정 이벤트
-    window.addEventListener('resize', this.resize.bind(this), false);
+    // window.addEventListener('resize', this.resize.bind(this), false);
     this.resize();
     window.requestAnimationFrame(this.animate.bind(this));
     
