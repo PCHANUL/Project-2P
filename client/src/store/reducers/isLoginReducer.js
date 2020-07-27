@@ -1,7 +1,5 @@
 import * as actionTypes from '../actions';
 
-
-
 const initialState = {
   isLogin: false,
   username: '',
@@ -22,7 +20,8 @@ const reducer = (state = initialState, action) => {
         ...state,
         isLogin: true,
         username: action.payload.username,
-        avatar: action.payload.avatar,
+        // avatar: action.payload.avatar,
+        avatar: 'helllllllo',
       };
 
     case actionTypes.LOGOUT:
@@ -37,8 +36,10 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isLogin: true,
-        username: 'userData.data.nickname',
-        avatar: 'userData.data.avatarId',
+        username: action.payload.username,
+        avatar: 'default Avatar',
+        // username: 'userData.data.nickname',
+        // avatar: 'userData.data.avatarId',
       };
     default:
       return state;

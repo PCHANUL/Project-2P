@@ -5,7 +5,7 @@ import isLoginReducer from './reducers/isLoginReducer';
 import selectedRoom from './reducers/selectedRoom';
 
 import axios from 'axios';
-import axiosMiddleware from 'redux-axios-middleware';
+// import axiosMiddleware from 'redux-axios-middleware';
 
 const client = axios.create({
   baseURL: 'http://localhost:3001',
