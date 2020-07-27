@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
+import cookie from 'react-cookies';
+import { connect } from 'react-redux';
 import { ThemeProvider, makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -24,11 +26,18 @@ const readyTheme = {
   boxShadow: '0 3px 5px 2px rgba(33, 203, 243, .3)',
 };
 
-const BtnContent = ({ readyHandler, isReady, username }) => {
+const BtnContent = ({ readyHandler, isReady, username, currentUsername }) => {
   const classes = useStyles();
-
   return (
-    <button type='button' onClick={() => readyHandler(username)} className={classes.root}>
+    <button
+      type='button'
+      onClick={() => {
+        if (currentUsername === username) {
+          readyHandler(username);
+        }
+      }}
+      className={classes.root}
+    >
       {isReady ? '가즈아ㅏ' : '준비하세요'}
     </button>
   );
@@ -38,10 +47,20 @@ const ReadyBtn = ({ isReady, readyHandler, username }) => {
   return (
     <div style={{ marginBottom: '15px' }}>
       <ThemeProvider theme={isReady ? readyTheme : getReadyTheme}>
-        <BtnContent readyHandler={readyHandler} isReady={isReady} username={username} />
+        <BtnContent
+          readyHandler={readyHandler}
+          isReady={isReady}
+          username={username}
+          currentUsername={cookie.load('username')}
+        />
       </ThemeProvider>
     </div>
   );
 };
 
-export default ReadyBtn;
+const mapStateToProps = (state) => {
+  return {
+    login: state.login,
+  };
+};
+export default connect(mapStateToProps)(ReadyBtn);
