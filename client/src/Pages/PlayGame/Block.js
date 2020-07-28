@@ -2,6 +2,8 @@ export class Block {
   constructor(width, height, x, y, stageWidth, stageHeight) {
     this.width = width;
     this.height = height;
+    this.initX = x;
+    this.initY = y;
     this.x = x;
     this.y = y;
     this.maxX = width + x;

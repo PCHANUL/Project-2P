@@ -5,7 +5,7 @@ export class Ball {
     this.vx = speed;
     this.vy = speed;
     this.x = stageWidth / 2;
-    this.y = stageHeight / 2;
+    this.y = this.initY;
     this.stop = true;
   }
 
@@ -13,13 +13,11 @@ export class Ball {
     blockPosX, blockPosY, blockSizeX, blockSizeY,
     RivalPosX, RivalPosY, RivalSizeX, RivalSizeY) 
     {
+
+    const response = this.bounceWindow(stageWidth, stageHeight);
     
-
-    this.bounceWindow(stageWidth, stageHeight);
-
     this.bounceBlock(blockPosX, blockPosY, blockSizeX, blockSizeY);
     this.bounceRival(RivalPosX, RivalPosY, RivalSizeX, RivalSizeY);
-
     
     ctx.fillStyle = '#fdd700';
     ctx.beginPath();
@@ -35,6 +33,10 @@ export class Ball {
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     }
     ctx.fill();
+
+    if(response){
+      return response
+    }
   }
 
   stoppp(myTurn) {
@@ -57,13 +59,11 @@ export class Ball {
     } else  if (this.y <= minY) {
       this.vy *= -1;
       this.y += this.vy;
-      console.log('이김')
-      this.stoppp()
+      return { gameResult: true }
     } else if (this.y >= maxY) {
       this.vy *= -1;
       this.y += this.vy;
-      console.log('짐')
-      this.stoppp()
+      return { gameResult: false }
     }
   }
 

@@ -41,12 +41,14 @@ class Game extends Component {
     this.blockSizeY = this.state.height / 35;
     this.blockPosX = (this.state.width / 2) - (this.blockSizeX / 2);
     this.blockPosY = this.state.height * 4.5 / 5;
+    this.blockPosInitX = (this.state.width / 2) - (this.blockSizeX / 2);
 
     // Rival Block
     this.RivalSizeX = this.state.width / 3;
     this.RivalSizeY = this.state.height / 35;
     this.RivalPosX = (this.state.width / 2) - (this.RivalSizeX / 2);
     this.RivalPosY = this.state.height / 12;
+    this.RivalPosInitX = (this.state.width / 2) - (this.RivalSizeX / 2);
 
     // Ball
     this.ballRadius = this.state.width / 20;
@@ -55,9 +57,6 @@ class Game extends Component {
     // mouse
     this.mousePos = 0;
   }
-  
-  
-  
   
   componentDidMount() {
     this.canvas = document.getElementById('canvas');
@@ -84,15 +83,12 @@ class Game extends Component {
       this.mousePos = e.layerX
     })
 
-    this.canvas.addEventListener('mousedown', (e) => {
-      this.ball.stoppp(true)
+    document.addEventListener('keydown', (e) => {
+      if(e.keyCode === 65){
+        this.ball.stoppp(true)
+        this.initPos()
+      }
     })
-    
-    // document.addEventListener('keydown', (e) => {
-    //   console.log('key')
-    //   if(e.keyCode === 65) this.RivalPosX -= 30
-    //   else if(e.keyCode === 83) this.RivalPosX += 30
-    // })
   } 
  
   // 화면크기 재설정 함수
@@ -104,6 +100,12 @@ class Game extends Component {
     this.canvas.height = this.stageHeight * 2;
 
     this.setState({ width: this.canvas.width, height: this.canvas.height })
+  }
+
+  // block 위치 재설정
+  initPos() {
+    this.blockPosX = this.blockPosInitX;
+    this.RivalPosX = this.RivalPosInitX
   }
 
   // 애니메이션 생성
@@ -125,11 +127,18 @@ class Game extends Component {
     this.ctx.clearRect(0, 0, this.state.width, this.state.height)
     this.Rivalblock.draw(this.ctx, this.RivalPosX, this.RivalPosY)
     this.block.draw(this.ctx, this.blockPosX, this.blockPosY)
-    this.ball.draw(
+    const response = this.ball.draw(
       this.ctx, this.state.width, this.state.height, 
       this.blockPosX, this.blockPosY, this.blockSizeX, this.blockSizeY,
       this.RivalPosX, this.RivalPosY, this.RivalSizeX, this.RivalSizeY,
     ) 
+
+    // 게임결과 출력시 화면 초기화
+    if(response){
+      console.log(response)
+      this.ball.stoppp(true)
+      this.initPos()
+    }
   }
 
   render() {
