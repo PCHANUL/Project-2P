@@ -12,10 +12,13 @@ export class Block {
   }
 
   draw(ctx, x, y) {
-    ctx.fillStyle = this.color;
+    ctx.fillStyle = '#000';
+    ctx.strokeStyle = '#fff';
     ctx.beginPath();
     ctx.rect(x, y, this.width, this.height);
+    ctx.lineWidth = 4;
     ctx.fill();
+    ctx.stroke();
   }
 }
 

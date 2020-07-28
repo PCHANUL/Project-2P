@@ -19,7 +19,7 @@ export class Ball {
     this.bounceBlock(blockPosX, blockPosY, blockSizeX, blockSizeY);
     this.bounceRival(RivalPosX, RivalPosY, RivalSizeX, RivalSizeY);
     
-    ctx.fillStyle = '#fdd700';
+    ctx.fillStyle = '#ffff8c';
     ctx.beginPath();
     if(!this.stop){
       this.x += this.vx;
@@ -32,6 +32,7 @@ export class Ball {
       this.vy = this.speed;
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     }
+    
     ctx.fill();
 
     if(response){

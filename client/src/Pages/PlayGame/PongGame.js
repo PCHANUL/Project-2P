@@ -10,10 +10,11 @@ import { isDeleteExpression } from 'typescript';
 
 const styles = (theme) => ({
   Paper: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: 'black',
     border: '1px solid #000',
     boxShadow: theme.shadows[5],
     margin: theme.spacing(3, 3),
+
   }
 });
 
@@ -26,8 +27,8 @@ class Game extends Component {
     super(props);
     this.state = {
       score: 100,
-      width: document.body.clientWidth / 1.5,
-      height: document.body.clientHeight * 2,
+      width: document.body.clientWidth / 4,
+      height: document.body.clientHeight / 1.2,
     }
 
     //초기화
@@ -62,13 +63,10 @@ class Game extends Component {
     this.canvas = document.getElementById('canvas');
     this.ctx = this.canvas.getContext('2d');
 
-
     this.ball = new Ball(this.state.width, this.state.height, this.ballRadius, this.ballSpeed)
     this.block = new Block(this.blockSizeX, this.blockSizeY, this.blockPosX, this.blockPosY, this.state.width, this.state.height);
     this.Rivalblock = new RivalBlock(this.blockSizeX, this.blockSizeY, this.blockPosX, this.blockPosY, this.state.width, this.state.height);
 
-    // 화면크기 재설정 이벤트
-    // window.addEventListener('resize', this.resize.bind(this), false);
     this.resize();
     window.requestAnimationFrame(this.animate.bind(this));
     
@@ -80,6 +78,7 @@ class Game extends Component {
     this.canvas.addEventListener('mousemove', (e) => {
       this.mousePos = e.layerX - this.mousePos
       this.blockPosX = this.blockPosX + this.mousePos 
+      // this.RivalPosX = this.RivalPosX + this.mousePos 
       this.mousePos = e.layerX
     })
 
@@ -96,8 +95,8 @@ class Game extends Component {
     this.stageWidth = document.body.clientWidth;
     this.stageHeight = document.body.clientHeight;
  
-    this.canvas.width = this.stageWidth / 1.5;
-    this.canvas.height = this.stageHeight * 2;
+    this.canvas.width = this.stageWidth / 4;
+    this.canvas.height = this.stageHeight / 1.2;
 
     this.setState({ width: this.canvas.width, height: this.canvas.height })
   }
@@ -125,8 +124,16 @@ class Game extends Component {
     
     window.requestAnimationFrame(this.animate.bind(this));
     this.ctx.clearRect(0, 0, this.state.width, this.state.height)
+
+    // Block
+    this.ctx.shadowColor = '#707070';
+    this.ctx.shadowBlur = 20;
     this.Rivalblock.draw(this.ctx, this.RivalPosX, this.RivalPosY)
     this.block.draw(this.ctx, this.blockPosX, this.blockPosY)
+
+    // Ball
+    this.ctx.shadowColor = '#ffff8c';
+    this.ctx.shadowBlur = 5;
     const response = this.ball.draw(
       this.ctx, this.state.width, this.state.height, 
       this.blockPosX, this.blockPosY, this.blockSizeX, this.blockSizeY,
@@ -136,7 +143,7 @@ class Game extends Component {
     // 게임결과 출력시 화면 초기화
     if(response){
       console.log(response)
-      this.ball.stoppp(true)
+      this.ball.stoppp(false)
       this.initPos()
     }
   }
@@ -149,6 +156,7 @@ class Game extends Component {
         width: this.state.width,
         height: this.state.height,
         cursor: 'none',
+        boxShadow: '1px 1px 100px 0px #707070',
         }} className={classes.Paper}>
         <canvas id="canvas" />
       </Paper>
