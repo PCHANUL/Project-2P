@@ -73,20 +73,19 @@ class Game extends Component {
     this.resize();
     window.requestAnimationFrame(this.animate.bind(this));
     
-    this.canvas.addEventListener('mousemove', (e) => {
-      this.mousePos = e.layerX - this.mousePos
-      this.blockPosX = this.blockPosX + this.mousePos 
-      this.RivalPosX = this.RivalPosX + this.mousePos 
-      this.mousePos = e.layerX
-    })
-
     // this.canvas.addEventListener('mousemove', (e) => {
     //   this.mousePos = this.mousePos - e.layerX
     //   this.RivalPosX = this.RivalPosX + this.mousePos 
     //   this.mousePos = e.layerX
     // })
+    this.canvas.addEventListener('mousemove', (e) => {
+      this.mousePos = e.layerX - this.mousePos
+      this.blockPosX = this.blockPosX + this.mousePos 
+      this.mousePos = e.layerX
+    })
+
     this.canvas.addEventListener('mousedown', (e) => {
-      this.ball.stoppp(false)
+      this.ball.stoppp(true)
     })
     
     // document.addEventListener('keydown', (e) => {

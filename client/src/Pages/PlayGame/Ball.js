@@ -37,9 +37,9 @@ export class Ball {
     ctx.fill();
   }
 
-  stoppp(side) {
+  stoppp(myTurn) {
     this.stop = !this.stop;
-    if(side){
+    if(!myTurn){
       this.vx *= -1;
       this.vy *= -1;
     }
