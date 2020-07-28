@@ -19,9 +19,16 @@ const WaitingRoom = (props) => {
   const history = useHistory();
 
   useEffect(() => {
+    if (!cookie.load('username')) {
+      history.push('/');
+    } else if (!cookie.load('selectedRoom')) {
+      history.push('/selectroom')
+    }
+
     // roomname, username, avatar, isReady, gameCode
+    console.log('refresh')
     props.enterChatroom(
-      props.waitingRoom.selectedRoom,
+      cookie.load('selectedRoom'),
       cookie.load('username'),
       cookie.load('avatarId'),
       false,
@@ -31,13 +38,7 @@ const WaitingRoom = (props) => {
       props.leaveRoomHandler();
     };
   }, []);
-
-  React.useEffect(() => {
-    if (!cookie.load('username')) {
-      history.push('/');
-    }
-  }, []);
-
+  
   return (
     <div>
       {bothPlayersReady ? <ReadyProgress /> : null}

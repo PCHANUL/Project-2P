@@ -1,4 +1,4 @@
-export class Block {
+export class RivalBlock {
   constructor(width, height, x, y, stageWidth, stageHeight) {
     this.width = width;
     this.height = height;
@@ -6,11 +6,11 @@ export class Block {
     this.y = y;
     this.maxX = width + x;
     this.maxY = height + y;
-    this.color = '#ff384e'
+    this.color = '#848484'
   }
 
   draw(ctx, x, y) {
-    ctx.fillStyle = this.color;
+    ctx.fillStyle = '#848484';
     ctx.beginPath();
     ctx.rect(x, y, this.width, this.height);
     ctx.fill();

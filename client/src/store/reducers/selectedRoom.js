@@ -1,7 +1,13 @@
 import * as actionTypes from '../actions';
 
+function createDate(roomName, isWait, isLocked, isFull) {
+  return { roomName, isWait, isLocked, isFull };
+}
+
 const initialState = {
-  roomList: [ ],
+  roomList: [ 
+    createDate('드루와드루와드루와드루와드루와드루와드루와드루와드루와드루와', true, false, false),
+  ],
   isMaking: false,
   currentGame: 0,
 };
@@ -25,9 +31,7 @@ const reducer = (state = initialState, action) => {
         isMaking: false,
       };
     case actionTypes.GET_ROOMS:
-      function createDate(roomName, isWait, isLocked, isFull) {
-        return { roomName, isWait, isLocked, isFull };
-      }
+      
       
       const rows = [
         createDate('드루와드루와드루와드루와드루와드루와드루와드루와드루와드루와', true, false, false),

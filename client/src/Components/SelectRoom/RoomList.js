@@ -38,6 +38,8 @@ import Collapse from '@material-ui/core/Collapse';
 import { TextField } from '@material-ui/core';
 import { NaturePeopleOutlined } from '@material-ui/icons';
 
+import cookie from 'react-cookies'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -208,7 +210,8 @@ const mapReduxStateToReactProps = (state) => {
 const mapReduxDispatchToReactProps = (dispatch) => {
   return {
     selectRoom: function (roomName) {
-      dispatch({ type: actionTypes.SELECTED_ROOM, payload: roomName });
+      cookie.save('selectedRoom', roomName, { path: '/' })
+
     },
   };
 };

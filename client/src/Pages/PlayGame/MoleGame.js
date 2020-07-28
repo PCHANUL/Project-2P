@@ -71,7 +71,7 @@ class MoleGame extends Component {
     });
     
     // 화면크기 재설정 이벤트
-    window.addEventListener('resize', this.resize.bind(this), false);
+    // window.addEventListener('resize', this.resize.bind(this), false);
     this.resize();
     window.requestAnimationFrame(this.animate.bind(this));
     
