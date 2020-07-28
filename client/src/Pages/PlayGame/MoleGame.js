@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import io from 'socket.io-client';
 import PropTypes from 'prop-types';
+import cookie from 'react-cookies';
+
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import { Block } from './Block';
@@ -35,13 +38,14 @@ class MoleGame extends Component {
       score: 100,
       width: document.body.clientWidth / 1.5,
       height: document.body.clientHeight / 1.5,
+      currentMole: 0,
     };
     this.canvas = null;
     this.ctx = null;
     this.stageWidth = null;
     this.stageHeight = null;
 
-    this.clicked = false;
+    this.clicked = true;
 
     this.cursorX = null;
     this.cursorY = null;
@@ -49,6 +53,9 @@ class MoleGame extends Component {
     this.cursorClick = false;
 
     this.gifCount = 0;
+
+    // socket connection endpoint
+    this.socket = io('http://localhost:3009');
 
     for (let i = 0; i < 16; i++) {
       moles.push(
@@ -100,35 +107,43 @@ class MoleGame extends Component {
     this.canvas.addEventListener('mouseleave', (e) => {
       this.cursorEnter = false;
     });
+
+    // socket connection
+    this.socket.emit('gameStart', cookie.load('username'), 'someRoomId');
+    this.socket.on('generateMole', (index) => {
+      this.randomMole(index);
+    });
   }
 
   mousePressed(mouseX, mouseY) {
     // 최초의 클릭으로 랜덤게임함수 실행
-    if (!this.clicked) {
-      this.randomMole();
-      this.clicked = true;
-    }
+    // if (!this.clicked) {
+    //   this.randomMole();
+    //   this.clicked = true;
+    // }
 
     // 클릭한 경우 모든 요소의 clicked() 실행
     for (let i = 0; i < moles.length; i++) {
-      moles[i].clicked(mouseX, mouseY, i, this.ctx);
+      let clickedMole = moles[i].clicked(mouseX, mouseY, i, this.ctx);
+      if (clickedMole) {
+        const data = {
+          currentMole: this.state.currentMole,
+          username: cookie.load('username'),
+          index: clickedMole,
+        };
+        this.socket.emit('moleClick', data);
+      }
     }
   }
 
   // moles배열에서 랜덤한 인덱스의 mole이 나옴
-  randomMole() {
-    let ranNum = this.getRandomInt();
-    setTimeout(() => {
-      moles[ranNum].showMole();
-      this.randomMole();
-    }, 3000);
-  }
-
-  // 랜덤인수생성
-  getRandomInt() {
-    let min = Math.ceil(0);
-    let max = Math.floor(15);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  randomMole(index) {
+    moles[index].showMole();
+    // let ranNum = this.getRandomInt();
+    // setTimeout(() => {
+    //   moles[ranNum].showMole();
+    //   this.randomMole();
+    // }, 3000);
   }
 
   // 화면그리기

@@ -37,11 +37,11 @@ export class Mole {
     let objToMouseX = Math.pow(this.x - mouseX, 2);
     let objToMouseY = Math.pow(this.y - mouseY, 2);
     let objToMouseResult = Math.sqrt(objToMouseX + objToMouseY); // 거리측정
-
     if (objToMouseResult < this.diameter) {
       if (this.show) {
         this.show = false;
         this.gifcount = 0; // gif 프레임 초기화
+        return index;
       } else {
         // 나오지 않았지만 클릭한 경우
       }
