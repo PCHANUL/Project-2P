@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Game from './Game';
+import PongGame from './PongGame';
 import MoleGame from './MoleGame';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
@@ -85,13 +85,14 @@ const PlayGame = ({ currentGame }) => {
   return (
     <div className={classes.space}>
       <Paper style={{height: '1000px'}}>
-          {
+      <PongGame />
+          {/* {
             currentGame === 1
             ? <MoleGame />
             : <Game />
               
             
-          }
+          } */}
 
         
         {/* <Grid container direction="row" justify="space-evenly" alignItems="center">

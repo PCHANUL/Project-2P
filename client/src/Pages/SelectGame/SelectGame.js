@@ -10,9 +10,6 @@ import FlipCard from '../../Components/GameList/img/FlipCard2.jpeg';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-document.addEventListener('keydown', (e) => {
-  console.log('event')
-})
 
 const useStyles = makeStyles((theme) => ({
   flexContainer: {
