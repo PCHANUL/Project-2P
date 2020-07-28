@@ -37,20 +37,23 @@ class Game extends Component {
     this.stageHeight = null;
 
     // Block
-    this.blockPosX = this.state.width / 2;
-    this.blockPosY = this.state.height * 4.5 / 5;
     this.blockSizeX = this.state.width / 3;
     this.blockSizeY = this.state.height / 35;
+    this.blockPosX = (this.state.width / 2) - (this.blockSizeX / 2);
+    this.blockPosY = this.state.height * 4.5 / 5;
 
     // Rival Block
-    this.RivalPosX = this.state.width / 2;
-    this.RivalPosY = this.state.height / 12;
     this.RivalSizeX = this.state.width / 3;
     this.RivalSizeY = this.state.height / 35;
+    this.RivalPosX = (this.state.width / 2) - (this.RivalSizeX / 2);
+    this.RivalPosY = this.state.height / 12;
 
     // Ball
     this.ballRadius = this.state.width / 20;
-    this.ballSpeed = 10;
+    this.ballSpeed = this.state.width / 90;
+
+    // mouse
+    this.mousePos = 0;
   }
   
   
@@ -70,14 +73,19 @@ class Game extends Component {
     this.resize();
     window.requestAnimationFrame(this.animate.bind(this));
     
+    // this.canvas.addEventListener('mousemove', (e) => {
+    //   this.mousePos = this.mousePos - e.layerX
+    //   this.RivalPosX = this.RivalPosX + this.mousePos 
+    //   this.mousePos = e.layerX
+    // })
     this.canvas.addEventListener('mousemove', (e) => {
-      this.blockPosX = e.layerX - this.blockPosX / 2
+      this.mousePos = e.layerX - this.mousePos
+      this.blockPosX = this.blockPosX + this.mousePos 
+      this.mousePos = e.layerX
     })
-    this.canvas.addEventListener('mousemove', (e) => {
-      this.RivalPosX = e.layerX - this.RivalPosX / 2
-    })
+
     this.canvas.addEventListener('mousedown', (e) => {
-      this.ball.stoppp()
+      this.ball.stoppp(true)
     })
     
     // document.addEventListener('keydown', (e) => {

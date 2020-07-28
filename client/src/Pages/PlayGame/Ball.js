@@ -1,11 +1,12 @@
 export class Ball {
   constructor(stageWidth, stageHeight, radius, speed) {
     this.radius = radius;
+    this.speed = speed;
     this.vx = speed;
     this.vy = speed;
     this.x = stageWidth / 2;
     this.y = stageHeight / 2;
-    this.stop = false
+    this.stop = true;
   }
 
   draw(ctx, stageWidth, stageHeight, 
@@ -29,13 +30,19 @@ export class Ball {
     } else {
       this.x = stageWidth / 2;
       this.y = stageHeight / 2;
+      this.vx = this.speed;
+      this.vy = this.speed;
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     }
     ctx.fill();
   }
 
-  stoppp() {
+  stoppp(myTurn) {
     this.stop = !this.stop;
+    if(!myTurn){
+      this.vx *= -1;
+      this.vy *= -1;
+    }
   }
 
   bounceWindow(stageWidth, stageHeight) {
@@ -76,7 +83,7 @@ export class Ball {
       const min = Math.min(min1, min2);
 
       if(min === min1) {    // 좌우변
-        this.vx -= 3;
+        this.vx -= 5;
         this.vx *= -1;
         this.vy *= -1;
         this.x += this.vx;
@@ -105,12 +112,13 @@ export class Ball {
       const min = Math.min(min1, min2);
 
       if(min === min1) {
+        this.vx += 5;
         this.vx *= -1;
         this.vy *= -1;
         this.x += this.vx;
         this.y += this.vy;
       } else if (min === min2) {
-        this.vx += 1;
+        this.vx -= 1;
         this.vy *= -1;
         this.y += this.vy;
       }
