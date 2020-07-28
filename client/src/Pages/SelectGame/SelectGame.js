@@ -25,7 +25,7 @@ const SelectGame = ({ isLogin }) => {
     if(!cookie.load('username')){
       history.push('/')
     }
-  })
+  },[])
 
 
   return (
