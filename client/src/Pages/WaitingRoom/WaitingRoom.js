@@ -13,8 +13,6 @@ import cookie from 'react-cookies';
 import './WaitingRoom.css';
 let socket = io.connect('http://localhost:3002');
 
-let num = 0;
-
 const WaitingRoom = (props) => {
   const { roomUsers, chat } = props.waitingRoom;
   const bothPlayersReady = roomUsers.filter((user) => user.userInfo.isReady).length === 2;
@@ -45,12 +43,9 @@ const WaitingRoom = (props) => {
     <div>
       {bothPlayersReady ? <ReadyProgress /> : null}
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        {
-          roomUsers.map((user, idx) => {
-            console.log(roomUsers)
-            return <Users key={idx} user={user} readyHandler={props.readyHandler} />;
-          })
-        }
+        {roomUsers.map((user, idx) => {
+          return <Users key={idx} user={user} readyHandler={props.readyHandler} />;
+        })}
       </div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <div className='container'>
@@ -97,7 +92,6 @@ const mapReduxDispatchToReactProps = (dispatch) => {
       dispatch({ type: actionTypes.CHAT_LOG, payload: msg });
     },
     enterChatroom: (roomname, username, avatar, isReady, gameCode) => {
-      console.log('enter')
       const userInfo = { username, avatar, isReady };
       const room = { gameCode, roomId: roomname };
       socket.emit('joinRoom', { userInfo, room });
