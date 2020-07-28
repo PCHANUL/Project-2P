@@ -50,7 +50,7 @@ class Game extends Component {
 
     // Ball
     this.ballRadius = this.state.width / 20;
-    this.ballSpeed = 10;
+    this.ballSpeed = this.state.width / 90;
   }
   
   

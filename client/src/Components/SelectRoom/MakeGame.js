@@ -1,5 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -20,6 +21,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+
+const axios = require('axios')
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,9 +51,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function MakeGame({ isMaking, makeRoomsClose }) {
+function MakeGame({ isMaking, makeRoomsClose }) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [state, setState] = React.useState({
     age: '',
     name: 'hai',
@@ -65,7 +68,7 @@ export default function MakeGame({ isMaking, makeRoomsClose }) {
 
   React.useEffect(() => {
     setOpen(isMaking)
-  },[])
+  })
   
   const handleOpen = () => {
     setOpen(true);
@@ -172,3 +175,19 @@ export default function MakeGame({ isMaking, makeRoomsClose }) {
     </div>
   );
 }
+
+function mapReduxStateToReactProps(state) {
+  return {
+    isMaking: state.selectedRoom.isMaking,
+  };
+}
+
+function mapReduxDispatchToReactProps(dispatch) {
+  return {
+    makeRoomsClose: function() {
+
+      dispatch({type:"MAKE_ROOM_CLOSE"})
+    }
+  };
+}
+export default connect(mapReduxStateToReactProps, mapReduxDispatchToReactProps)(MakeGame);

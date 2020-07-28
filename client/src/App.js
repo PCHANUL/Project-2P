@@ -11,7 +11,7 @@ import WaitingRoom from './Pages/WaitingRoom/WaitingRoom';
 import SelectRoom from './Pages/SelectRoom/SelectRoom';
 import Nav from './Components/Nav/Nav';
 
-import MakeGame from './containers/MakeGame';
+import MakeGame from './Components/SelectRoom/MakeGame';
 import PlayGame from './Pages/PlayGame/PlayGame';
 
 const axios = require('axios');

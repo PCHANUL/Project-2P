@@ -17,6 +17,8 @@ import Grid from '@material-ui/core/Grid';
 import * as actionTypes from '../../store/actions';
 import RoomList from '../../Components/SelectRoom/RoomList';
 
+const axios = require('axios')
+
 let rows = [];
 
 const useStyles = makeStyles((theme) => ({
@@ -42,35 +44,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking, changeCurrentGame }) {
+function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
   const classes = useStyles();
   const history = useHistory();
-  const [value, setValue] = React.useState(0);
+  const [currentGame, selectedGame] = React.useState(0);
   const [rows, getRows] = React.useState([{}]);
 
   React.useEffect(() => {
     if (!cookie.load('username')) {
       history.push('/');
+    } else if (!cookie.load('selectedGame')) {
+      history.push('/selectgame')
     }
 
+    selectedGame(Number(cookie.load('selectedGame')))
+    console.log('currentGame: ', currentGame);
+
+
     // 대기방이 없는 경우 계속 요청을 보낸다.
-    if (roomList.length === 0) {
-      getRooms();
-    }
+    // if (roomList.length === 0) {
+    //   getRooms();
+    // }
     getRows(roomList);
   });
 
   const handleChange = (event, newValue) => {
-    console.log(newValue);
-    setValue(newValue);
-    changeCurrentGame(newValue);
+    console.log(newValue)
+    selectedGame(newValue);
+    cookie.save('selectedGame', newValue, { path: '/' })
   };
 
   return (
     <div>
       <Paper className={classes.root}>
         <Tabs
-          value={value}
+          value={currentGame}
           onChange={handleChange}
           indicatorColor='primary'
           textColor='primary'
@@ -171,15 +179,26 @@ const mapReduxStateToReactProps = (state) => {
   return {
     roomList: state.selectedRoom.roomList,
     isMaking: state.selectedRoom.isMaking,
-    currentGame: state.selectedRoom.currentGame,
     login: state.login,
   };
 };
 
 const mapReduxDispatchToReactProps = (dispatch) => {
   return {
-    getRooms: function () {
-      dispatch({ type: 'GET_ROOMS' });
+    getRooms: async function () {
+      console.log('awefawe')
+      try {
+        const response = await axios({
+          method: 'get',
+          url: 'http://localhost:3001/rooms/roomlist',
+          withCredentials: true,
+        })
+        console.log(response)
+      } catch (err) {
+        console.log(err)
+      }
+      // let result = await 
+      // dispatch({ type: 'GET_ROOMS' });
     },
     makeRooms: function () {
       dispatch({ type: 'MAKE_ROOM' });

@@ -86,6 +86,7 @@ const PlayGame = ({ currentGame }) => {
     <div className={classes.space}>
       <Paper style={{height: '1000px'}}>
       <PongGame />
+      {/* <MoleGame /> */}
           {/* {
             currentGame === 1
             ? <MoleGame />

@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { withRouter, useHistory } from 'react-router-dom';
+import cookie from 'react-cookies'
 
 import {
   Card,
@@ -42,15 +43,15 @@ const useStyles = makeStyles((theme) => ({
 const gameDescription = {
   WhackAMole: {
     desc: '두더지를 잡아라!',
-    code: 1,
+    code: 0,
   },
   Pong: {
     desc: '핑핑핑퐁퐁퐁',
-    code: 2,
+    code: 1,
   },
   FlipCard: {
     desc: '사천성! 같은 카드를 뒤집어라!',
-    code: 3,
+    code: 2,
   },
 };
 
@@ -90,7 +91,7 @@ const GameList = ({ image, gameName, getRooms, selectGame }) => {
               <Grid item>
                 <Button color="primary" disableElevation className={classes.button} variant="outlined" onClick={() => {
                   getRooms()
-                  selectGame(gameDescription[gameName]['code'])
+                  cookie.save('selectedGame', gameDescription[gameName]['code'], { path: '/' })
                   history.push('/selectroom')
                 }}>
                   <Typography variant='h6'>
@@ -120,25 +121,6 @@ const GameList = ({ image, gameName, getRooms, selectGame }) => {
         />
       }
     </Card>
-
-      //   {/* <CardContent>
-      //     <Typography gutterBottom variant='h5' component='h2'>
-      //       {gameName}
-      //     </Typography>
-      //     <Typography variant='body2' color='textSecondary' component='p'>
-      //       {gameDescription[gameName]}
-      //     </Typography>
-      //   </CardContent> */}
-      
-      // {/* <CardActions> */}
-      //   {/* <Button size='small' color='primary' onClick={() => {
-      //     getRooms()
-      //     history.push('/selectroom')
-      //   }}>
-      //     게임 하기!
-      //   </Button> */}
-      // {/* </CardActions> */}
-    
   );
 };
 

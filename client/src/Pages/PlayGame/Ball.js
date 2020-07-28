@@ -1,6 +1,7 @@
 export class Ball {
   constructor(stageWidth, stageHeight, radius, speed) {
     this.radius = radius;
+    this.speed = speed;
     this.vx = speed;
     this.vy = speed;
     this.x = stageWidth / 2;
@@ -13,22 +14,23 @@ export class Ball {
     RivalPosX, RivalPosY, RivalSizeX, RivalSizeY) 
     {
     
-
     this.bounceWindow(stageWidth, stageHeight);
-
     this.bounceBlock(blockPosX, blockPosY, blockSizeX, blockSizeY);
     this.bounceRival(RivalPosX, RivalPosY, RivalSizeX, RivalSizeY);
-
     
     ctx.fillStyle = '#fdd700';
     ctx.beginPath();
+
+    // Ball 제어
     if(!this.stop){
-      this.x += this.vx;
+      this.x += 0;
       this.y += this.vy;
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     } else {
       this.x = stageWidth / 2;
       this.y = stageHeight / 2;
+      this.vx = this.speed;
+      this.vy = this.speed;
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     }
     ctx.fill();
@@ -76,13 +78,15 @@ export class Ball {
       const min = Math.min(min1, min2);
 
       if(min === min1) {    // 좌우변
-        this.vx -= 3;
+        console.log('a')
+        this.vy += 3;
         this.vx *= -1;
         this.vy *= -1;
         this.x += this.vx;
         this.y += this.vy;
       } else if (min === min2) {    //상하변
-        this.vx += 1;
+        console.log('b')
+        this.vx += 2;
         this.vy *= -1;
         this.y += this.vy;
       }
@@ -105,12 +109,13 @@ export class Ball {
       const min = Math.min(min1, min2);
 
       if(min === min1) {
+        this.vy += 3;
         this.vx *= -1;
         this.vy *= -1;
         this.x += this.vx;
         this.y += this.vy;
       } else if (min === min2) {
-        this.vx += 1;
+        this.vx += 2;
         this.vy *= -1;
         this.y += this.vy;
       }
