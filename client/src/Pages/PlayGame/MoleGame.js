@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import io from 'socket.io-client';
 import PropTypes from 'prop-types';
 import cookie from 'react-cookies';
+import MoleScoreCard from '../../Components/PlayGame/MoleScoreCard';
 
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
@@ -35,7 +36,8 @@ class MoleGame extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      score: 100,
+      myScore: 0,
+      opponentScore: 0,
       width: document.body.clientWidth / 1.5,
       height: document.body.clientHeight / 1.5,
       currentMole: 0,
@@ -111,22 +113,35 @@ class MoleGame extends Component {
     // socket connection
     this.socket.emit('gameStart', cookie.load('username'), 'someRoomId');
     this.socket.on('generateMole', (index) => {
+      this.setState({ currentMole: this.state.currentMole + 1 });
       this.randomMole(index);
+    });
+    this.socket.on('updateScore', (data) => {
+      /**
+       * data = {
+       *    index: 0~15,
+       *    score: {
+       *      player1: 0,
+       *      player2: 10,
+       *    }
+       * }
+       */
+      moles[data.index].hideMole();
+      const [player1, player2] = Object.keys(data.score);
+      if (player1 === cookie.load('username')) {
+        this.setState({ myScore: data.score[player1], opponentScore: data.score[player2] });
+      } else {
+        this.setState({ myScore: data.score[player2], opponentScore: data.score[player1] });
+      }
     });
   }
 
   mousePressed(mouseX, mouseY) {
-    // 최초의 클릭으로 랜덤게임함수 실행
-    // if (!this.clicked) {
-    //   this.randomMole();
-    //   this.clicked = true;
-    // }
-
-    // 클릭한 경우 모든 요소의 clicked() 실행
     for (let i = 0; i < moles.length; i++) {
       let clickedMole = moles[i].clicked(mouseX, mouseY, i, this.ctx);
       if (clickedMole) {
         const data = {
+          gameRoomId: 'someRoomId',
           currentMole: this.state.currentMole,
           username: cookie.load('username'),
           index: clickedMole,
@@ -139,11 +154,6 @@ class MoleGame extends Component {
   // moles배열에서 랜덤한 인덱스의 mole이 나옴
   randomMole(index) {
     moles[index].showMole();
-    // let ranNum = this.getRandomInt();
-    // setTimeout(() => {
-    //   moles[ranNum].showMole();
-    //   this.randomMole();
-    // }, 3000);
   }
 
   // 화면그리기
@@ -188,19 +198,25 @@ class MoleGame extends Component {
     const { classes } = this.props;
 
     return (
-      <Paper
-        id='paper'
-        style={{
-          width: this.state.width,
-          height: this.state.height,
-          cursor: 'none',
-        }}
-        className={classes.Paper}
-      >
-        <canvas id='canvas' />
-        <img id='hemmer' src={hemmer} style={{ width: '40px', display: 'none' }} />
-        <img id='clicked' src={clicked} style={{ width: '40px', display: 'none' }} />
-      </Paper>
+      <div>
+        <Paper
+          id='paper'
+          style={{
+            width: this.state.width,
+            height: this.state.height,
+            cursor: 'none',
+          }}
+          className={classes.Paper}
+        >
+          <canvas id='canvas' />
+          <img id='hemmer' src={hemmer} style={{ width: '40px', display: 'none' }} />
+          <img id='clicked' src={clicked} style={{ width: '40px', display: 'none' }} />
+        </Paper>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <MoleScoreCard score={this.state.myScore} player='My Score' />
+          <MoleScoreCard score={this.state.opponentScore} player='Opponent Score' />
+        </div>
+      </div>
     );
   }
 }

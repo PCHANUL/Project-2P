@@ -51,6 +51,13 @@ export class Mole {
   showMole() {
     // 두더지가 나옴
     this.show = true;
+    setTimeout(() => {
+      this.show = false;
+    }, 2500);
+  }
+
+  hideMole() {
+    this.show = false;
   }
 
   draw(ctx, stageWidth, stageHeight) {
