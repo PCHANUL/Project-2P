@@ -21,6 +21,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import cookie from 'react-cookies'
 
 const axios = require('axios')
 
@@ -51,51 +52,43 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+
+
 function MakeGame({ isMaking, makeRoomsClose }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [state, setState] = React.useState({
-    age: '',
-    name: 'hai',
-  });
-  const [values, setValues] = React.useState({
-    amount: '',
-    password: '',
-    weight: '',
-    weightRange: '',
-    showPassword: false,
-  });
+  const [selectedGame, setGame] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [roomName, setRoomname] = React.useState('');
+  
 
   React.useEffect(() => {
     setOpen(isMaking)
   })
   
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handleChange = (event) => {
-    const name = event.target.name;
-    setState({
-      ...state,
-      [name]: event.target.value,
-    });
-  };
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
-  };
+  const makeRoom = async (selectedGame, roomName, password) => {
+    try {
+      const response = await axios({
+        method: 'post',
+        url: 'http://localhost:3001/rooms/makeroom',
+        data: {
+          gameCode: selectedGame ? selectedGame : cookie.load('selectedGame'),
+          roomName: roomName,
+          password: password,
+          username: cookie.load('username')
+        },
+      })
+      console.log(response)
+      alert('성공적으로 생성되었습니다')
+    } catch (err) {
+      console.log(err)
+    }
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const handleChange1 = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
+  }
 
   return (
     <div>
@@ -119,41 +112,41 @@ function MakeGame({ isMaking, makeRoomsClose }) {
                 </Grid>
                 <Grid>
                   <IconButton aria-label="취소">
-                    <CancelIcon onClick={ () => makeRoomsClose() }/>
+                    <CancelIcon onClick={ () => {
+                      setGame('')
+                      makeRoomsClose()
+                      } 
+                    }/>
                   </IconButton>
                 </Grid>
             </Grid>
             <FormControl className={classes.formControl}>
               <InputLabel htmlFor="age-native-helper">Game</InputLabel>
               <NativeSelect
-                value={state.age}
-                onChange={handleChange}
-                inputProps={{
-                  name: 'age',
-                  id: 'age-native-helper',
-                }}
+                value={
+                  selectedGame ? selectedGame : cookie.load('selectedGame')
+                }
+                onChange={(e) => setGame(e.target.value)}
               >
                 <option aria-label="None" value="" />
-                <option value={10}>두더지게임</option>
-                <option value={20}>타일맞추기</option>
-                <option value={30}>핑퐁게임</option>
+                <option value={0}>두더지게임</option>
+                <option value={1}>핑퐁게임</option>
+                <option value={2}>사천성</option>
               </NativeSelect>
               
             </FormControl>
             <div>
-            <TextField id="standard-basic" label="Room name" />
+            <TextField id="standard-basic" label="Room name" onChange={(e) => setRoomname(e.target.value)}/>
             </div>
             <div>
             <FormControl className={clsx(classes.margin, classes.textField)}>
               <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
               <Input
-                id="standard-adornment-password"
-                type={values.showPassword ? 'text' : 'password'}
-                value={values.password}
-                onChange={handleChange1('password')}
+                type='text'
+                onChange={(e) => setPassword(e.target.value)}
                 endAdornment={
                   <InputAdornment position="end">
-                      {values.password ? <LockIcon /> : <LockOpenIcon />}
+                      {password ? <LockIcon /> : <LockOpenIcon />}
                   </InputAdornment>
                 }
                 />
@@ -162,11 +155,15 @@ function MakeGame({ isMaking, makeRoomsClose }) {
             </div>
             <div className={classes.button}>
             {
-              values.password 
-              ? <Button variant="contained" color="primary">
+              password 
+              ? <Button variant="contained" color="primary"
+                  onClick={() => makeRoom(selectedGame, roomName, password)}
+                >
                   비공개방 생성
                 </Button>
-              : <Button variant="contained">공개방 생성</Button>
+              : <Button variant="contained"
+                  onClick={() => makeRoom(selectedGame, roomName)}
+                >공개방 생성</Button>
             }
             </div>
           </Paper>
@@ -184,13 +181,10 @@ function mapReduxStateToReactProps(state) {
 
 function mapReduxDispatchToReactProps(dispatch) {
   return {
-    makeRoomsClose: async function() {
-      const response = await axios({
-        method: 'post',
-        url: 'http://localhost:3001/rooms/'
-      })
+    makeRoomsClose: function() {
       dispatch({type:"MAKE_ROOM_CLOSE"})
-    }
+    },
+    
   };
 }
 export default connect(mapReduxStateToReactProps, mapReduxDispatchToReactProps)(MakeGame);

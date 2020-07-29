@@ -32,7 +32,7 @@ const WaitingRoom = (props) => {
       cookie.load('username'),
       cookie.load('avatarId'),
       false,
-      props.currentGame.currentGame
+      cookie.load('selectedGame')
     );
     return () => {
       props.leaveRoomHandler();

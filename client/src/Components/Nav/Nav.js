@@ -84,7 +84,14 @@ export default function Nav() {
     <div className={classes.root}>
       <AppBar position='static'>
         <Toolbar>
-          <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' onClick={() => history.goBack()}>
+          <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' 
+            onClick={() => {
+              if(cookie.load('selectedRoom')){
+                cookie.remove('selectedRoom', { path: '/' })
+              } 
+              history.goBack()
+            }}
+          >
             <ArrowBack />
           </IconButton>
           <Typography variant='h6' className={classes.title}></Typography>

@@ -10,10 +10,11 @@ export class RivalBlock {
   }
 
   draw(ctx, x, y) {
-    ctx.fillStyle = '#848484';
+    ctx.strokeStyle = '#848484';
     ctx.beginPath();
     ctx.rect(x, y, this.width, this.height);
-    ctx.fill();
+    ctx.lineWidth = this.width / 40;
+    ctx.stroke();
   }
 }
 

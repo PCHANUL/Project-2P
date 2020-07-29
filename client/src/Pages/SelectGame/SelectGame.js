@@ -1,5 +1,5 @@
 import React from 'react';
-import GameList from '../../containers/GameList';
+import GameList from '../../Components/GameList/GameList';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom'
 import cookie from 'react-cookies'

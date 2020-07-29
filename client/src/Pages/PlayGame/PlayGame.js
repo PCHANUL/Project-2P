@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     // alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#000'
   },
   user1: {
     height: 200,
@@ -84,8 +85,9 @@ const PlayGame = ({ currentGame }) => {
 
   return (
     <div className={classes.space}>
-      <Paper style={{height: '1000px'}}>
+      <Paper style={{height: '1000px', backgroundColor: '#000'}}>
       <PongGame />
+      {/* <MoleGame /> */}
           {/* {
             currentGame === 1
             ? <MoleGame />

@@ -5,7 +5,7 @@ export class Ball {
     this.vx = speed;
     this.vy = speed;
     this.x = stageWidth / 2;
-    this.y = this.initY;
+    this.y = stageHeight / 2;
     this.stop = true;
   }
 
@@ -19,8 +19,10 @@ export class Ball {
     this.bounceBlock(blockPosX, blockPosY, blockSizeX, blockSizeY);
     this.bounceRival(RivalPosX, RivalPosY, RivalSizeX, RivalSizeY);
     
-    ctx.fillStyle = '#fdd700';
+    ctx.fillStyle = '#ffff8c';
     ctx.beginPath();
+
+    // Ball 제어
     if(!this.stop){
       this.x += this.vx;
       this.y += this.vy;
@@ -32,6 +34,7 @@ export class Ball {
       this.vy = this.speed;
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     }
+    
     ctx.fill();
 
     if(response){
@@ -89,7 +92,8 @@ export class Ball {
         this.x += this.vx;
         this.y += this.vy;
       } else if (min === min2) {    //상하변
-        this.vx += 1;
+        console.log('b')
+        this.vx += 2;
         this.vy *= -1;
         this.y += this.vy;
       }
