@@ -7,11 +7,9 @@ import { Block } from './Block';
 import { RivalBlock } from './RivalBlock';
 import { Ball } from './Ball'
 import { isDeleteExpression } from 'typescript';
+import cookie from 'react-cookies';
 import socketio from 'socket.io-client';
-const socket = socketio.connect('http://localhost:3005');
-(() => {
-  socket.emit('joinRoom');
-})();
+let socket
 const styles = (theme) => ({
   Paper: {
     backgroundColor: 'black',
@@ -58,6 +56,13 @@ class Game extends Component {
   }
   
   componentDidMount() {
+    let socket = socketio.connect('http://localhost:3005');
+    (() => {
+      socket.emit('joinRoom', {
+        username: cookie.load('username'),
+        room: cookie.load('selectedRoom'),
+      });
+    })();
     this.canvas = document.getElementById('canvas');
     this.ctx = this.canvas.getContext('2d');
 
@@ -99,6 +104,14 @@ class Game extends Component {
       this.initPos()
     })
   } 
+
+  // 게임소켓 분리
+  componentWillUnmount() {
+    (() => {
+      socket.emit('disconnect');
+    })();
+  }
+
   // 화면크기 재설정 함수
   resize() {
     this.stageWidth = document.body.clientWidth;
@@ -132,7 +145,7 @@ class Game extends Component {
 
     // Block
     this.ctx.shadowColor = '#707070';
-    this.ctx.shadowBlur = 20;
+    this.ctx.shadowBlur = 30;
     this.Rivalblock.draw(this.ctx, this.RivalPosX, this.RivalPosY)
     this.block.draw(this.ctx, this.blockPosX, this.blockPosY)
 
