@@ -71,6 +71,8 @@ export class Ball {
   }
 
   bounceBlock(blockPosX, blockPosY, blockSizeX, blockSizeY) {
+    console.log('blockSizeX: ', blockSizeX);
+
     const minX = blockPosX - this.radius;
     const maxX = blockPosX + blockSizeX + this.radius;
     const minY = blockPosY - this.radius;
@@ -86,14 +88,14 @@ export class Ball {
       const min = Math.min(min1, min2);
 
       if(min === min1) {    // 좌우변
-        this.vx -= 5;
+        // this.vx -= blockSizeX/10;
         this.vx *= -1;
         this.vy *= -1;
         this.x += this.vx;
         this.y += this.vy;
       } else if (min === min2) {    //상하변
         console.log('b')
-        this.vx += 2;
+        // this.vx += blockSizeX/15;
         this.vy *= -1;
         this.y += this.vy;
       }
@@ -116,13 +118,13 @@ export class Ball {
       const min = Math.min(min1, min2);
 
       if(min === min1) {
-        this.vx += 5;
+        // this.vx += blockSizeX/10;
         this.vx *= -1;
         this.vy *= -1;
         this.x += this.vx;
         this.y += this.vy;
       } else if (min === min2) {
-        this.vx -= 1;
+        // this.vx -= blockSizeX/15;
         this.vy *= -1;
         this.y += this.vy;
       }

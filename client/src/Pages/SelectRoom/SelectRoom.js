@@ -56,13 +56,14 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
     } else if (cookie.load('selectedRoom')){
       history.push('/waitingroom')
     }
+    
+    selectedGame(Number(cookie.load('selectedGame')))
+    getRoomList(roomList);
 
     // 새로운 방이 생성되기 전까지 실행
     if(rooms[0] === undefined){  
-      getRooms()
+      setTimeout(getRooms.bind(), 1000)
     }
-    selectedGame(Number(cookie.load('selectedGame')))
-    getRoomList(roomList);
   });
 
   const handleChange = (event, newValue) => {
@@ -70,7 +71,7 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
     cookie.save('selectedGame', newValue, { path: '/' })
   };
 
-  let emptyRoomList = (
+  const emptyRoomList = (
     <Grid
       container
       container
@@ -126,52 +127,54 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
           textColor='primary'
           centered
         >
-          <Tab label='Game one' />
-          <Tab label='Game Two' />
-          <Tab label='Game Three' />
+          <Tab label='게임 설명' />
+          <Tab label='두더지 게임' />
+          <Tab label='핑퐁 게임' />
+          <Tab label='추가 게임' />
         </Tabs>
       </Paper>
       {
-        rooms[0] === undefined
-        ?  emptyRoomList
-        : (
-        <div>
-          <div className={classes.section1}>
-            {rooms.map((room, idx) => (
-              <RoomList
-                key={idx}
-                roomName={room.roomName}
-                isWait={room.isWait}
-                isLocked={room.isLocked}
-                isFull={room.isFull}
-                login={login}
-              />
-            ))}
-          </div>
-          <Tooltip
-            title='방만들기'
-            aria-label='add'
-            onClick={() => {
-              makeRooms();
-            }}
-          >
-            <Fab color='secondary' className={classes.absolute}>
-              <AddIcon />
-            </Fab>
-          </Tooltip>
-          <Tooltip
-            title='새로고침'
-            aria-label='add'
-            onClick={() => {
-              getRooms();
-            }}
-          >
-            <Fab color='primary' className={classes.refresh}>
-              <RefreshIcon />
-            </Fab>
-          </Tooltip>
-        </div>
-      )}
+        cookie.load('selectedGame') === '0'
+        ? <div>게임설명</div>
+        : rooms[0] === undefined  // 생성된 방이 없다
+          ? emptyRoomList
+          : <div>
+              <div className={classes.section1}>
+                {rooms.map((room, idx) => (
+                  <RoomList
+                    key={idx}
+                    roomName={room.roomName}
+                    isWait={room.isWait}
+                    isLocked={room.isLocked}
+                    isFull={room.isFull}
+                    login={login}
+                  />
+                ))}
+              </div>
+              <Tooltip
+                title='방만들기'
+                aria-label='add'
+                onClick={() => {
+                  makeRooms();
+                }}
+              >
+                <Fab color='secondary' className={classes.absolute}>
+                  <AddIcon />
+                </Fab>
+              </Tooltip>
+              <Tooltip
+                title='새로고침'
+                aria-label='add'
+                onClick={() => {
+                  getRooms();
+                }}
+              >
+                <Fab color='primary' className={classes.refresh}>
+                  <RefreshIcon />
+                </Fab>
+              </Tooltip>
+            </div>
+      }
     </div>
   );
 }
@@ -188,12 +191,14 @@ const mapReduxDispatchToReactProps = (dispatch) => {
   return {
     getRooms: async function () {
       try {
-        const response = await axios({
-          method: 'get',
-          url: 'http://localhost:3001/rooms/roomlist',
-          withCredentials: true,
-        })
-        dispatch({ type: 'GET_ROOMS', payload: response.data });
+        if(cookie.load('selectedGame') !== '0'){
+          const response = await axios({
+            method: 'get',
+            url: 'http://localhost:3001/rooms/roomlist',
+            withCredentials: true,
+          })
+          dispatch({ type: 'GET_ROOMS', payload: response.data });
+        }
       } catch (err) {
         console.log(err)
       }

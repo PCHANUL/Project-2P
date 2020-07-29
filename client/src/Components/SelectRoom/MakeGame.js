@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -56,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MakeGame({ isMaking, makeRoomsClose }) {
   const classes = useStyles();
+  const history = useHistory();
   const [open, setOpen] = React.useState(false);
   const [selectedGame, setGame] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -129,9 +131,9 @@ function MakeGame({ isMaking, makeRoomsClose }) {
                 onChange={(e) => setGame(e.target.value)}
               >
                 <option aria-label="None" value="" />
-                <option value={0}>두더지게임</option>
-                <option value={1}>핑퐁게임</option>
-                <option value={2}>사천성</option>
+                <option value={1}>두더지게임</option>
+                <option value={2}>핑퐁게임</option>
+                <option value={3}>사천성</option>
               </NativeSelect>
               
             </FormControl>
@@ -157,12 +159,22 @@ function MakeGame({ isMaking, makeRoomsClose }) {
             {
               password 
               ? <Button variant="contained" color="primary"
-                  onClick={() => makeRoom(selectedGame, roomName, password)}
+                  onClick={async () => {
+                    await makeRoom(selectedGame, roomName, password);
+                    makeRoomsClose();
+                    cookie.save('selectedRoom', roomName, { path: '/' });
+                    history.push('/waitingroom')
+                  }}
                 >
                   비공개방 생성
                 </Button>
               : <Button variant="contained"
-                  onClick={() => makeRoom(selectedGame, roomName)}
+                  onClick={() => {
+                    makeRoom(selectedGame, roomName);
+                    makeRoomsClose();
+                    cookie.save('selectedRoom', roomName, { path: '/' });
+                    history.push('/waitingroom')
+                  }}
                 >공개방 생성</Button>
             }
             </div>

@@ -54,7 +54,7 @@ class Game extends Component {
     // mouse
     this.mousePos = 0;
   }
-  
+
   componentDidMount() {
     let socket = socketio.connect('http://localhost:3005');
     (() => {
@@ -106,11 +106,11 @@ class Game extends Component {
   } 
 
   // 게임소켓 분리
-  componentWillUnmount() {
-    (() => {
-      socket.emit('disconnect');
-    })();
-  }
+  // componentWillUnmount() {
+  //   (() => {
+  //     socket.emit('disconnect');
+  //   })();
+  // }
 
   // 화면크기 재설정 함수
   resize() {

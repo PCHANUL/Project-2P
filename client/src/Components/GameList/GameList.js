@@ -44,15 +44,15 @@ const useStyles = makeStyles((theme) => ({
 const gameDescription = {
   WhackAMole: {
     desc: '두더지를 잡아라!',
-    code: 0,
+    code: 1,
   },
   Pong: {
     desc: '핑핑핑퐁퐁퐁',
-    code: 1,
+    code: 2,
   },
   FlipCard: {
     desc: '사천성! 같은 카드를 뒤집어라!',
-    code: 2,
+    code: 3,
   },
 };
 
