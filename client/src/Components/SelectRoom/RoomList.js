@@ -212,6 +212,7 @@ const mapReduxDispatchToReactProps = (dispatch) => {
   return {
     selectRoom: function (roomName) {
       cookie.save('selectedRoom', roomName, { path: '/' })
+
     },
   };
 };

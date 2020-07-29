@@ -6,24 +6,25 @@ export class Ball {
     this.vy = speed;
     this.x = stageWidth / 2;
     this.y = stageHeight / 2;
-    this.stop = false
+    this.stop = true;
   }
 
   draw(ctx, stageWidth, stageHeight, 
     blockPosX, blockPosY, blockSizeX, blockSizeY,
     RivalPosX, RivalPosY, RivalSizeX, RivalSizeY) 
     {
+
+    const response = this.bounceWindow(stageWidth, stageHeight);
     
-    this.bounceWindow(stageWidth, stageHeight);
     this.bounceBlock(blockPosX, blockPosY, blockSizeX, blockSizeY);
     this.bounceRival(RivalPosX, RivalPosY, RivalSizeX, RivalSizeY);
     
-    ctx.fillStyle = '#fdd700';
+    ctx.fillStyle = '#ffff8c';
     ctx.beginPath();
 
     // Ball 제어
     if(!this.stop){
-      this.x += 0;
+      this.x += this.vx;
       this.y += this.vy;
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     } else {
@@ -33,11 +34,20 @@ export class Ball {
       this.vy = this.speed;
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     }
+    
     ctx.fill();
+
+    if(response){
+      return response
+    }
   }
 
-  stoppp() {
+  stoppp(myTurn) {
     this.stop = !this.stop;
+    if(!myTurn){
+      this.vx *= -1;
+      this.vy *= -1;
+    }
   }
 
   bounceWindow(stageWidth, stageHeight) {
@@ -52,13 +62,11 @@ export class Ball {
     } else  if (this.y <= minY) {
       this.vy *= -1;
       this.y += this.vy;
-      console.log('이김')
-      this.stoppp()
+      return { gameResult: true }
     } else if (this.y >= maxY) {
       this.vy *= -1;
       this.y += this.vy;
-      console.log('짐')
-      this.stoppp()
+      return { gameResult: false }
     }
   }
 
@@ -78,8 +86,7 @@ export class Ball {
       const min = Math.min(min1, min2);
 
       if(min === min1) {    // 좌우변
-        console.log('a')
-        this.vy += 3;
+        this.vx -= 5;
         this.vx *= -1;
         this.vy *= -1;
         this.x += this.vx;
@@ -109,13 +116,13 @@ export class Ball {
       const min = Math.min(min1, min2);
 
       if(min === min1) {
-        this.vy += 3;
+        this.vx += 5;
         this.vx *= -1;
         this.vy *= -1;
         this.x += this.vx;
         this.y += this.vy;
       } else if (min === min2) {
-        this.vx += 2;
+        this.vx -= 1;
         this.vy *= -1;
         this.y += this.vy;
       }
