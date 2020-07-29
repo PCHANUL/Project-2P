@@ -1,13 +1,11 @@
 import * as actionTypes from '../actions';
 
-function createDate(roomName, isWait, isLocked, isFull) {
-  return { roomName, isWait, isLocked, isFull };
+function createDate(gameCode, roomName, isWait, isLocked, isFull) {
+  return { gameCode, roomName, isWait, isLocked, isFull };
 }
 
 const initialState = {
-  roomList: [ 
-    createDate('드루와드루와드루와드루와드루와드루와드루와드루와드루와드루와', true, false, false),
-  ],
+  roomList: [],
   isMaking: false,
   currentGame: 0,
 };
@@ -31,23 +29,21 @@ const reducer = (state = initialState, action) => {
         isMaking: false,
       };
     case actionTypes.GET_ROOMS:
-      
-      
-      const rows = [
-        createDate('드루와드루와드루와드루와드루와드루와드루와드루와드루와드루와', true, false, false),
-        createDate('드루와라', false, true, true),
-        createDate('야!타', true, true, true),
-        createDate('늬 내가누군지아니?', false, false, true),
-        createDate('매너겜좀합시다', true, false, false),
-        createDate('6학녕1반', true, true, false),
-        createDate('드루와', true, false, false),
-        createDate('드루와', true, false, false),
-        createDate('드루와', true, false, false),
-      ]; 
+      // let mole = []
+      // let pong = []
+      // let card = []
 
+      // action.payload.map(function(room){
+      //   if (room.gameCode === '0') {
+      //     mole.push(createDate(room.gameCode, room.roomName, true, room.isLocked, room.userNum === 1 ? false : true));
+      //   } else if (room.gameCode === '1') {
+      //     pong.push(createDate(room.gameCode, room.roomName, true, room.isLocked, room.userNum === 1 ? false : true));
+      //   }
+      // })
+      
       return {
         ...state,
-        roomList: rows,
+        roomList: action.payload,
       };
     default:
       return state;

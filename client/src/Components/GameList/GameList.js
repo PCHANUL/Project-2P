@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { withRouter, useHistory } from 'react-router-dom';
 import cookie from 'react-cookies'
+import { connect } from 'react-redux';
 
 import {
   Card,
@@ -55,7 +56,7 @@ const gameDescription = {
   },
 };
 
-const GameList = ({ image, gameName, getRooms, selectGame }) => {
+const GameList = ({ image, gameName, getRooms, selectGame, makeRooms }) => {
   const classes = useStyles();
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -89,18 +90,25 @@ const GameList = ({ image, gameName, getRooms, selectGame }) => {
             </Typography>
             <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={3}>
               <Grid item>
-                <Button color="primary" disableElevation className={classes.button} variant="outlined" onClick={() => {
-                  getRooms()
-                  cookie.save('selectedGame', gameDescription[gameName]['code'], { path: '/' })
-                  history.push('/selectroom')
-                }}>
+                <Button color="primary" disableElevation className={classes.button} variant="outlined" 
+                  onClick={() => {
+                    cookie.save('selectedGame', gameDescription[gameName]['code'], { path: '/' })
+                    getRooms()
+                    history.push('/selectroom')
+                  }
+                }>
                   <Typography variant='h6'>
                     참가하기
                   </Typography>
                 </Button>
               </Grid>
               <Grid item>
-                <Button color="secondary" disableElevation className={classes.button} variant="outlined">
+                <Button color="secondary" disableElevation className={classes.button} variant="outlined" 
+                  onClick={() => {
+                    cookie.save('selectedGame', gameDescription[gameName]['code'], { path: '/' })
+                    makeRooms()
+                  }}
+                >
                   <Typography variant='h6'>
                     방 만들기
                   </Typography>
@@ -124,4 +132,25 @@ const GameList = ({ image, gameName, getRooms, selectGame }) => {
   );
 };
 
-export default withRouter(GameList);
+const mapReduxDispatchToReactProps = (dispatch) => {
+  return {
+    getRooms: async function () {
+      // try {
+      //   const response = await axios({
+      //     method: 'get',
+      //     url: 'http://localhost:3001/rooms/roomlist',
+      //     withCredentials: true,
+      //   })
+      //   console.log(response)
+      // } catch (err) {
+      //   console.log(err)
+      // }
+      // dispatch({ type: 'GET_ROOMS' });
+    },
+    makeRooms: function () {
+      dispatch({ type: 'MAKE_ROOM' });
+    },
+  };
+};
+
+export default connect(null, mapReduxDispatchToReactProps)(withRouter(GameList));

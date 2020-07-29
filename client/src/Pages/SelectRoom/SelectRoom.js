@@ -19,8 +19,6 @@ import RoomList from '../../Components/SelectRoom/RoomList';
 
 const axios = require('axios')
 
-let rows = [];
-
 const useStyles = makeStyles((theme) => ({
   absolute: {
     position: 'fixed',
@@ -48,31 +46,74 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
   const classes = useStyles();
   const history = useHistory();
   const [currentGame, selectedGame] = React.useState(0);
-  const [rows, getRows] = React.useState([{}]);
+  const [rooms, getRoomList] = React.useState([{}]);
 
   React.useEffect(() => {
     if (!cookie.load('username')) {
       history.push('/');
     } else if (!cookie.load('selectedGame')) {
       history.push('/selectgame')
+    } else if (cookie.load('selectedRoom')){
+      history.push('/waitingroom')
     }
 
+    // 새로운 방이 생성되기 전까지 실행
+    if(rooms[0] === undefined){  
+      getRooms()
+    }
     selectedGame(Number(cookie.load('selectedGame')))
-    console.log('currentGame: ', currentGame);
-
-
-    // 대기방이 없는 경우 계속 요청을 보낸다.
-    // if (roomList.length === 0) {
-    //   getRooms();
-    // }
-    getRows(roomList);
+    getRoomList(roomList);
   });
 
   const handleChange = (event, newValue) => {
-    console.log(newValue)
     selectedGame(newValue);
     cookie.save('selectedGame', newValue, { path: '/' })
   };
+
+  let emptyRoomList = (
+    <Grid
+      container
+      container
+      direction='column'
+      justify='space-evenly'
+      alignItems='center'
+      className={classes.section1}
+    >
+      <Paper className={classes.emptyAlert}>
+        <Grid item>
+          <Typography variant='h4' className={classes.alertText}>
+            대기중인 방이 없습니다.
+            <br />
+            방을 생성해보세요
+          </Typography>
+        </Grid>
+        <Grid container direction='row' justify='space-evenly' alignItems='center'>
+          <Tooltip
+            title='방만들기'
+            aria-label='add'
+            onClick={() => {
+              makeRooms();
+            }}
+          >
+            <Fab color='secondary'>
+              <AddIcon />
+            </Fab>
+          </Tooltip>
+          <Tooltip
+            title='새로고침'
+            aria-label='add'
+            onClick={() => {
+              getRooms();
+            }}
+          >
+            <Fab color='primary'>
+              <RefreshIcon />
+            </Fab>
+          </Tooltip>
+        </Grid>
+      </Paper>
+    </Grid>
+  )
 
   return (
     <div>
@@ -80,6 +121,7 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
         <Tabs
           value={currentGame}
           onChange={handleChange}
+          onClick={getRooms}
           indicatorColor='primary'
           textColor='primary'
           centered
@@ -89,60 +131,19 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
           <Tab label='Game Three' />
         </Tabs>
       </Paper>
-
-      {rows.length === 0 ? (
-        <Grid
-          container
-          container
-          direction='column'
-          justify='space-evenly'
-          alignItems='center'
-          className={classes.section1}
-        >
-          <Paper className={classes.emptyAlert}>
-            <Grid item>
-              <Typography variant='h4' className={classes.alertText}>
-                대기중인 방이 없습니다.
-                <br />
-                방을 생성해보세요
-              </Typography>
-            </Grid>
-            <Grid container direction='row' justify='space-evenly' alignItems='center'>
-              <Tooltip
-                title='방만들기'
-                aria-label='add'
-                onClick={() => {
-                  makeRooms();
-                }}
-              >
-                <Fab color='secondary'>
-                  <AddIcon />
-                </Fab>
-              </Tooltip>
-              <Tooltip
-                title='새로고침'
-                aria-label='add'
-                onClick={() => {
-                  getRooms();
-                }}
-              >
-                <Fab color='primary'>
-                  <RefreshIcon />
-                </Fab>
-              </Tooltip>
-            </Grid>
-          </Paper>
-        </Grid>
-      ) : (
+      {
+        rooms[0] === undefined
+        ?  emptyRoomList
+        : (
         <div>
           <div className={classes.section1}>
-            {rows.map((row, idx) => (
+            {rooms.map((room, idx) => (
               <RoomList
                 key={idx}
-                roomName={row.roomName}
-                isWait={row.isWait}
-                isLocked={row.isLocked}
-                isFull={row.isFull}
+                roomName={room.roomName}
+                isWait={room.isWait}
+                isLocked={room.isLocked}
+                isFull={room.isFull}
                 login={login}
               />
             ))}
@@ -186,25 +187,19 @@ const mapReduxStateToReactProps = (state) => {
 const mapReduxDispatchToReactProps = (dispatch) => {
   return {
     getRooms: async function () {
-      console.log('awefawe')
       try {
         const response = await axios({
           method: 'get',
           url: 'http://localhost:3001/rooms/roomlist',
           withCredentials: true,
         })
-        console.log(response)
+        dispatch({ type: 'GET_ROOMS', payload: response.data });
       } catch (err) {
         console.log(err)
       }
-      // let result = await 
-      // dispatch({ type: 'GET_ROOMS' });
     },
     makeRooms: function () {
       dispatch({ type: 'MAKE_ROOM' });
-    },
-    changeCurrentGame: function (currentGame) {
-      dispatch({ type: 'SELECT_GAME', payload: currentGame + 1 });
     },
   };
 };
