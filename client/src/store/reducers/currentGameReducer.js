@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions';
 
 const initialState = {
-  currentGame: 1,
+  currentGame: 0,
 };
 
 const reducer = (state = initialState, action) => {

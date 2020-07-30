@@ -149,6 +149,7 @@ function RoomList({ login, roomName, isWait, isLocked, isFull, selectRoom, selec
                         color='primary'
                         onClick={() => {
                           selectRoom(roomName);
+                          cookie.save('selectedRoom', roomName, { path: '/' })
 
                           // 비밀번호가 있다면 구역이 확장된다
                           if (isLocked) {
