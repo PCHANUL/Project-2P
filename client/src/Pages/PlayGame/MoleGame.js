@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import io from 'socket.io-client';
 import PropTypes from 'prop-types';
 import cookie from 'react-cookies';
+import Gameover from '../../Components/PlayGame/Gameover';
 import MoleScoreCard from '../../Components/PlayGame/MoleScoreCard';
 
 import Paper from '@material-ui/core/Paper';
@@ -36,8 +36,10 @@ class MoleGame extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      winner: '',
       myScore: 0,
       opponentScore: 0,
+      opponentUsername: '',
       width: document.body.clientWidth / 1.5,
       height: document.body.clientHeight / 1.5,
       currentMole: 0,
@@ -134,6 +136,19 @@ class MoleGame extends Component {
         this.setState({ myScore: data.score[player2], opponentScore: data.score[player1] });
       }
     });
+    this.socket.on('gameover', (data) => {
+      // data = username
+      console.log('gameover socket');
+      this.setState({ winner: data });
+    });
+    this.socket.on('init', ([username, currentMole]) => {
+      const opponentUsername = username.filter((username) => cookie.load('username') !== username);
+      this.setState({ opponentUsername, currentMole });
+    });
+  }
+
+  componentWillUnmount() {
+    this.socket.disconnect();
   }
 
   mousePressed(mouseX, mouseY) {
@@ -199,6 +214,7 @@ class MoleGame extends Component {
 
     return (
       <div>
+        {this.state.winner !== '' ? <Gameover winner={this.state.winner} /> : null}
         <Paper
           id='paper'
           style={{
@@ -213,8 +229,8 @@ class MoleGame extends Component {
           <img id='clicked' src={clicked} style={{ width: '40px', display: 'none' }} />
         </Paper>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <MoleScoreCard score={this.state.myScore} player='My Score' />
-          <MoleScoreCard score={this.state.opponentScore} player='Opponent Score' />
+          <MoleScoreCard score={this.state.myScore} player={cookie.load('username')} />
+          <MoleScoreCard score={this.state.opponentScore} player={this.state.opponentUsername} />
         </div>
       </div>
     );

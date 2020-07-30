@@ -26,7 +26,6 @@ const WaitingRoom = (props) => {
     }
 
     // roomname, username, avatar, isReady, gameCode
-    console.log('refresh')
     props.enterChatroom(
       cookie.load('selectedRoom'),
       cookie.load('username'),
