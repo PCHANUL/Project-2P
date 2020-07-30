@@ -26,8 +26,8 @@ class Game extends Component {
     super(props);
     this.state = {
       score: 100,
-      width: document.body.clientWidth / 4,
-      height: document.body.clientHeight / 1.2,
+      width: Math.floor(document.body.clientWidth / 4),
+      height: Math.floor(document.body.clientHeight / 1.2),
     }
     //초기화
     this.canvas = null;
@@ -38,23 +38,23 @@ class Game extends Component {
     this.blockSizeX = this.state.width / 3;
     this.blockSizeY = this.state.height / 35;
     this.blockPosX = (this.state.width / 2) - (this.blockSizeX / 2);
-    this.blockPosY = this.state.height * 4.5 / 5;
+    this.blockPosY = Math.floor(this.state.height * 4.5 / 5);
     this.blockPosInitX = (this.state.width / 2) - (this.blockSizeX / 2);
     // Rival Block
     this.RivalSizeX = this.state.width / 3;
     this.RivalSizeY = this.state.height / 35;
     this.RivalPosX = (this.state.width / 2) - (this.RivalSizeX / 2);
-    this.RivalPosY = this.state.height / 12;
+    this.RivalPosY = Math.floor(this.state.height / 12);
     this.RivalPosInitX = (this.state.width / 2) - (this.RivalSizeX / 2);
 
     // Ball
     this.ballRadius = this.state.width / 20;
-    this.ballSpeed = this.state.width / 90;
+    this.ballSpeed = this.state.width / 100;
 
     // mouse
     this.mousePos = 0;
   }
-  
+
   componentDidMount() {
     let socket = socketio.connect('http://localhost:3005');
     (() => {
@@ -78,24 +78,25 @@ class Game extends Component {
     //   this.RivalPosX = this.RivalPosX + this.mousePos 
     //   this.mousePos = e.layerX
     // })
+
     this.canvas.addEventListener('mousemove', (e) => {
-      // this.mousePos = e.layerX - this.mousePos
-      // this.blockPosX = this.blockPosX + this.mousePos 
-      // this.mousePos = e.layerX
-      socket.emit('mouseMove', (e.layerX));
+      this.blockPosX = Math.floor(e.layerX - this.blockSizeX)
+      this.RivalPosX = Math.floor(e.layerX - this.RivalSizeX)
+      let posPercent = this.blockPosX / this.state.width;
+      socket.emit('mouseMove', Number(posPercent.toFixed(4)));
     });
-    socket.on('myMove', (e) => {
-      this.mousePos = e - this.mousePos
-      this.blockPosX = this.blockPosX + this.mousePos 
-      this.mousePos = e
-    });
+    // socket.on('myMove', (e) => {
+    //   // this.mousePos = e
+    //   // this.blockPosX = e * this.state.width
+    //   // this.mousePos = e
+    // });
     socket.on('rivalMove', (e) => {
-      this.mousePos = this.mousePos - e
-      this.RivalPosX = this.RivalPosX + this.mousePos 
-      this.mousePos = e
+      this.RivalPosX = ((1 - e) * this.state.width) - this.RivalSizeX
     });
     document.addEventListener('keydown', (e) => {
       if(e.keyCode === 65){
+        this.ball.stoppp(true)
+        this.initPos()
         socket.emit('start', true);
       }
     });
@@ -106,19 +107,19 @@ class Game extends Component {
   } 
 
   // 게임소켓 분리
-  componentWillUnmount() {
-    (() => {
-      socket.emit('disconnect');
-    })();
-  }
+  // componentWillUnmount() {
+  //   (() => {
+  //     socket.emit('disconnect');
+  //   })();
+  // }
 
   // 화면크기 재설정 함수
   resize() {
     this.stageWidth = document.body.clientWidth;
     this.stageHeight = document.body.clientHeight;
  
-    this.canvas.width = this.stageWidth / 4;
-    this.canvas.height = this.stageHeight / 1.2;
+    this.canvas.width = Math.floor(this.stageWidth / 4);
+    this.canvas.height = Math.floor(this.stageHeight / 1.2);
 
     this.setState({ width: this.canvas.width, height: this.canvas.height })
   }
@@ -152,6 +153,8 @@ class Game extends Component {
     // Ball
     this.ctx.shadowColor = '#ffff8c';
     this.ctx.shadowBlur = 5;
+    // this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    // this.ctx.fillRect(0, 0, this.state.width, this.state.height);
     const response = this.ball.draw(
       this.ctx, this.state.width, this.state.height, 
       this.blockPosX, this.blockPosY, this.blockSizeX, this.blockSizeY,

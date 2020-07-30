@@ -17,6 +17,8 @@ const signout = async() => {
   await logout()
   cookie.remove('username', {path:'/'})
   cookie.remove('avatarId', {path:'/'})
+  cookie.remove('selectedGame', {path:'/'})
+  cookie.remove('selectedRoom', {path:'/'})
   window.location.reload()
 }
 
@@ -86,9 +88,11 @@ export default function Nav() {
         <Toolbar>
           <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' 
             onClick={() => {
-              if(cookie.load('selectedRoom')){
+              if(cookie.load('selectedGame') && cookie.load('selectedRoom')){
                 cookie.remove('selectedRoom', { path: '/' })
-              } 
+              } else if(cookie.load('selectedGame')){
+                cookie.remove('selectedGame', { path: '/' })
+              }
               history.goBack()
             }}
           >

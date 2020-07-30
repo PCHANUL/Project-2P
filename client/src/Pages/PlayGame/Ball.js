@@ -7,6 +7,8 @@ export class Ball {
     this.x = stageWidth / 2;
     this.y = stageHeight / 2;
     this.stop = true;
+    this.blockPrePosX = 0;
+    this.RivalPrePosX = 0;
   }
 
   draw(ctx, stageWidth, stageHeight, 
@@ -30,13 +32,16 @@ export class Ball {
     } else {
       this.x = stageWidth / 2;
       this.y = stageHeight / 2;
-      this.vx = this.speed;
+      this.vx = 0;
       this.vy = this.speed;
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     }
     
     ctx.fill();
 
+    this.blockPrePosX = blockPosX;
+    this.RivalPrePosX = RivalPosX;
+    
     if(response){
       return response
     }
@@ -85,17 +90,68 @@ export class Ball {
       const min2 = Math.min(y1, y2);
       const min = Math.min(min1, min2);
 
-      if(min === min1) {    // 좌우변
-        this.vx -= 5;
+      if (min === min1) {    // 좌우변
         this.vx *= -1;
         this.vy *= -1;
-        this.x += this.vx;
-        this.y += this.vy;
+        if (x2 === min) {
+          console.log('right')
+          this.vx += this.speed;
+          this.x = maxX;
+          this.y = minY;
+        } else if (x1 === min) {
+          console.log('left')
+          this.vx -= this.speed;
+          this.x = minX;
+          this.y = minY;
+        }
       } else if (min === min2) {    //상하변
-        console.log('b')
-        this.vx += 2;
         this.vy *= -1;
-        this.y += this.vy;
+        // 스타트
+        if (this.vx === 0) {
+          console.log('this.blockPrePosX > blockPosX: ', this.blockPrePosX, blockPosX);
+          if (this.blockPrePosX > blockPosX) {
+            console.log('왼쪽으로 움직임')
+            this.vx -= this.speed/2;
+          } 
+          if (this.blockPrePosX < blockPosX) {
+            console.log('오른쪽으로 움직임')
+            this.vx += this.speed/2;
+          }
+        }
+        // 공의 방향감지
+        else if (Math.sign(this.vx) === -1) {
+          console.log('오른쪽에서')
+          console.log(this.blockPrePosX, blockPosX)
+          if (this.blockPrePosX > blockPosX) {
+            console.log('왼쪽으로 움직임')
+            this.vx -= this.speed;
+          } else if (this.blockPrePosX < blockPosX) {
+            console.log('오른쪽으로 움직임')
+            this.vx += this.speed;
+          }
+        } else if (Math.sign(this.vx) === 1) {
+          console.log('왼쪽에서')
+          console.log(this.blockPrePosX, blockPosX)
+          if (this.blockPrePosX > blockPosX) {
+            console.log('왼쪽으로 움직임')
+            this.vx -= this.speed;
+          } else if (this.blockPrePosX < blockPosX) {
+            console.log('오른쪽으로 움직임')
+            this.vx += this.speed;
+          }
+        }
+
+        // 위 또는 아래에 부딪힌 경우
+        if (y1 === min) {
+          console.log('top')
+          this.vy -= this.speed/10;
+          console.log('this.speed/10: ', this.speed/10);
+          console.log('minY: ', minY);
+          this.y = minY;
+        } else if (y2 === min) {
+          console.log('bottom')
+          this.y = minY - this.speed;
+        }
       }
     }
   }
@@ -115,16 +171,70 @@ export class Ball {
       const min2 = Math.min(y1, y2);
       const min = Math.min(min1, min2);
 
-      if(min === min1) {
-        this.vx += 5;
+      if(min === min1) {  // 좌우변
         this.vx *= -1;
         this.vy *= -1;
-        this.x += this.vx;
-        this.y += this.vy;
-      } else if (min === min2) {
-        this.vx -= 1;
+        if (x2 === min) {
+          console.log('right')
+          this.vx += this.speed;
+          this.x = maxX;
+          this.y = maxY;
+        } else if (x1 === min) {
+          console.log('left')
+          this.vx -= this.speed;
+          this.x = minX;
+          this.y = maxY;
+        }
+      } else if (min === min2) {   // 상하변
         this.vy *= -1;
-        this.y += this.vy;
+        
+        // 스타트
+        if (this.vx === 0) {
+          console.log('this.blockPrePosX > blockPosX: ', this.blockPrePosX, blockPosX);
+
+          if (this.blockPrePosX > blockPosX) {
+            console.log('왼쪽으로 움직임')
+            this.vx += this.speed/2;
+          } 
+          if (this.blockPrePosX < blockPosX) {
+            console.log('오른쪽으로 움직임')
+            this.vx -= this.speed/2;
+          }
+        }
+        // 공의 방향감지
+        else if (Math.sign(this.vx) === -1) {
+          console.log('오른쪽에서')
+          console.log(this.blockPrePosX, blockPosX)
+          if (this.blockPrePosX > blockPosX) {
+            console.log('왼쪽으로 움직임')
+            this.vx -= this.speed;
+          } else if (this.blockPrePosX < blockPosX) {
+            console.log('오른쪽으로 움직임')
+            this.vx += this.speed;
+          }
+        } else if (Math.sign(this.vx) === 1) {
+          console.log('왼쪽에서')
+          console.log(this.blockPrePosX, blockPosX)
+          if (this.blockPrePosX > blockPosX) {
+            console.log('왼쪽으로 움직임')
+            this.vx -= this.speed;
+          } else if (this.blockPrePosX < blockPosX) {
+            console.log('오른쪽으로 움직임')
+            this.vx += this.speed;
+          }
+        }
+
+
+        // 아래 또는 위에 부딪힌 경우
+        if (y1 === min) {
+          console.log('top')
+          this.y = maxY + this.speed;
+        } else if (y2 === min) {
+          console.log('bottom')
+          this.vy += this.speed/10;
+          console.log('this.speed/10: ', this.speed/10);
+          this.y = maxY + this.speed;
+        }
       }
     }
   }
