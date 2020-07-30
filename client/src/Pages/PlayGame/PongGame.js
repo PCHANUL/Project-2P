@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+
 import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+
 import { withStyles } from '@material-ui/core/styles';
 import { Block } from './Block';
 import { RivalBlock } from './RivalBlock';
@@ -16,8 +21,11 @@ const styles = (theme) => ({
     border: '1px solid #000',
     boxShadow: theme.shadows[5],
     margin: theme.spacing(3, 3),
-
-  }
+  },
+  root: {
+    minWidth: 275,
+    margin: '20px',
+  },
 });
 let dx = 20
 let preKey
@@ -25,15 +33,20 @@ class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      score: 100,
       width: Math.floor(document.body.clientWidth / 4),
       height: Math.floor(document.body.clientHeight / 1.2),
+      
+      // score
+      myScore: 0,
+      rivalScore: 0
     }
+
     //초기화
     this.canvas = null;
     this.ctx = null;
     this.stageWidth = null;
     this.stageHeight = null;
+
     // Block
     this.blockSizeX = this.state.width / 3;
     this.blockSizeY = this.state.height / 35;
@@ -53,10 +66,14 @@ class Game extends Component {
 
     // mouse
     this.mousePos = 0;
+
+    // pre date
+    this.prePercent = 0;
+
   }
 
   componentDidMount() {
-    let socket = socketio.connect('http://localhost:3005');
+    socket = socketio.connect('http://localhost:3005');
     (() => {
       socket.emit('joinRoom', {
         username: cookie.load('username'),
@@ -68,7 +85,7 @@ class Game extends Component {
 
     this.ball = new Ball(this.state.width, this.state.height, this.ballRadius, this.ballSpeed)
     this.block = new Block(this.blockSizeX, this.blockSizeY, this.blockPosX, this.blockPosY, this.state.width, this.state.height);
-    this.Rivalblock = new RivalBlock(this.blockSizeX, this.blockSizeY, this.blockPosX, this.blockPosY, this.state.width, this.state.height);
+    this.Rivalblock = new RivalBlock(this.RivalSizeX, this.RivalSizeY, this.RivalPosX, this.RivalPosY, this.state.width, this.state.height);
 
     this.resize();
     window.requestAnimationFrame(this.animate.bind(this));
@@ -80,10 +97,15 @@ class Game extends Component {
     // })
 
     this.canvas.addEventListener('mousemove', (e) => {
-      this.blockPosX = Math.floor(e.layerX - this.blockSizeX)
-      this.RivalPosX = Math.floor(e.layerX - this.RivalSizeX)
-      let posPercent = this.blockPosX / this.state.width;
-      socket.emit('mouseMove', Number(posPercent.toFixed(4)));
+      if(e.movementX !== 0){
+        this.blockPosX = Math.floor(e.layerX - this.blockSizeX)
+        this.RivalPosX = Math.floor(e.layerX - this.RivalSizeX)
+      }
+      let posPercent = Number((this.blockPosX / this.state.width).toFixed(2));
+      if(this.prePercent !== posPercent){
+        socket.emit('mouseMove', posPercent);
+        this.prePercent = posPercent
+      }
     });
     // socket.on('myMove', (e) => {
     //   // this.mousePos = e
@@ -93,7 +115,12 @@ class Game extends Component {
     socket.on('rivalMove', (e) => {
       this.RivalPosX = ((1 - e) * this.state.width) - this.RivalSizeX
     });
+
     document.addEventListener('keydown', (e) => {
+      if(e.keyCode === 81){
+        console.log('awefawef')
+        this.setState({ myScore: this.state.myScore += 1 })
+      }
       if(e.keyCode === 65){
         this.ball.stoppp(true)
         this.initPos()
@@ -168,6 +195,8 @@ class Game extends Component {
       socket.emit('start');
     }
   }
+
+
   render() {
     const { classes } = this.props;
     return (
@@ -178,6 +207,28 @@ class Game extends Component {
         boxShadow: '1px 1px 100px 0px #707070',
         }} className={classes.Paper}>
         <canvas id="canvas" />
+
+        {/* 점수판 */}
+        <Card className={classes.root}>
+          <CardContent>
+            <Typography variant='h5' component='h2'>
+              {'me'}
+            </Typography>
+            <Typography className={classes.pos} color='textSecondary' variant='h1' component='h1'>
+              {this.state.myScore}
+            </Typography>
+          </CardContent>
+        </Card>
+        <Card className={classes.root}>
+          <CardContent>
+            <Typography variant='h5' component='h2'>
+              {'rival'}
+            </Typography>
+            <Typography className={classes.pos} color='textSecondary' variant='h1' component='h1'>
+              {this.state.rivalScore}
+            </Typography>
+          </CardContent>
+        </Card>
       </Paper>
     );
   }

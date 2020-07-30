@@ -86,8 +86,8 @@ const PlayGame = ({ currentGame }) => {
   return (
     <div className={classes.space}>
       <Paper style={{ height: '1000px', backgroundColor: '#000' }}>
-        {/* <PongGame /> */}
-        <MoleGame />
+        <PongGame />
+        {/* <MoleGame /> */}
         {/* {
             currentGame === 1
             ? <MoleGame />
@@ -96,6 +96,7 @@ const PlayGame = ({ currentGame }) => {
             
           } */}
 
+        
         {/* <Grid container direction="row" justify="space-evenly" alignItems="center">
           <Paper>
             <Grid item xs>
@@ -183,8 +184,8 @@ const PlayGame = ({ currentGame }) => {
             </Grid>
           </Paper>
         </Fade>
-      </Modal> */}
-      </Paper>
+        </Modal> */ }
+      </Paper> 
     </div>
   );
 };
