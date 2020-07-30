@@ -12,8 +12,8 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 
-import user1 from '../../images/avatar.png'
-import user2 from '../../images/avatar2.png'
+import user1 from '../../images/avatar.png';
+import user2 from '../../images/avatar2.png';
 
 const useStyles = makeStyles((theme) => ({
   Paper: {
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     // alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#000'
+    backgroundColor: '#000',
   },
   user1: {
     height: 200,
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     // flexGrow: 1,
   },
-}))
+}));
 
 const PlayGame = ({ currentGame }) => {
   const classes = useStyles();
@@ -85,10 +85,10 @@ const PlayGame = ({ currentGame }) => {
 
   return (
     <div className={classes.space}>
-      <Paper style={{height: '1000px', backgroundColor: '#000'}}>
-      <PongGame />
-      {/* <MoleGame /> */}
-          {/* {
+      <Paper style={{ height: '1000px', backgroundColor: '#000' }}>
+        {/* <PongGame /> */}
+        <MoleGame />
+        {/* {
             currentGame === 1
             ? <MoleGame />
             : <Game />
@@ -96,7 +96,6 @@ const PlayGame = ({ currentGame }) => {
             
           } */}
 
-        
         {/* <Grid container direction="row" justify="space-evenly" alignItems="center">
           <Paper>
             <Grid item xs>
