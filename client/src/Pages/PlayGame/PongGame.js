@@ -53,10 +53,13 @@ class Game extends Component {
 
     // mouse
     this.mousePos = 0;
+
+    // pre date
+    this.prePercent = 0;
   }
 
   componentDidMount() {
-    let socket = socketio.connect('http://localhost:3005');
+    socket = socketio.connect('http://localhost:3005');
     (() => {
       socket.emit('joinRoom', {
         username: cookie.load('username'),
@@ -68,7 +71,7 @@ class Game extends Component {
 
     this.ball = new Ball(this.state.width, this.state.height, this.ballRadius, this.ballSpeed)
     this.block = new Block(this.blockSizeX, this.blockSizeY, this.blockPosX, this.blockPosY, this.state.width, this.state.height);
-    this.Rivalblock = new RivalBlock(this.blockSizeX, this.blockSizeY, this.blockPosX, this.blockPosY, this.state.width, this.state.height);
+    this.Rivalblock = new RivalBlock(this.RivalSizeX, this.RivalSizeY, this.RivalPosX, this.RivalPosY, this.state.width, this.state.height);
 
     this.resize();
     window.requestAnimationFrame(this.animate.bind(this));
@@ -80,10 +83,15 @@ class Game extends Component {
     // })
 
     this.canvas.addEventListener('mousemove', (e) => {
-      this.blockPosX = Math.floor(e.layerX - this.blockSizeX)
-      this.RivalPosX = Math.floor(e.layerX - this.RivalSizeX)
-      let posPercent = this.blockPosX / this.state.width;
-      socket.emit('mouseMove', Number(posPercent.toFixed(4)));
+      if(e.movementX !== 0){
+        this.blockPosX = Math.floor(e.layerX - this.blockSizeX)
+        this.RivalPosX = Math.floor(e.layerX - this.RivalSizeX)
+      }
+      let posPercent = Number((this.blockPosX / this.state.width).toFixed(2));
+      if(this.prePercent !== posPercent){
+        socket.emit('mouseMove', posPercent);
+        this.prePercent = posPercent
+      }
     });
     // socket.on('myMove', (e) => {
     //   // this.mousePos = e
@@ -95,8 +103,8 @@ class Game extends Component {
     });
     document.addEventListener('keydown', (e) => {
       if(e.keyCode === 65){
-        this.ball.stoppp(true)
-        this.initPos()
+        // this.ball.stoppp(true)
+        // this.initPos()
         socket.emit('start', true);
       }
     });
@@ -165,9 +173,11 @@ class Game extends Component {
       console.log(response)
       // this.ball.stoppp(true)
       // this.initPos()
-      socket.emit('start');
+      socket.emit('start', 'awefawef');
     }
   }
+
+
   render() {
     const { classes } = this.props;
     return (

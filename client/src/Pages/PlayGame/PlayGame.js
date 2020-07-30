@@ -97,7 +97,7 @@ const PlayGame = ({ currentGame }) => {
           } */}
 
         
-        {/* <Grid container direction="row" justify="space-evenly" alignItems="center">
+        <Grid container direction="row" justify="space-evenly" alignItems="center">
           <Paper>
             <Grid item xs>
               <Typography variant="h1" color="primary">
@@ -184,7 +184,7 @@ const PlayGame = ({ currentGame }) => {
             </Grid>
           </Paper>
         </Fade>
-      </Modal> */}
+      </Modal>
       </Paper>
     </div>
   );
