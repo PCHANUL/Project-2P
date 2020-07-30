@@ -138,12 +138,20 @@ class MoleGame extends Component {
     });
     this.socket.on('gameover', (data) => {
       // data = username
-      console.log('gameover socket');
       this.setState({ winner: data });
     });
-    this.socket.on('init', ([username, currentMole]) => {
-      const opponentUsername = username.filter((username) => cookie.load('username') !== username);
-      this.setState({ opponentUsername, currentMole });
+    this.socket.on('init', ([usernames, currentMole, score]) => {
+      const opponentUsername = usernames.filter((username) => cookie.load('username') !== username);
+      const players = Object.keys(score);
+      let myScore, opponentScore;
+      players.forEach((player) => {
+        if (player === cookie.load('username')) {
+          myScore = score[player];
+        } else {
+          opponentScore = score[player];
+        }
+      });
+      this.setState({ opponentUsername, currentMole, myScore, opponentScore });
     });
   }
 
