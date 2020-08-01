@@ -14,7 +14,7 @@ export class RivalBlock {
     ctx.fillStyle = '#000';
     ctx.beginPath();
     ctx.rect(x, y, this.width, this.height);
-    ctx.lineWidth = this.width / 40;
+    ctx.lineWidth = this.width / 10;
     ctx.stroke();
     ctx.fill();
   }
