@@ -95,12 +95,12 @@ export class Ball {
         this.vy *= -1;
         if (x2 === min) {
           console.log('right')
-          this.vx += this.speed;
+          // this.vx += this.speed;
           this.x = maxX;
           this.y = minY;
         } else if (x1 === min) {
           console.log('left')
-          this.vx -= this.speed;
+          // this.vx -= this.speed;
           this.x = minX;
           this.y = minY;
         }

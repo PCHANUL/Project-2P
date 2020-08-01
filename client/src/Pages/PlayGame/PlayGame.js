@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PongGame from './PongGame';
+import BDman from './BDman';
 import MoleGame from './MoleGame';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,6 +15,8 @@ import Grid from '@material-ui/core/Grid';
 
 import user1 from '../../images/avatar.png';
 import user2 from '../../images/avatar2.png';
+import { setRawCookie } from 'react-cookies';
+import cookie from 'react-cookies'
 
 const useStyles = makeStyles((theme) => ({
   Paper: {
@@ -83,108 +86,17 @@ const PlayGame = ({ currentGame }) => {
     setOpen(false);
   };
 
+  const screen = () => {
+    let games = [<MoleGame />, <BDman />, <PongGame />];
+    return games[cookie.load('selectedGame') - 1]
+  }
+
   return (
     <div className={classes.space}>
       <Paper style={{ height: '1000px', backgroundColor: '#000' }}>
-        <PongGame />
-        {/* <MoleGame /> */}
-        {/* {
-            currentGame === 1
-            ? <MoleGame />
-            : <Game />
-              
-            
-          } */}
-
-        
-        {/* <Grid container direction="row" justify="space-evenly" alignItems="center">
-          <Paper>
-            <Grid item xs>
-              <Typography variant="h1" color="primary">
-                10
-              </Typography>
-              <Card style={{
-                left: '10%',
-                bottom: '5%',
-              }} className={classes.userCard}>
-                <CardMedia
-                  className={classes.user1}
-                  image={user1}
-                />
-                <Typography variant="h4">
-                  오마이갇
-                </Typography>
-              </Card>
-            </Grid>
-            <Grid item xs>
-            </Grid>
-          </Paper>
-          <Typography variant="h4">
-            10:00
-          </Typography>
-          <Paper>
-            <Grid item xs>
-              <Typography variant="h1">
-                6
-              </Typography>
-            </Grid>
-            <Grid item xs>
-              <Card style={{
-                right: '5%',
-                bottom: '5%',
-              }}className={classes.userCard}>
-                <CardMedia
-                  className={classes.user2}
-                  image={user2}
-                />
-                <Typography variant="h4">
-                  사탕주세요
-                </Typography>
-              </Card>
-            </Grid>
-          </Paper>
-        </Grid>
-        <Grid container direction="row" justify="space-evenly" alignItems="center">
-          <Paper type="button" onClick={handleOpen} style={{'width': '600px', 'margin-top': '30px'}}>
-            <Typography variant="h4">
-              기권
-            </Typography>
-          </Paper>
-        </Grid>
-
-        <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={classes.modal}
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={open}>
-          <Paper className={classes.gameover}>
-            <Grid item container direction="row" justify="center" alignItems="center">
-              <Typography variant="h4">
-                게임종료되었습니다
-              </Typography>
-              <Typography variant="h6">
-                오마이갇 님이 승리하였습니다
-              </Typography>
-              <Grid item>
-              <Typography variant="h2">
-                {
-                  
-                }
-              </Typography>
-
-              </Grid>
-            </Grid>
-          </Paper>
-        </Fade>
-        </Modal> */ }
+        {
+          screen()
+        }
       </Paper> 
     </div>
   );
