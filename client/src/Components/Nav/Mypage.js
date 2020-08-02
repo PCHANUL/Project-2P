@@ -1,28 +1,20 @@
 import React, { Component } from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Card, CardHeader, CardMedia, CardContent, CardActions, 
+  MobileStepper, 
+  Paper, Collapse, IconButton, Typography, Button, 
+} from '@material-ui/core';
+import { VictoryBar, VictoryLabel } from 'victory';
 
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+
+
 import clsx from 'clsx';
-import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 
 import avatar from '../../images/avatar.png'
 import cookie from 'react-cookies'
@@ -41,7 +33,7 @@ function getModalStyle() {
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: 'absolute',
-    width: 400,
+    width: 300,
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
@@ -77,7 +69,26 @@ const useStyles = makeStyles((theme) => ({
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
-  }
+  },
+  img: {
+    height: 150,
+    maxWidth: 200,
+    overflow: 'hidden',
+    display: 'block',
+    width: '100%',
+  },
+  imgroot: {
+    maxWidth: 220,
+    flexGrow: 1,
+    marginLeft: '50px',
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    height: 50,
+    paddingLeft: theme.spacing(1),
+    backgroundColor: theme.palette.background.default,
+  },
 
 }));
 
@@ -91,47 +102,137 @@ const rows = [
   createDate('Pong', 100, 60, 10),
 ];
 
+const tutorialSteps = [
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231454.svg',
+  },
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231493.svg',
+  },
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231553.svg',
+  },
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231596.svg',
+  },
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231653.svg',
+  },
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231623.svg',
+  },
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231436.svg',
+  },
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231511.svg',
+  },
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231589.svg',
+  },
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231676.svg',
+  },
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231460.svg',
+  },
+  {
+    imgPath:
+      'https://image.flaticon.com/icons/svg/3231/3231482.svg',
+  },
+];
+
+let sampleData = [
+  {x: "두더지잡기", y: 5},
+  {x: "구슬동자", y: 7},
+  {x: "숫자야구", y: 3},
+]
 
 function Mypage() {
   const classes = useStyles();
+  const theme = useTheme();
   const [modalStyle] = React.useState(getModalStyle);
   const [expanded, setExpanded] = React.useState(false);
+  const [isSetAvatar, setAvatar] = React.useState(false);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const maxSteps = tutorialSteps.length;
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   }
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const changeAvatar = () => {
+    console.log(activeStep)
+  }
   
+
   return (
       <Card style={modalStyle} className={classes.paper}>
         <CardHeader
           title="Mypage"
           subheader={cookie.load('username')}
         />
-        <CardMedia
-          className={classes.media}
-          image={avatar}
-        />
-        <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel id="demo-simple-select-outlined-label">select avatar</InputLabel>
-          <Select
-            labelId="demo-simple-select-outlined-label"
-            id="demo-simple-select-outlined"
-            label="select avatar"
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>
-        </FormControl>
-        <CardContent>
-            This impressive paella is a perfect party dish and a fun meal to cook together with your
-            guests. Add 1 cup of frozen peas along with the mussels, if you like.
-        </CardContent>
+        <div className={classes.imgroot}>
+          <img
+            className={classes.img}
+            src={tutorialSteps[activeStep].imgPath}
+            alt={tutorialSteps[activeStep].label}
+          />
+          {
+            isSetAvatar
+            ? <div>
+                <Button variant="contained" color="primary" style={{ marginLeft: '45px' }} onClick={() => {
+                  setAvatar(false)
+                  changeAvatar()
+                }}>아바타 바꾸기</Button>
+                <MobileStepper
+                  style={{ marginLeft: '-20px'}}
+                  steps={maxSteps}
+                  position="static"
+                  variant="text"
+                  activeStep={activeStep}
+                  nextButton={
+                    <Button size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1}>
+                      Next
+                      {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                    </Button>
+                  }
+                  backButton={
+                    <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+                      {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                      Back
+                    </Button>
+                  }
+                />
+              </div>
+            : <Button variant="contained" style={{ marginLeft: '45px' }} onClick={() => setAvatar(true)}>아바타 바꾸기</Button>
+          }
+          
+
+          
+        </div>
+        
         <CardActions disableSpacing>
-          <div className={classes.record}>게임성적보기</div>
+          <div className={classes.record}>게임승률보기</div>
           <IconButton
             className={clsx(classes.expand, {
               [classes.expandOpen]: expanded,
@@ -144,30 +245,19 @@ function Mypage() {
           </IconButton>
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Game</TableCell>
-                  <TableCell align="right">played</TableCell>
-                  <TableCell align="right">won</TableCell>
-                  <TableCell align="right">tied</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {
-                  rows.map((row) => (
-                    <TableRow key={row.name}>
-                      <TableCell component="th" scope="row">{row.game}</TableCell>
-                      <TableCell align="right">{row.played}</TableCell>
-                      <TableCell align="right">{row.won}</TableCell>
-                      <TableCell align="right">{row.tied}</TableCell>
-                    </TableRow>
-                  ))
-                }
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <VictoryBar polar
+          data={sampleData}
+          labels={(item) => {
+            return `${item.datum.xName} ${item.datum.y * 10}%`
+          }}
+          width={400} height={400}
+          domain={{ x: [0, 7], y: [0, 7] }}
+          style={{ 
+            data: { fill: "#c43a31", stroke: "black", strokeWidth: 4 },
+            // labels: { fill: "white" } 
+          }}
+          // labelComponent={<VictoryLabel dy={30} />}
+          />
         </Collapse>
       </Card>
   )

@@ -93,8 +93,8 @@ const PlayGame = ({ currentGame }) => {
       tag: <BDman />,
       color: '#000',
       pos: '90px',
-      // shadow: '-40px 0px 100px 0px #5c0200, 30px 0px 100px 0px #5e5d00',
-      shadow: '1px 1px 200px 0px #737373',
+      shadow: '-40px 0px 100px 0px #5c0200, 30px 0px 100px 0px #5e5d00',
+      // shadow: '1px 1px 200px 0px #737373',
     }, {
       tag: <PongGame />,
       color: '#001',
