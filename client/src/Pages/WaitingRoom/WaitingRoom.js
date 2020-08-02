@@ -41,7 +41,7 @@ const WaitingRoom = (props) => {
   return (
     <div>
       {bothPlayersReady ? <ReadyProgress /> : null}
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '70px' }}>
         {roomUsers.map((user, idx) => {
           return <Users key={idx} user={user} readyHandler={props.readyHandler} />;
         })}

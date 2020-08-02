@@ -357,8 +357,8 @@ class Game extends Component {
             <Paper id="paper" style={{
               width: this.state.width,
               height: this.state.height,
-              // boxShadow: '1px 1px 100px 0px #d6d6d6',
-              boxShadow: '-5px -5px 20px 0px #5c0200, 0px 0px 30px 0px #d6d6d6, 5px 5px 20px 0px #b5af00',
+              boxShadow: '0px 0px 20px 0px #d6d6d6',
+              // boxShadow: '-5px -5px 20px 0px #5c0200, 0px 0px 30px 0px #d6d6d6, 5px 5px 20px 0px #b5af00',
               }} className={classes.Paper}>
                 <canvas id="canvas" />
             </Paper>
