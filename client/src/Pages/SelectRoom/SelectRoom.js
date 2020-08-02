@@ -34,12 +34,15 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 2),
   },
   emptyAlert: {
-    width: '700px',
-    height: '700px',
+    width: theme.spacing(80),
+    height: theme.spacing(70),
   },
   alertText: {
-    margin: theme.spacing(30, 0, 10, 0),
+    margin: theme.spacing(20, 0, 10, 0),
   },
+  root: {
+    padding: theme.spacing(8, 0, 0, 0),
+  }
 }));
 
 function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {

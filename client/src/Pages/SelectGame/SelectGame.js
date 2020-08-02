@@ -13,7 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   flexContainer: {
-    margin: theme.spacing(2),
+    padding: theme.spacing(8, 0, 0, 0),
   }
 }))
 
@@ -31,7 +31,7 @@ const SelectGame = ({ isLogin }) => {
 
 
   return (
-      <Grid container direction="column" justify="space-evenly" alignItems="center">
+      <Grid className={ classes.flexContainer } container direction="column" justify="space-evenly" alignItems="center">
         <Grid container direction="row" justify="space-evenly" alignItems="center" >
           <Grid item style={{margin: '25px'}}>
             <GameList image={WhackAMole} gameName='WhackAMole' />

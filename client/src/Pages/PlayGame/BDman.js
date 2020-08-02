@@ -19,8 +19,6 @@ import { Grid } from '@material-ui/core';
 import avatar from '../../images/bald.png';
 import avatar2 from '../../images/gas-mask.png';
 
-
-
 let socket
 const styles = (theme) => ({
   Paper: {
@@ -33,9 +31,8 @@ const styles = (theme) => ({
     width: theme.spacing(25),
     // height: theme.spacing(20),
     padding: theme.spacing(4, 4, 2, 2),
-    backgroundColor: 'black',
-    border: '1px solid #fff',
-    
+    backgroundColor: 'transparent',
+    border: '2px solid #636363',
   },
   avatar: {
     width: theme.spacing(15), 
@@ -49,8 +46,12 @@ const styles = (theme) => ({
     // border: '1px solid #fff',
   },
   pos: {
-    color: '#fff'
+    color: '#fff',
   },
+  reloadText: {
+    color: '#fff',
+    marginRight: '40px'
+  }
 });
 
 class Game extends Component {
@@ -340,7 +341,7 @@ class Game extends Component {
     return (
       <Grid container direction='row' justify='space-evenly' alignItems='center'>
           <Grid item>
-            <Paper className={classes.root} style={{ marginRight: '20px' }}> 
+            <Paper className={classes.root} style={{ marginRight: '20px', marginLeft: '40px' }}> 
               <Grid container direction='column' justify='center' alignItems='center'>
                 <img src={avatar2} className={classes.avatar}></img>
                 <Typography className={classes.pos} variant='h5' component='h2'>
@@ -356,12 +357,13 @@ class Game extends Component {
             <Paper id="paper" style={{
               width: this.state.width,
               height: this.state.height,
-              boxShadow: '1px 1px 100px 0px #707070',
+              // boxShadow: '1px 1px 100px 0px #d6d6d6',
+              boxShadow: '-5px -5px 20px 0px #5c0200, 0px 0px 30px 0px #d6d6d6, 5px 5px 20px 0px #b5af00',
               }} className={classes.Paper}>
                 <canvas id="canvas" />
             </Paper>
           </Grid>
-          <Paper className={classes.magazine}>
+          <Paper className={classes.magazine} style={{ zIndex: 1 }}>
             {
               <Grid item>
                 { this.makeBullet() }
@@ -369,7 +371,7 @@ class Game extends Component {
             }
           </Paper>
           <Grid item>
-            <Paper className={classes.root}>
+            <Paper className={classes.root} style={{ marginRight: '40px', zIndex: 1 }}>
               <Grid container direction='column' justify='center' alignItems='center'>
                   <img src={avatar} className={classes.avatar}></img>
                   <Typography className={classes.pos} variant='h5' component='h2'>
@@ -380,7 +382,7 @@ class Game extends Component {
                   </Typography>
               </Grid>
             </Paper>
-              <Typography className={classes.pos} variant='h5' component='h2'>
+              <Typography className={classes.reloadText} variant='h5' component='h2'>
                 { this.state.isReload
                   ? '재장전중'
                   : this.state.bullet === 0 

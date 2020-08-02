@@ -6,25 +6,42 @@ import Gameover from '../../Components/PlayGame/Gameover';
 import MoleScoreCard from '../../Components/PlayGame/MoleScoreCard';
 
 import Paper from '@material-ui/core/Paper';
+import { Grid, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { Block } from './Block';
-import { Ball } from './Ball';
 import { isDeleteExpression } from 'typescript';
 
 import { Mole } from './mole';
 import hemmer from '../../images/hemmer.png';
 import clicked from '../../images/clicked.png';
 
-// png파일을 gif처럼 만들기위한 배열
-let gif = [];
+import avatar from '../../images/bald.png'
+import avatar2 from '../../images/gas-mask.png'
 
 const styles = (theme) => ({
   Paper: {
-    backgroundColor: theme.palette.background.paper,
-    border: '1px solid #000',
-    boxShadow: theme.shadows[5],
+    border: '20px solid #06cdd4',
+    borderRadius: '40px',
+    // boxShadow: theme.shadows[20],
+    backgroundColor: 'white',
     margin: theme.spacing(3, 3),
+    background: '#00babd'
   },
+  root: {
+    width: theme.spacing(25),
+    // height: theme.spacing(20),
+    padding: theme.spacing(4),
+    backgroundColor: 'white',
+    borderRadius: '30px',
+  },
+  avatar: {
+    width: theme.spacing(15), 
+    height: theme.spacing(13), 
+    marginLeft: '10px'
+  },
+  pos: {
+    color: '#000'
+  },
+
 });
 
 let blockX;
@@ -40,8 +57,8 @@ class MoleGame extends Component {
       myScore: 0,
       opponentScore: 0,
       opponentUsername: '',
-      width: document.body.clientWidth / 1.5,
-      height: document.body.clientHeight / 1.5,
+      width: (document.body.clientWidth / 4),
+      height: (document.body.clientWidth / 4),
       currentMole: 0,
     };
     this.canvas = null;
@@ -63,7 +80,7 @@ class MoleGame extends Component {
 
     for (let i = 0; i < 16; i++) {
       moles.push(
-        new Mole(document.body.clientWidth / 1.5, document.body.clientHeight / 1.5, 15, i)
+        new Mole(this.state.width, this.state.height, 15, i)
       );
     }
   }
@@ -74,12 +91,6 @@ class MoleGame extends Component {
     this.hemmer = document.getElementById('hemmer');
     this.clickedCursor = document.getElementById('clicked');
 
-    // 분리된 gif의 png를 배열에 추가
-    var req = require.context('../../images/gif', false, /.*\.png$/);
-    req.keys().forEach(function (key) {
-      gif.push(req(key));
-    });
-
     // 화면크기 재설정 이벤트
     // window.addEventListener('resize', this.resize.bind(this), false);
     this.resize();
@@ -89,6 +100,9 @@ class MoleGame extends Component {
       'mousedown',
       (e) => {
         this.mousePressed(e.layerX, e.layerY);
+        for(let i=0; i<16; i++){
+          this.randomMole(i)
+        }
         this.cursorClick = true;
       },
       false
@@ -156,6 +170,7 @@ class MoleGame extends Component {
   }
 
   componentWillUnmount() {
+    moles = [];
     this.socket.disconnect();
   }
 
@@ -189,13 +204,6 @@ class MoleGame extends Component {
       moles[i].draw(this.ctx, this.canvas.width, this.canvas.height, this.gifCount);
     }
 
-    // gif 움직임 생성
-    this.gifCount += 1;
-    if (this.gifCount === 47) this.gifCount = 0;
-    let imgtest = new Image();
-    imgtest.src = gif[this.gifCount];
-    this.ctx.drawImage(imgtest, 10, this.canvas.height - 50, 70, 50);
-
     // 마우스가 canvas에 들어온 경우 망치이미지 생성
     if (this.cursorEnter) {
       if (this.cursorClick) {
@@ -211,8 +219,8 @@ class MoleGame extends Component {
     this.stageWidth = document.body.clientWidth;
     this.stageHeight = document.body.clientHeight;
 
-    this.canvas.width = this.stageWidth / 1.5;
-    this.canvas.height = this.stageHeight / 1.5;
+    this.canvas.width = Math.floor(this.stageWidth / 4);
+    this.canvas.height = Math.floor(this.stageWidth / 4);
 
     this.setState({ width: this.canvas.width, height: this.canvas.height });
   }
@@ -221,26 +229,52 @@ class MoleGame extends Component {
     const { classes } = this.props;
 
     return (
-      <div>
+      <Grid container direction='row' justify='space-evenly' alignItems='center'>
         {this.state.winner !== '' ? <Gameover winner={this.state.winner} /> : null}
-        <Paper
-          id='paper'
-          style={{
+
+        <Grid item>
+          <Paper className={classes.root} style={{ marginLeft: '40px' }}> 
+            <Grid container direction='column' justify='center' alignItems='center'>
+              <img src={avatar2} className={classes.avatar}></img>
+              <Typography className={classes.pos} variant='h5' component='h2'>
+                {'Rival'}
+              </Typography>
+              <Typography className={classes.pos} color='textSecondary' variant='h1' component='h1'>
+                {this.state.opponentScore}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
+
+        <Paper id='paper' style={{
             width: this.state.width,
             height: this.state.height,
             cursor: 'none',
-          }}
-          className={classes.Paper}
-        >
+          }} className={classes.Paper} >
           <canvas id='canvas' />
           <img id='hemmer' src={hemmer} style={{ width: '40px', display: 'none' }} />
           <img id='clicked' src={clicked} style={{ width: '40px', display: 'none' }} />
         </Paper>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+
+        <Grid item>
+          <Paper className={classes.root} style={{ marginRight: '40px' }}> 
+            <Grid container direction='column' justify='center' alignItems='center'>
+              <img src={avatar} className={classes.avatar}></img>
+              <Typography className={classes.pos} variant='h5' component='h2'>
+                {'you'}
+              </Typography>
+              <Typography className={classes.pos} color='textSecondary' variant='h1' component='h1'>
+                {this.state.myScore}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
+
+        {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
           <MoleScoreCard score={this.state.myScore} player={cookie.load('username')} />
           <MoleScoreCard score={this.state.opponentScore} player={this.state.opponentUsername} />
-        </div>
-      </div>
+        </div> */}
+      </Grid>
     );
   }
 }
