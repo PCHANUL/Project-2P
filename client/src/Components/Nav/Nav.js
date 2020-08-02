@@ -38,7 +38,7 @@ const logout = async() => {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    // position: "fixed",
+    position: "fixed",
     width: "100%",
   },
   menuButton: {

@@ -19,14 +19,11 @@ import { setRawCookie } from 'react-cookies';
 import cookie from 'react-cookies'
 
 const useStyles = makeStyles((theme) => ({
-  Paper: {
-    backgroundColor: theme.palette.background.paper,
-    border: '1px solid #000',
-    boxShadow: theme.shadows[5],
-    // padding: theme.spacing(2, 4, 3),
-    width: 1000,
-    height: 700,
-    margin: theme.spacing(3, 3),
+  paper: {
+    backgroundColor: 'transparent',
+    
+    width: theme.shadows[20],
+    height: theme.shadows[20],
   },
   gameover: {
     backgroundColor: theme.palette.background.paper,
@@ -51,10 +48,10 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 3),
   },
   space: {
+    height: '100vh',
     display: 'flex',
     // alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#000',
   },
   user1: {
     height: 200,
@@ -86,16 +83,34 @@ const PlayGame = ({ currentGame }) => {
     setOpen(false);
   };
 
-  const screen = () => {
-    let games = [<MoleGame />, <BDman />, <PongGame />];
-    return games[cookie.load('selectedGame') - 1]
-  }
+  let games = [
+    {},{
+      tag: <MoleGame />,
+      color: '#00babd',
+      pos: '170px',
+      shadow: '1px 1px 100px 0px #00535c',
+    }, {
+      tag: <BDman />,
+      color: '#000',
+      pos: '90px',
+      // shadow: '-40px 0px 100px 0px #5c0200, 30px 0px 100px 0px #5e5d00',
+      shadow: '1px 1px 200px 0px #737373',
+    }, {
+      tag: <PongGame />,
+      color: '#001',
+      pos: '90px',
+      shadow: '1px 1px 100px 0px #00535c',
+    }
+  ];
 
   return (
-    <div className={classes.space}>
-      <Paper style={{ height: '1000px', backgroundColor: '#000' }}>
+    <div className={classes.space} style={{ backgroundColor: games[cookie.load('selectedGame')]['color'] }}>
+      <Paper className={classes.paper} style={{ 
+        paddingTop: games[cookie.load('selectedGame')]['pos'],
+        boxShadow: games[cookie.load('selectedGame')]['shadow'],
+      }}>
         {
-          screen()
+          games[cookie.load('selectedGame')]['tag']
         }
       </Paper> 
     </div>
