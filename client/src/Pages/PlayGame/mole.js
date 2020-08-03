@@ -74,25 +74,25 @@ export class Mole {
       // 두더지가 나온경우
       if (this.gifcount !== 7) this.gifcount += 1; // gif움직임 생성(png를 한장씩 그립니다)
       this.mole.src = molegif[this.gifcount];
-      ctx.drawImage(this.mole, this.x - 25, this.y - 25, stageWidth / 5, stageHeight / 5);
+      ctx.drawImage(this.mole, this.x, this.y, stageWidth / 5, stageHeight / 5);
     } else {
-      ctx.drawImage(this.molehole, this.x - 25, this.y - 25, stageWidth / 5, stageHeight / 5);
+      ctx.drawImage(this.molehole, this.x, this.y, stageWidth / 5, stageHeight / 5);
     }
   }
 
   position(stageWidth, stageHeight, index) {
     if (index < 4) {
-      this.x = stageWidth / 1.25 - (stageWidth / 4.5) * index;
-      this.y = stageHeight / 7;
+      this.x = stageWidth / 1.35 - (stageWidth / 4.5) * index;
+      this.y = stageHeight / 11;
     } else if (index < 8) {
-      this.x = stageWidth / 1.25 - (stageWidth / 4.5) * (index - 4);
-      this.y = stageHeight / 7 + stageHeight / 5;
+      this.x = stageWidth / 1.35 - (stageWidth / 4.5) * (index - 4);
+      this.y = stageHeight / 11 + stageHeight / 5;
     } else if (index < 12) {
-      this.x = stageWidth / 1.25 - (stageWidth / 4.5) * (index - 8);
-      this.y = stageHeight / 7 + (stageHeight / 5) * 2;
+      this.x = stageWidth / 1.35 - (stageWidth / 4.5) * (index - 8);
+      this.y = stageHeight / 11 + (stageHeight / 5) * 2;
     } else if (index < 16) {
-      this.x = stageWidth / 1.25 - (stageWidth / 4.5) * (index - 12);
-      this.y = stageHeight / 7 + (stageHeight / 5) * 3;
+      this.x = stageWidth / 1.35 - (stageWidth / 4.5) * (index - 12);
+      this.y = stageHeight / 11 + (stageHeight / 5) * 3;
     }
   }
 }

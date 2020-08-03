@@ -132,8 +132,8 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
         >
           <Tab label='게임 설명' />
           <Tab label='두더지 게임' />
-          <Tab label='핑퐁 게임' />
-          <Tab label='추가 게임' />
+          <Tab label='구슬 동자' />
+          <Tab label='숫자 야구' />
         </Tabs>
       </Paper>
       {
