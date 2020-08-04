@@ -17,7 +17,7 @@ import Grid from '@material-ui/core/Grid';
 import * as actionTypes from '../../store/actions';
 import RoomList from '../../Components/SelectRoom/RoomList';
 
-const axios = require('axios')
+const axios = require('axios');
 
 const useStyles = makeStyles((theme) => ({
   absolute: {
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     padding: theme.spacing(8, 0, 0, 0),
-  }
+  },
 }));
 
 function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
@@ -55,23 +55,17 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
     if (!cookie.load('username')) {
       history.push('/');
     } else if (!cookie.load('selectedGame')) {
-      history.push('/selectgame')
-    } else if (cookie.load('selectedRoom')){
-      history.push('/waitingroom')
+      history.push('/selectgame');
+    } else if (cookie.load('selectedRoom')) {
+      history.push('/waitingroom');
     }
-    
-    selectedGame(Number(cookie.load('selectedGame')))
-    getRoomList(roomList);
-
-    // 새로운 방이 생성되기 전까지 실행
-    if(rooms[0] === undefined){  
-      setTimeout(getRooms.bind(), 1000)
-    }
-  });
+    getRooms(getRoomList);
+    selectedGame(Number(cookie.load('selectedGame')));
+  }, [currentGame]);
 
   const handleChange = (event, newValue) => {
     selectedGame(newValue);
-    cookie.save('selectedGame', newValue, { path: '/' })
+    cookie.save('selectedGame', newValue, { path: '/' });
   };
 
   const emptyRoomList = (
@@ -117,7 +111,7 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
         </Grid>
       </Paper>
     </Grid>
-  )
+  );
 
   return (
     <div>
@@ -136,48 +130,48 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
           <Tab label='숫자 야구' />
         </Tabs>
       </Paper>
-      {
-        cookie.load('selectedGame') === '0'
-        ? <div>게임설명</div>
-        : rooms[0] === undefined  // 생성된 방이 없다
-          ? emptyRoomList
-          : <div>
-              <div className={classes.section1}>
-                {rooms.map((room, idx) => (
-                  <RoomList
-                    key={idx}
-                    roomName={room.roomName}
-                    isWait={room.isWait}
-                    isLocked={room.isLocked}
-                    isFull={room.isFull}
-                    login={login}
-                  />
-                ))}
-              </div>
-              <Tooltip
-                title='방만들기'
-                aria-label='add'
-                onClick={() => {
-                  makeRooms();
-                }}
-              >
-                <Fab color='secondary' className={classes.absolute}>
-                  <AddIcon />
-                </Fab>
-              </Tooltip>
-              <Tooltip
-                title='새로고침'
-                aria-label='add'
-                onClick={() => {
-                  getRooms();
-                }}
-              >
-                <Fab color='primary' className={classes.refresh}>
-                  <RefreshIcon />
-                </Fab>
-              </Tooltip>
-            </div>
-      }
+      {cookie.load('selectedGame') === '0' ? (
+        <div>게임설명</div>
+      ) : rooms[0] === undefined ? ( // 생성된 방이 없다
+        emptyRoomList
+      ) : (
+        <div>
+          <div className={classes.section1}>
+            {rooms.map((room, idx) => (
+              <RoomList
+                key={idx}
+                roomName={room.roomName}
+                isWait={room.isWait}
+                isLocked={room.isLocked}
+                isFull={room.isFull}
+                login={login}
+              />
+            ))}
+          </div>
+          <Tooltip
+            title='방만들기'
+            aria-label='add'
+            onClick={() => {
+              makeRooms();
+            }}
+          >
+            <Fab color='secondary' className={classes.absolute}>
+              <AddIcon />
+            </Fab>
+          </Tooltip>
+          <Tooltip
+            title='새로고침'
+            aria-label='add'
+            onClick={() => {
+              getRooms();
+            }}
+          >
+            <Fab color='primary' className={classes.refresh}>
+              <RefreshIcon />
+            </Fab>
+          </Tooltip>
+        </div>
+      )}
     </div>
   );
 }
@@ -192,18 +186,19 @@ const mapReduxStateToReactProps = (state) => {
 
 const mapReduxDispatchToReactProps = (dispatch) => {
   return {
-    getRooms: async function () {
+    getRooms: async function (cb) {
       try {
-        if(cookie.load('selectedGame') !== '0'){
+        if (cookie.load('selectedGame') !== '0') {
           const response = await axios({
             method: 'get',
             url: 'http://localhost:3001/rooms/roomlist',
             withCredentials: true,
-          })
+          });
+          cb(response.data);
           dispatch({ type: 'GET_ROOMS', payload: response.data });
         }
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
     },
     makeRooms: function () {
