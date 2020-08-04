@@ -74,9 +74,17 @@ class NumsGame extends Component {
       height: (document.body.clientWidth / 2),
       currentMole: 0,
       clickedNums: 0,
+      count: 60,
 
       resultPad: [],
       rounds: [],
+
+      RivalNums: [],
+      myNums: [],
+
+      board: true,
+      myTurn : true,
+      wrongInput: false,
     };
     this.canvas = null;
     this.ctx = null;
@@ -91,8 +99,8 @@ class NumsGame extends Component {
     this.cursorEnter = false;
     this.cursorClick = false;
 
-    this.gifCount = 0;
-    this.check = false;
+    this.out = false;
+    this.result = false;
 
     this.numPad = [];
     
@@ -100,7 +108,7 @@ class NumsGame extends Component {
     // socket connection endpoint
     this.socket = io('http://localhost:3002');
 
-    for (let i = 0; i < 13; i++) {
+    for (let i = 0; i < 14; i++) {
       this.numPad.push(
         new KeyPad(this.state.width, this.state.height, this.state.width/10, i)
       );
@@ -131,8 +139,9 @@ class NumsGame extends Component {
     this.canvas.addEventListener(
       'mousedown',
       (e) => {
-        this.mousePressed(e.layerX, e.layerY);
-        this.cursorClick = true;
+        if(this.state.myTurn){
+          this.mousePressed(e.layerX, e.layerY);
+        }
       },
       false
     );
@@ -140,7 +149,6 @@ class NumsGame extends Component {
     this.canvas.addEventListener(
       'mouseup',
       (e) => {
-        this.cursorClick = false;
       },
       false
     );
@@ -158,7 +166,33 @@ class NumsGame extends Component {
 
     // 키입력 이벤트
     document.addEventListener('keydown', (e) => {
-      this.check = !this.check
+      if(e.keyCode === 81){
+        this.out = !this.out
+      }
+      if(e.keyCode === 87){
+        this.result = !this.result
+      }
+      if(e.keyCode === 84){
+        let a = !this.state.myTurn
+        this.turnChange(a)
+      }
+
+      // 처리된 데이터를 받는다.
+      if(e.keyCode === 65){   // Rival data
+        this.setState({ board: false })
+        let input = { number: 1234, result: '1S 3B'}
+        this.setState({ RivalNums: [...this.state.RivalNums, input]})
+        this.out = true;
+        this.inputResult()
+      }
+      if(e.keyCode === 83){   // My data
+        this.setState({ board: false })
+        let input = { number: 1234, result: '1S 3B'}
+        this.setState({ myNums: [...this.state.myNums, input]})
+        this.result = true;
+        this.inputResult()
+      }
+      
     });
 
     // socket connection
@@ -211,39 +245,57 @@ class NumsGame extends Component {
     this.socket.disconnect();
   }
 
+  eraseAll() {
+    this.state.resultPad.map((item) => {
+      this.numPad[item].removed()
+    })
+    this.setState({ resultPad: [] })
+  }
+
   mousePressed(mouseX, mouseY) {
     for (let i = 0; i < this.numPad.length; i++) {
       // 키 패드 클릭
       let clickedMole = this.numPad[i].clicked(mouseX, mouseY, i, (this.state.resultPad.length === 4));
       
       if (clickedMole || clickedMole === 0) {
-        
-        console.log(clickedMole)
-        // 하나의 입력된 숫자를 제거
-        if (clickedMole === 10) {
-          let del = [...this.state.resultPad]
-          let deleted = del.pop()
-          this.numPad[deleted.index].removed();
-          this.setState({ resultPad: [...del] })
-        } 
-        // 모든 입력된 숫자를 제거
-        else if (clickedMole === 11) {
-          this.state.resultPad.map((item) => {
-            this.numPad[item.index].removed()
-          })
-          this.setState({ resultPad: [] })
-        }
-        // 입력된 값들을 서버로 전송
-        else if (clickedMole === 12) {
-          let result = ''
-          this.state.resultPad.map((item) => {
-            result = result + String(item.clickedNum)
-          })
-          console.log(result)
-        }
-        // 입력된 숫자를 화면에 출력
-        else if (this.state.resultPad.length !== 4){
-          this.setState({ resultPad: [ ...this.state.resultPad, {clickedNum: clickedMole, index: i}]})
+        if(this.state.resultPad.includes(clickedMole) === false) {
+          // 하나의 입력된 숫자를 제거
+          if (clickedMole === 11) {
+            let del = [...this.state.resultPad]
+            let deleted = del.pop()
+            if(deleted){
+              this.numPad[deleted].removed();
+              this.setState({ resultPad: [...del] })
+            }
+          } 
+          // 모든 입력된 숫자를 제거
+          else if (clickedMole === 12) {
+            this.eraseAll()
+          }
+          // 입력된 값들을 서버로 전송
+          else if (clickedMole === 13) {
+            if(this.state.resultPad.length === 4){  
+              let result = ''
+              this.state.resultPad.map((item) => {
+                result = result + String(item)
+              })
+              // 서버로 전송
+              console.log(result)
+
+              // 입력된 버튼 초기화
+              this.eraseAll()
+              // 현황판을 끈다
+              this.setState({ board: false })
+            } else {
+              this.setState({ wrongInput: true })
+              setTimeout(() => this.setState({ wrongInput: false }), 2000)
+            }
+          }
+
+          // 입력된 숫자를 화면에 출력
+          else if (this.state.resultPad.length !== 4){
+            this.setState({ resultPad: [ ...this.state.resultPad, clickedMole]})
+          }
         }
 
 
@@ -277,7 +329,46 @@ class NumsGame extends Component {
     return { number, strike, ball, out };
   }
 
+  inputResult() {
+    if (this.result) {
+      let text = this.state.myNums[this.state.myNums.length - 1].result
+      this.ctx.fillText(`${text}`, this.state.width / 4.5, this.state.height / 3)
+      setTimeout(() => {
+        this.setState({ board: true });
+        this.result = false;
+      }, 2000)
+    }
+    if (this.out) {
+      let text = this.state.RivalNums[this.state.RivalNums.length - 1].result
+      this.ctx.fillText(`${text}`, this.state.width / 4.5, this.state.height / 3)
+      setTimeout(() => {
+        this.setState({ board: true });
+        this.out = false;
+      }, 2000)
+    }
+
+  }
   
+  // 일정 시간 후에 현황판 출력
+  printBoard() {
+    // 유저가 입력한 게임결과 출력
+    this.state.myNums.map((item, index) => {
+      this.ctx.font = `700 ${this.radius * 0.9}px san serif`;
+      this.ctx.fillText(`${ item.number }`, this.state.width / 1.8, this.state.height / 8 + (this.state.height/13 * index));
+      
+      this.ctx.font = `300 ${this.radius * 0.6}px san serif`;
+      this.ctx.fillText(`${ item.result }`, this.state.width / 1.4, this.state.height / 8 + (this.state.height/13 * index));
+    })
+
+    // 상대방이 입력한 게임결과 출력
+    this.state.RivalNums.map((item, index) => {
+      this.ctx.font = `700 ${this.radius * 0.9}px san serif`;
+      this.ctx.fillText(`${ item.number }`, this.state.width / 7, this.state.height / 8 + (this.state.height/13 * index))
+      
+      this.ctx.font = `300 ${this.radius * 0.6}px san serif`;
+      this.ctx.fillText(`${ item.result }`, this.state.width / 3.3, this.state.height / 8 + (this.state.height/13 * index))
+    })
+  }
 
 
   // 화면그리기
@@ -299,25 +390,19 @@ class NumsGame extends Component {
     this.ctx.shadowBlur = 0;
 
     this.ctx.fillStyle = '#000';
-    this.ctx.font = `900 ${this.radius * 4}px san serif`;
+    this.ctx.font = `900 ${this.radius * 3}px san serif`;
+
 
     // 채점결과출력
-    if (this.check) {
-      // this.ctx.fillText('OUT', this.state.width / 6.5, this.state.height / 3)
-      this.ctx.fillText('B2S1', this.state.width / 6.5, this.state.height / 3)
-    } 
-    // 현황판 출력
-    else {
-      
+    this.inputResult()
+    
+    if(this.state.board){
+      this.printBoard()
     }
 
 
-    // this.ctx.shadowColor = '#f50000';
-    // this.ctx.shadowColor = '#ffee00';
-    // this.ctx.shadowColor = '#00e026';
-    // this.ctx.shadowBlur = 10;
 
-    // 입력되는 숫자 표시
+    // 클릭된 숫자 출력
     this.state.resultPad.map(( num, index ) => {
       let x = this.state.width / 6.5 + (this.state.width / 7) * (index)
       let y = this.state.height / 1.8;
@@ -331,7 +416,7 @@ class NumsGame extends Component {
       // 텍스트
       this.ctx.fillStyle = '#000';
       this.ctx.font = `${this.radius * 1.5}px serif`;
-      this.ctx.fillText(`${num.clickedNum}`, x - this.radius/2.7, y + this.radius/2.7)
+      this.ctx.fillText(`${num}`, x - this.radius/2.7, y + this.radius/2.7)
     })
    
 
@@ -387,6 +472,25 @@ class NumsGame extends Component {
     this.setState({ width: this.canvas.width, height: this.canvas.height });
   }
 
+  turnChange(isMyturn) {
+    this.setState({ myTurn: isMyturn})
+    this.countdown()
+  }
+
+  countdown() {
+    // 이전 카운트다운을 취소, 초기화
+    clearInterval(this.timer)
+    this.setState({ count: 60 })
+
+    // 카운트다운 시작
+    this.timer = setInterval(() => {
+      this.setState({ count: this.state.count - 1})
+      if(this.state.count === 0){
+        clearInterval(this.timer)
+      }
+    }, 1000);
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -398,10 +502,14 @@ class NumsGame extends Component {
           <Paper className={classes.root} style={{ 
             marginLeft: '40px', 
             width:`${document.body.clientWidth/9}px`, 
-            boxShadow: '0px 0px 20px 0px #85f3ff',
+            boxShadow: `0px 0px 20px 0px ${this.state.myTurn ? '#d6d6d6' : '#0067c2'}`,
           }}> 
             <Typography className={classes.pos} variant='h2' component='h2'>
-              {'60'}
+              {
+                this.state.myTurn
+                ? '대기'
+                : this.state.count
+              }
             </Typography>
             <Grid container direction='column' justify='center' alignItems='center'>
               <img src={avatar2} className={classes.avatar}></img>
@@ -426,11 +534,22 @@ class NumsGame extends Component {
           <Paper className={classes.root} style={{ 
             marginRight: '40px', 
             width:`${document.body.clientWidth/9}px`, 
-            boxShadow: '0px 0px 20px 0px #d6d6d6',
+            boxShadow: `0px 0px 20px 0px ${
+              this.state.wrongInput
+              ? '#ff5c5c'
+              : this.state.myTurn ? '#0067c2' : '#d6d6d6'
+            }`,
           }}> 
-            <Typography className={classes.pos} variant='h2' component='h2'>
-              {'대기'}
-            </Typography>
+            
+              {
+                this.state.wrongInput
+                ? <Typography className={classes.pos} variant='h6'>
+                    4자리를<br />입력하세요
+                  </Typography>
+                : <Typography className={classes.pos} variant='h2' component='h2'>
+                    {this.state.myTurn ? this.state.count : '대기'}
+                  </Typography>
+              }
             <Grid container direction='column' justify='center' alignItems='center'>
               <img src={avatar} className={classes.avatar}></img>
               <Typography className={classes.pos} variant='h5' component='h2'>
