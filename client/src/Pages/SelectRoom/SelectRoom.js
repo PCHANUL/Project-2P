@@ -101,7 +101,7 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
             title='새로고침'
             aria-label='add'
             onClick={() => {
-              getRooms();
+              getRooms(getRoomList);
             }}
           >
             <Fab color='primary'>
@@ -143,8 +143,10 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
                 roomName={room.roomName}
                 isWait={room.isWait}
                 isLocked={room.isLocked}
-                isFull={room.isFull}
+                isFull={room.userNum}
                 login={login}
+                roomId={room.roomId}
+                gameCode={room.gameCode}
               />
             ))}
           </div>
@@ -163,7 +165,7 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
             title='새로고침'
             aria-label='add'
             onClick={() => {
-              getRooms();
+              getRooms(getRoomList);
             }}
           >
             <Fab color='primary' className={classes.refresh}>
