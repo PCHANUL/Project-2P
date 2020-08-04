@@ -10,7 +10,7 @@ let isImported = false;
 
 export class KeyPad {
   constructor(stageWidth, stageHeight, radius, index) {
-    this.radius = stageWidth / 12;
+    this.radius = stageWidth / 15;
     this.diameter = this.radius;
     this.position(stageWidth, stageHeight, index);
     this.index = index
@@ -54,18 +54,27 @@ export class KeyPad {
     this.enterImg.src = enter;
   }
 
-  clicked(mouseX, mouseY, index, ctx) {
+  clicked(mouseX, mouseY, index, limit) {
+    console.log(limit)
     let objToMouseX = Math.pow(this.x - mouseX, 2);
     let objToMouseY = Math.pow(this.y - mouseY, 2);
     let objToMouseResult = Math.sqrt(objToMouseX + objToMouseY); // 거리측정
     if (objToMouseResult < this.diameter) {
-      if (this.isClicked) {
-        this.isClicked = false;
-      } else {
+      if (index < 9 && !limit) {
         this.isClicked = true;
         return index + 1;
+      } else if (index === 9) {
+        this.isClicked = true;
+        return index - 9;
+      } else if (index > 9) {
+        this.isClicked = true;
+        return index;
       }
     }
+  }
+
+  removed(){
+    this.isClicked = false;
   }
 
   showMole() {
@@ -152,17 +161,17 @@ export class KeyPad {
   position(stageWidth, stageHeight, index) {
     console.log(index)
     if (index < 4) {
-      this.x = stageWidth / 5 + (stageWidth / 5) * (index);
-      this.y = stageHeight / 1.9;
+      this.x = stageWidth / 4.9 + (stageWidth / 5) * (index);
+      this.y = stageHeight / 1.8;
     } else if (index < 8) {
-      this.x = stageWidth / 5 + (stageWidth / 5) * (index - 4);
-      this.y = stageHeight / 1.9 + stageHeight / 9;
+      this.x = stageWidth / 4.9 + (stageWidth / 5) * (index - 4);
+      this.y = stageHeight / 1.8 + stageHeight / 10;
     } else if (index < 12) {
-      this.x = stageWidth / 5 + (stageWidth / 5) * (index - 8);
-      this.y = stageHeight / 1.9 + (stageHeight / 9) * 2;
+      this.x = stageWidth / 4.9 + (stageWidth / 5) * (index - 8);
+      this.y = stageHeight / 1.8 + (stageHeight / 10) * 2;
     } else if (index === 12) {
-      this.x = stageWidth / 5 + (stageWidth / 5) * (index - 9);
-      this.y = stageHeight / 1.9 - stageHeight / 9;
+      this.x = stageWidth / 4.9 + (stageWidth / 5) * (index - 9);
+      this.y = stageHeight / 1.8 - stageHeight / 10;
     }
   }
 }

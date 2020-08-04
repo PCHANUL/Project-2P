@@ -61,11 +61,6 @@ const styles = (theme) => ({
 
 });
 
-let blockX;
-let dx = 10;
-let preKey;
-let numPad = [];
-let resultPad = [];
 
 class NumsGame extends Component {
   constructor(props) {
@@ -80,7 +75,8 @@ class NumsGame extends Component {
       currentMole: 0,
       clickedNums: 0,
 
-      rounds: []
+      resultPad: [],
+      rounds: [],
     };
     this.canvas = null;
     this.ctx = null;
@@ -98,11 +94,14 @@ class NumsGame extends Component {
     this.gifCount = 0;
     this.check = false;
 
+    this.numPad = [];
+    
+
     // socket connection endpoint
     this.socket = io('http://localhost:3002');
 
     for (let i = 0; i < 13; i++) {
-      numPad.push(
+      this.numPad.push(
         new KeyPad(this.state.width, this.state.height, this.state.width/10, i)
       );
     }
@@ -125,10 +124,10 @@ class NumsGame extends Component {
     this.setState({ rounds: rows })
 
     // 화면크기 재설정 이벤트
-    // window.addEventListener('resize', this.resize.bind(this), false);
     this.resize();
     window.requestAnimationFrame(this.animate.bind(this));
 
+    // 마우스 클릭이벤트
     this.canvas.addEventListener(
       'mousedown',
       (e) => {
@@ -146,6 +145,7 @@ class NumsGame extends Component {
       false
     );
 
+    // 마우스 움직임
     this.canvas.addEventListener('mousemove', (e) => {
       this.cursorEnter = true;
       this.cursorX = e.layerX;
@@ -156,8 +156,8 @@ class NumsGame extends Component {
       this.cursorEnter = false;
     });
 
+    // 키입력 이벤트
     document.addEventListener('keydown', (e) => {
-      console.log('awefawef', e)
       this.check = !this.check
     });
 
@@ -177,7 +177,7 @@ class NumsGame extends Component {
        *    }
        * }
        */
-      numPad[data.index].hideMole();
+      this.numPad[data.index].hideMole();
       const [player1, player2] = Object.keys(data.score);
       if (player1 === cookie.load('username')) {
         this.setState({ myScore: data.score[player1], opponentScore: data.score[player2] });
@@ -185,10 +185,12 @@ class NumsGame extends Component {
         this.setState({ myScore: data.score[player2], opponentScore: data.score[player1] });
       }
     });
+
     this.socket.on('gameover', (data) => {
       // data = username
       this.setState({ winner: data });
     });
+    
     this.socket.on('init', ([usernames, currentMole, score]) => {
       const opponentUsername = usernames.filter((username) => cookie.load('username') !== username);
       const players = Object.keys(score);
@@ -205,17 +207,47 @@ class NumsGame extends Component {
   }
 
   componentWillUnmount() {
-    numPad = [];
+    this.numPad = [];
     this.socket.disconnect();
   }
 
   mousePressed(mouseX, mouseY) {
-    for (let i = 0; i < numPad.length; i++) {
+    for (let i = 0; i < this.numPad.length; i++) {
       // 키 패드 클릭
-      let clickedMole = numPad[i].clicked(mouseX, mouseY, i, this.ctx);
-      console.log(clickedMole)
+      let clickedMole = this.numPad[i].clicked(mouseX, mouseY, i, (this.state.resultPad.length === 4));
+      
+      if (clickedMole || clickedMole === 0) {
+        
+        console.log(clickedMole)
+        // 하나의 입력된 숫자를 제거
+        if (clickedMole === 10) {
+          let del = [...this.state.resultPad]
+          let deleted = del.pop()
+          this.numPad[deleted.index].removed();
+          this.setState({ resultPad: [...del] })
+        } 
+        // 모든 입력된 숫자를 제거
+        else if (clickedMole === 11) {
+          this.state.resultPad.map((item) => {
+            this.numPad[item.index].removed()
+          })
+          this.setState({ resultPad: [] })
+        }
+        // 입력된 값들을 서버로 전송
+        else if (clickedMole === 12) {
+          let result = ''
+          this.state.resultPad.map((item) => {
+            result = result + String(item.clickedNum)
+          })
+          console.log(result)
+        }
+        // 입력된 숫자를 화면에 출력
+        else if (this.state.resultPad.length !== 4){
+          this.setState({ resultPad: [ ...this.state.resultPad, {clickedNum: clickedMole, index: i}]})
+        }
 
-      if (clickedMole) {
+
+        // socket data
         const data = {
           gameRoomId: 'someRoomId',
           currentMole: this.state.currentMole,
@@ -253,95 +285,42 @@ class NumsGame extends Component {
     window.requestAnimationFrame(this.animate.bind(this));
     this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
 
-    // numPad의 모든 요소를 각자의 위치에 생성
-    for (let i = 0; i < numPad.length; i++) {
-      numPad[i].draw(this.ctx, this.canvas.width, this.canvas.height, i);
+    // this.numPad의 모든 요소를 각자의 위치에 생성
+    for (let i = 0; i < this.numPad.length; i++) {
+      this.numPad[i].draw(this.ctx, this.canvas.width, this.canvas.height, i);
     }
 
     this.ctx.fillStyle = '#fff'
     this.ctx.lineWidth = 1;
     this.ctx.shadowColor = '#c9c9c9';
     this.ctx.shadowBlur = 8;
-    this.ctx.fillRect(this.state.width / 3.8, this.state.height / 14, this.state.width / 1.6, this.state.height / 3)
+    this.ctx.fillRect(this.state.width / 12, this.state.height / 15, this.state.width / 1.2, this.state.height / 2.5)
     
     this.ctx.shadowBlur = 0;
 
     this.ctx.fillStyle = '#000';
-    this.ctx.font = `900 ${this.radius * 1.8}px san serif`;
-    this.ctx.fillText('O', this.state.width / 9, this.state.height / 6.5)
-    this.ctx.fillText('B', this.state.width / 9, this.state.height / 3.7)
-    this.ctx.fillText('S', this.state.width / 9 * 1.1, this.state.height / 2.6)
+    this.ctx.font = `900 ${this.radius * 4}px san serif`;
 
-
-    // let x = this.state.width / 5 + (this.state.width / 5) * (0)
-    // let y = this.state.height / 2;
-
-    // this.ctx.fillStyle = '#fff'
-    // this.ctx.beginPath();
-    // this.ctx.arc(x, y, this.radius, 0, 2 * Math.PI);
-    // this.ctx.lineWidth = 5;
-    // this.ctx.fill();
-
-    // this.ctx.shadowBlur = 0;
-    // // 텍스트
-    // this.ctx.fillStyle = '#000';
-    // this.ctx.font = `${this.radius}px serif`;
-    // this.ctx.fillText(`${9}`, x - this.radius/2.7, y + this.radius/2.7)
-
-
-
-    for(let j=0; j<1; j++){
-      // 위치
-      let x = this.state.width / 2.8 + (this.state.width / 7) * (j)
-      let y = this.state.height / 8;
-
-      this.ctx.fillStyle = '#f50000';
-      this.ctx.shadowColor = '#f50000';
-      this.ctx.shadowBlur = 10;
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, this.radius * 3/4, 0, 2 * Math.PI);
-      this.ctx.fill();
-
-      this.ctx.shadowBlur = 0;
-    }
-
-    for(let j=0; j<2; j++){
-      // 위치
-      let x = this.state.width / 2.8 + (this.state.width / 7) * (j)
-      let y = this.state.height / 8 + this.state.height / 9;
-
-      this.ctx.fillStyle = '#ffee00';
-      this.ctx.shadowColor = '#ffee00';
-      this.ctx.shadowBlur = 10;
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, this.radius * 3/4, 0, 2 * Math.PI);
-      this.ctx.fill();
-
-      this.ctx.shadowBlur = 0;
-    }
-
-    for(let j=0; j<1; j++){
-      // 위치
-      let x = this.state.width / 2.8 + (this.state.width / 7) * (j)
-      let y = this.state.height / 8 + this.state.height * 2 / 9 ;
-
-      this.ctx.fillStyle = '#00e026';
-      this.ctx.shadowColor = '#00e026';
-      this.ctx.shadowBlur = 10;
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, this.radius * 3/4, 0, 2 * Math.PI);
-      this.ctx.fill();
-
-      this.ctx.shadowBlur = 0;
+    // 채점결과출력
+    if (this.check) {
+      // this.ctx.fillText('OUT', this.state.width / 6.5, this.state.height / 3)
+      this.ctx.fillText('B2S1', this.state.width / 6.5, this.state.height / 3)
+    } 
+    // 현황판 출력
+    else {
+      
     }
 
 
+    // this.ctx.shadowColor = '#f50000';
+    // this.ctx.shadowColor = '#ffee00';
+    // this.ctx.shadowColor = '#00e026';
+    // this.ctx.shadowBlur = 10;
 
     // 입력되는 숫자 표시
-    for(let j=0; j<4; j++){
-      // 위치
-      let x = this.state.width / 6.5 + (this.state.width / 7) * (j)
-      let y = this.state.height / 2;
+    this.state.resultPad.map(( num, index ) => {
+      let x = this.state.width / 6.5 + (this.state.width / 7) * (index)
+      let y = this.state.height / 1.8;
 
       this.ctx.fillStyle = '#fff'
       this.ctx.beginPath();
@@ -352,8 +331,9 @@ class NumsGame extends Component {
       // 텍스트
       this.ctx.fillStyle = '#000';
       this.ctx.font = `${this.radius * 1.5}px serif`;
-      this.ctx.fillText(`${j}`, x - this.radius/2.7, y + this.radius/2.7)
-    }
+      this.ctx.fillText(`${num.clickedNum}`, x - this.radius/2.7, y + this.radius/2.7)
+    })
+   
 
 
     
@@ -417,8 +397,8 @@ class NumsGame extends Component {
         <Grid item>
           <Paper className={classes.root} style={{ 
             marginLeft: '40px', 
-            width:`${document.body.clientWidth/5}px`, 
-            boxShadow: '0px 0px 20px 0px #ffce52',
+            width:`${document.body.clientWidth/9}px`, 
+            boxShadow: '0px 0px 20px 0px #85f3ff',
           }}> 
             <Typography className={classes.pos} variant='h2' component='h2'>
               {'60'}
@@ -428,37 +408,6 @@ class NumsGame extends Component {
               <Typography className={classes.pos} variant='h5' component='h2'>
                 {'Rival'}
               </Typography>
-
-
-              <TableContainer component={Paper} style={{ overflowBlock: 'scroll' }}>
-                <Table className={classes.table} aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell >number</TableCell>
-                      <TableCell align="center">Strike</TableCell>
-                      <TableCell align="center">Ball</TableCell>
-                      <TableCell align="center">Out</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {
-                      this.state.rounds[0]
-                      ? this.state.rounds.map((round) => (
-                          <TableRow key={round.number} hover='true' >
-                            <TableCell component="th" scope="row">
-                              {round.number}
-                            </TableCell>
-                            <TableCell align="center">{round.strike}</TableCell>
-                            <TableCell align="center">{round.ball}</TableCell>
-                            <TableCell align="center">{round.out}</TableCell>
-                          </TableRow>))
-                      : null
-                    }
-                  </TableBody>
-                </Table>
-              </TableContainer>
-
-
             </Grid>
           </Paper>
         </Grid>
@@ -476,6 +425,7 @@ class NumsGame extends Component {
         <Grid item>
           <Paper className={classes.root} style={{ 
             marginRight: '40px', 
+            width:`${document.body.clientWidth/9}px`, 
             boxShadow: '0px 0px 20px 0px #d6d6d6',
           }}> 
             <Typography className={classes.pos} variant='h2' component='h2'>
@@ -486,37 +436,6 @@ class NumsGame extends Component {
               <Typography className={classes.pos} variant='h5' component='h2'>
                 {'you'}
               </Typography>
-
-
-              <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>number</TableCell>
-                      <TableCell align="center">Strike</TableCell>
-                      <TableCell align="center">Ball</TableCell>
-                      <TableCell align="center">Out</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {
-                      this.state.rounds[0]
-                      ? this.state.rounds.map((round) => (
-                          <TableRow key={round.number} hover='true'>
-                            <TableCell component="th" scope="row">
-                              {round.number}
-                            </TableCell>
-                            <TableCell align="center">{round.strike}</TableCell>
-                            <TableCell align="center">{round.ball}</TableCell>
-                            <TableCell align="center">{round.out}</TableCell>
-                          </TableRow>))
-                      : null
-                    }
-                  </TableBody>
-                </Table>
-              </TableContainer>
-
-
             </Grid>
           </Paper>
         </Grid>
