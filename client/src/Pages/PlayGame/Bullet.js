@@ -57,7 +57,6 @@ export class Bullet {
 
     if (this.x <= minX || this.x >= maxX) {
       this.vx *= -1;
-      this.x += this.vx;
     } else  if (this.y <= minY || this.y >= maxY) {
       return true
     } 
@@ -78,11 +77,9 @@ export class Bullet {
       const min2 = Math.min(y1, y2);
       const min = Math.min(min1, min2);
 
-      if (min === min1) {    // 좌우
+      if (min === min1 || min === min2) {    // 좌우
         return true
-      } else if (min === min2) {    //상하
-        return true
-      }
+      } 
     }
   }
 
@@ -101,11 +98,9 @@ export class Bullet {
       const min2 = Math.min(y1, y2);
       const min = Math.min(min1, min2);
 
-      if(min === min1) {  // 좌우
+      if(min === min1 || min === min2) {  
         return true
-      } else if (min === min2) {   // 상하
-        return true
-      }
+      } 
     }
   }
 }

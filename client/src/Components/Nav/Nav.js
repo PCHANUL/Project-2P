@@ -85,50 +85,67 @@ export default function Nav() {
   return (
     <div className={classes.root}>
       <AppBar position='static'>
-        <Toolbar>
-          <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' 
-            onClick={() => {
-              if(cookie.load('selectedGame') && cookie.load('selectedRoom')){
-                cookie.remove('selectedRoom', { path: '/' })
-              } else if(cookie.load('selectedGame')){
-                cookie.remove('selectedGame', { path: '/' })
-              }
-              history.goBack()
-            }}
-          >
-            <ArrowBack />
-          </IconButton>
-          <Typography variant='h6' className={classes.title}></Typography>
           {
-            cookie.load('username')
-            ? <div>
-                <Button color='inherit' onClick={handleOpen}>
-                  Mypage
-                </Button>
-                <Button
-                color='inherit'
+            cookie.load('isPlaying')
+            ? (   // 게임화면일때 
+            <Toolbar>
+              <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' 
                 onClick={() => {
-                  signout();
+                  cookie.remove('isPlaying', { path: '/' })
+                  history.push('/waitingroom')
                 }}
-                > Logout
-                </Button>
-              </div>
-            : <Button
-                color='inherit'
-                onClick={() => {
-                  history.push('/');
-                }}
+              >
+                <ArrowBack />
+              </IconButton>
+            </Toolbar>
+            ) : (   // 게임화면이 아닐때
+            <Toolbar>
+              <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' 
+                  onClick={() => {
+                    if(cookie.load('selectedGame') && cookie.load('selectedRoom')){
+                      cookie.remove('selectedRoom', { path: '/' })
+                    } else if(cookie.load('selectedGame')){
+                      cookie.remove('selectedGame', { path: '/' })
+                    }
+                    history.goBack()
+                  }}
                 >
-                  Login
-              </Button>
-            }
-          <IconButton color='inherit'>
-            <ContactSupport />
-          </IconButton>
-          <Modal open={open} onClose={handleClose}>
-            <Mypage></Mypage>
-          </Modal>
-        </Toolbar>
+                  <ArrowBack />
+                </IconButton>
+                <Typography variant='h6' className={classes.title}></Typography>
+                  {
+                    cookie.load('username')
+                    ? <div>
+                        <Button color='inherit' onClick={handleOpen}>
+                          Mypage
+                        </Button>
+                        <Button
+                        color='inherit'
+                        onClick={() => {
+                          signout();
+                        }}
+                        > Logout
+                        </Button>
+                      </div>
+                    : <Button
+                        color='inherit'
+                        onClick={() => {
+                          history.push('/');
+                        }}
+                        >
+                          Login
+                      </Button>
+                    }
+                <IconButton color='inherit'>
+                  <ContactSupport />
+                </IconButton>
+                <Modal open={open} onClose={handleClose}>
+                  <Mypage></Mypage>
+                </Modal>
+              </Toolbar>
+            )
+          }
+        
       </AppBar>
     </div>
   );

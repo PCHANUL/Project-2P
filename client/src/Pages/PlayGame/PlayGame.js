@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PongGame from './PongGame';
+import PropTypes from 'prop-types';
+import NumsGame from './NumsGame';
 import BDman from './BDman';
 import MoleGame from './MoleGame';
 import Paper from '@material-ui/core/Paper';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import CardMedia from '@material-ui/core/CardMedia';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
@@ -15,10 +16,10 @@ import Grid from '@material-ui/core/Grid';
 
 import user1 from '../../images/avatar.png';
 import user2 from '../../images/avatar2.png';
-import { setRawCookie } from 'react-cookies';
 import cookie from 'react-cookies'
+import { withRouter } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
+const styles = (theme) => ({
   paper: {
     backgroundColor: 'transparent',
     
@@ -69,58 +70,55 @@ const useStyles = makeStyles((theme) => ({
   title: {
     // flexGrow: 1,
   },
-}));
+});
 
-const PlayGame = ({ currentGame }) => {
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+class PlayGame extends Component {
+  constructor(props){
+    super(props);
+    
+    this.games = [
+      {},{
+        tag: <MoleGame />,
+        color: '#00babd',
+        pos: '170px',
+        shadow: '1px 1px 100px 0px #00535c',
+      }, {
+        tag: <BDman />,
+        color: '#000',
+        pos: '90px',
+        shadow: '-40px 0px 100px 0px #5c0200, 30px 0px 100px 0px #5e5d00',
+        // shadow: '1px 1px 200px 0px #737373',
+      }, {
+        tag: <NumsGame />,
+        color: '#f0f0f0',
+        pos: '60px',
+        shadow: '1px 1px 100px 0px #d6d6d6',
+      }
+    ];
+  }
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
+  render(){
+    const { classes } = this.props;
+    console.log('cookie.loa: ', cookie.load('selectedGame'));
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+    
 
-  let games = [
-    {},{
-      tag: <MoleGame />,
-      color: '#00babd',
-      pos: '170px',
-      shadow: '1px 1px 100px 0px #00535c',
-    }, {
-      tag: <BDman />,
-      color: '#000',
-      pos: '90px',
-      shadow: '-40px 0px 100px 0px #5c0200, 30px 0px 100px 0px #5e5d00',
-      // shadow: '1px 1px 200px 0px #737373',
-    }, {
-      tag: <PongGame />,
-      color: '#001',
-      pos: '90px',
-      shadow: '1px 1px 100px 0px #00535c',
-    }
-  ];
-
-  return (
-    <div className={classes.space} style={{ backgroundColor: games[cookie.load('selectedGame')]['color'] }}>
-      <Paper className={classes.paper} style={{ 
-        paddingTop: games[cookie.load('selectedGame')]['pos'],
-        boxShadow: games[cookie.load('selectedGame')]['shadow'],
-      }}>
-        {
-          games[cookie.load('selectedGame')]['tag']
-        }
-      </Paper> 
-    </div>
-  );
+    return (
+      <div>
+        <div className={classes.space} style={{ backgroundColor: this.games[cookie.load('selectedGame')]['color'] }}>
+          <Paper className={classes.paper} style={{ 
+            paddingTop: this.games[cookie.load('selectedGame')]['pos'],
+            boxShadow: this.games[cookie.load('selectedGame')]['shadow'],
+          }}>
+            { this.games[cookie.load('selectedGame')]['tag'] }
+          </Paper> 
+        </div>
+      </div>
+    );
+  }
 };
-
-function mapReduxStateToReactProps(state) {
-  return {
-    currentGame: state.currentGame.currentGame,
-  };
+PlayGame.propsTypes = {
+  classes: PropTypes.object.isRequired,
 }
 
-export default connect(mapReduxStateToReactProps)(PlayGame);
+export default withRouter(withStyles(styles)(PlayGame));
