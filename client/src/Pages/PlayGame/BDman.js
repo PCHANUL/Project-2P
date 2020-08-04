@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import Gameover from '../../Components/PlayGame/Gameover'
 
 import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
@@ -68,6 +69,9 @@ class Game extends Component {
       // bullet
       bullet: 10,
       isReload: false,
+
+      // winner
+      winner: '',
     }
 
     //초기화
@@ -159,7 +163,7 @@ class Game extends Component {
         } 
         else if (e.keyCode === 50) {  // center (this.aim === 0)
           this.RivalMoveX = 0;
-          this.RivalMoveY = this.BulletSpeed;
+          this.RivalMoveY = this.BulletSpeed * 2;
         } 
         else if (e.keyCode === 51) {  // left (this.aim === -1)
           this.RivalMoveX = this.BulletSpeed;
@@ -340,6 +344,8 @@ class Game extends Component {
     const { classes } = this.props;
     return (
       <Grid container direction='row' justify='space-evenly' alignItems='center'>
+        {this.state.winner !== '' ? <Gameover winner={this.state.winner} /> : null}
+
           <Grid item>
             <Paper className={classes.root} style={{ marginRight: '20px', marginLeft: '40px' }}> 
               <Grid container direction='column' justify='center' alignItems='center'>

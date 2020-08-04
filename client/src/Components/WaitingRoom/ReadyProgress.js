@@ -26,6 +26,7 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
+import cookie from 'react-cookies';
 
 const useStyles = makeStyles({
   root: {
@@ -48,6 +49,7 @@ function ReadyProgress() {
 
   useEffect(() => {
     if (timer < 0) {
+      cookie.save('isPlaying', true, { path: '/' })
       return history.push('/playgame');
     }
     setTimeout(() => {
