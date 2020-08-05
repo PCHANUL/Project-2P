@@ -21,8 +21,10 @@ import clicked from '../../images/clicked.png';
 
 import avatar from '../../images/bald.png'
 import avatar2 from '../../images/gas-mask.png'
-import emoji from '../../images/emoji/1.gif'
-import emoji2 from '../../images/emoji/2.gif'
+import E1 from '../../images/emoji/1.gif'
+import E2 from '../../images/emoji/2.gif'
+import E3 from '../../images/emoji/3.gif'
+import E4 from '../../images/emoji/4.gif'
 
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -137,57 +139,19 @@ class NumsGame extends Component {
     this.result = false;
 
     this.numPad = [];
+
+    let gifImages = [];
+
+    let getGifImages = require.context('../../images/emoji', false, /.*\.gif$/);
+    getGifImages.keys().forEach(function (key) {
+      gifImages.push(getGifImages(key));
+    })
+
+    this.tileData = []
+    gifImages.map((item) => {
+      this.tileData.push({ img: item })
+    })
     
-    this.tileData = [
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji2,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-    ]
 
     // socket connection endpoint
     this.socket = io('http://localhost:3002');
@@ -261,7 +225,7 @@ class NumsGame extends Component {
         this.turnChange(a)
       }
       if(e.keyCode === 69){
-        this.activeRivalEmoji(emoji2)
+        this.activeRivalEmoji(this.tileData[1].img)
       }
 
       // 처리된 데이터를 받는다.
@@ -675,12 +639,9 @@ class NumsGame extends Component {
           {
             this.state.showEmojis
             ? <GridList cellHeight={180} className={classes.gridList}>
-                <GridListTile key="Subheader" cols={2} style={{ height: '40px' }}>
-                  <ListSubheader component="div">이모티콘</ListSubheader>
-                </GridListTile>
                 {
                   this.tileData.map((tile) => (
-                  <GridListTile key={tile.img} style={{ height: '100px', border: '1px solid #000' }} 
+                  <GridListTile key={tile.img} style={{ height: '100px' }} 
                     onClick={() => {
                       console.log('this.state.showEmojis: ', this.state.isActive);
                       if(this.state.isActive === false) {
@@ -689,7 +650,7 @@ class NumsGame extends Component {
                       }
                     }}
                   >
-                    <img src={tile.img} alt={tile.title} style={{ width: '70px', height: '70px', border: '1px solid #000' }} />
+                    <img src={tile.img} alt={tile.title} style={{ width: '70px', height: '70px' }} />
                   </GridListTile>
                   ))
                 }
