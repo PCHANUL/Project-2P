@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
@@ -159,7 +160,7 @@ let sampleData = [
   {x: "숫자야구", y: 3},
 ]
 
-function Mypage() {
+function Mypage({ avatar }) {
   const classes = useStyles();
   const theme = useTheme();
   const [modalStyle] = React.useState(getModalStyle);
@@ -194,7 +195,7 @@ function Mypage() {
         <div className={classes.imgroot}>
           <img
             className={classes.img}
-            src={tutorialSteps[activeStep].imgPath}
+            src={avatar[activeStep]}
             alt={tutorialSteps[activeStep].label}
           />
           {
@@ -263,4 +264,10 @@ function Mypage() {
   )
 }
 
-export default Mypage
+const mapReduxStateToReactProps = (state) => {
+  return {
+    avatar: state.login.avatar
+  }
+}
+
+export default connect(mapReduxStateToReactProps)(Mypage)

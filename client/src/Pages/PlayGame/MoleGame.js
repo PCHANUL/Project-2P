@@ -140,9 +140,9 @@ class MoleGame extends Component {
       'mousedown',
       (e) => {
         this.mousePressed(e.layerX, e.layerY);
-        for(let i=0; i<16; i++){
-          this.randomMole(i)
-        }
+        // for(let i=0; i<16; i++){
+        //   this.randomMole(i)
+        // }
         this.cursorClick = true;
       },
       false
@@ -217,6 +217,7 @@ class MoleGame extends Component {
   mousePressed(mouseX, mouseY) {
     for (let i = 0; i < moles.length; i++) {
       let clickedMole = moles[i].clicked(mouseX, mouseY, i, this.ctx);
+      console.log(clickedMole)
       if (clickedMole) {
         const data = {
           gameRoomId: 'someRoomId',
@@ -305,7 +306,7 @@ class MoleGame extends Component {
         <Paper id='paper' style={{
             width: this.state.width,
             height: this.state.height,
-            cursor: 'none',
+            // cursor: 'none',
           }} className={classes.Paper} >
           <canvas id='canvas' />
           <img id='hemmer' src={hemmer} style={{ width: '40px', display: 'none' }} />
@@ -315,7 +316,7 @@ class MoleGame extends Component {
         <Grid item>
           <Paper className={classes.root} style={{ marginRight: '40px' }}> 
             <Grid container direction='column' justify='center' alignItems='center'>
-              <img src={this.state.userAvatar} className={classes.avatar}></img>
+              <img src='https://image.flaticon.com/icons/svg/3231/3231482.svg' className={classes.avatar}></img>
               <Typography className={classes.pos} variant='h5' component='h2'>
                 {'you'}
               </Typography>
