@@ -55,18 +55,17 @@ export class KeyPad {
   }
 
   clicked(mouseX, mouseY, index, limit) {
-    console.log(limit)
     let objToMouseX = Math.pow(this.x - mouseX, 2);
     let objToMouseY = Math.pow(this.y - mouseY, 2);
     let objToMouseResult = Math.sqrt(objToMouseX + objToMouseY); // 거리측정
     if (objToMouseResult < this.diameter) {
-      if (index < 9 && !limit) {
+      if (index < 10 && !limit) {
         this.isClicked = true;
-        return index + 1;
-      } else if (index === 9) {
+        return index;
+      } else if (index === 10) {
         this.isClicked = true;
-        return index - 9;
-      } else if (index > 9) {
+        return index - 10;
+      } else if (index > 10) {
         this.isClicked = true;
         return index;
       }
@@ -108,25 +107,24 @@ export class KeyPad {
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
       ctx.stroke();
       
-      if (index === 9){
+      if (index === 10){
         ctx.fillStyle = '#000';
         ctx.font = `${this.radius}px serif`;
         ctx.fillText('0', this.x - this.radius/2.5, this.y + this.radius/2.5);
-      } else if (index === 10){
+      } else if (index === 11){
         ctx.drawImage(this.backImg, this.x - this.radius/2.1, this.y - this.radius/2.3, this.radius, this.radius);
         setTimeout(() => (this.isClicked = false), 300);
-      } else if (index === 11) {
+      } else if (index === 12) {
         ctx.drawImage(this.refreshImg, this.x - this.radius/2.1, this.y - this.radius/2.3, this.radius, this.radius);
         setTimeout(() => (this.isClicked = false), 300);
-      } else if (index === 12) {
+      } else if (index === 13) {
         ctx.drawImage(this.enterImg, this.x - this.radius/2.1, this.y - this.radius/2.3, this.radius, this.radius);
         setTimeout(() => (this.isClicked = false), 300);
       } else {
         ctx.fillStyle = '#000';
         ctx.font = `${this.radius}px serif`;
-        ctx.fillText(`${this.index + 1}`, this.x - this.radius/2.7, this.y + this.radius/2.7)
+        ctx.fillText(`${this.index}`, this.x - this.radius/2.7, this.y + this.radius/2.7)
       }
-
     } else {
       ctx.fillStyle = '#fff';
       ctx.shadowColor = '#c9c9c9';
@@ -138,20 +136,20 @@ export class KeyPad {
       ctx.shadowBlur = 0;
       ctx.shadowOffsetY = 0;
 
-      if (index === 9){
+      if (index === 10){
         ctx.fillStyle = '#000';
         ctx.font = `${this.radius}px serif`;
         ctx.fillText('0', this.x - this.radius/2.5, this.y + this.radius/2.5)
-      } else if(index === 10){
+      } else if(index === 11){
         ctx.drawImage(this.backImg, this.x - this.radius/2.1, this.y - this.radius/2.3, this.radius, this.radius)
-      } else if (index === 11) {
-        ctx.drawImage(this.refreshImg, this.x - this.radius/2.1, this.y - this.radius/2.3, this.radius, this.radius)
       } else if (index === 12) {
+        ctx.drawImage(this.refreshImg, this.x - this.radius/2.1, this.y - this.radius/2.3, this.radius, this.radius)
+      } else if (index === 13) {
         ctx.drawImage(this.enterImg, this.x - this.radius/2.1, this.y - this.radius/2.3, this.radius, this.radius)
       } else {
         ctx.fillStyle = '#000';
         ctx.font = `${this.radius}px serif`;
-        ctx.fillText(`${this.index + 1}`, this.x - this.radius/2.7, this.y + this.radius/2.7)
+        ctx.fillText(`${this.index}`, this.x - this.radius/2.7, this.y + this.radius/2.7)
       }
     }
   }
@@ -160,18 +158,20 @@ export class KeyPad {
 
   position(stageWidth, stageHeight, index) {
     console.log(index)
-    if (index < 4) {
-      this.x = stageWidth / 4.9 + (stageWidth / 5) * (index);
-      this.y = stageHeight / 1.8;
-    } else if (index < 8) {
-      this.x = stageWidth / 4.9 + (stageWidth / 5) * (index - 4);
-      this.y = stageHeight / 1.8 + stageHeight / 10;
-    } else if (index < 12) {
-      this.x = stageWidth / 4.9 + (stageWidth / 5) * (index - 8);
-      this.y = stageHeight / 1.8 + (stageHeight / 10) * 2;
-    } else if (index === 12) {
-      this.x = stageWidth / 4.9 + (stageWidth / 5) * (index - 9);
-      this.y = stageHeight / 1.8 - stageHeight / 10;
+    if(index !== 0){
+      if (index < 5) {
+        this.x = stageWidth / 4.9 + (stageWidth / 5) * (index - 1);
+        this.y = stageHeight / 1.8;
+      } else if (index < 9) {
+        this.x = stageWidth / 4.9 + (stageWidth / 5) * (index - 5);
+        this.y = stageHeight / 1.8 + stageHeight / 10;
+      } else if (index < 13) {
+        this.x = stageWidth / 4.9 + (stageWidth / 5) * (index - 9);
+        this.y = stageHeight / 1.8 + (stageHeight / 10) * 2;
+      } else if (index === 13) {
+        this.x = stageWidth / 4.9 + (stageWidth / 5) * (index - 10);
+        this.y = stageHeight / 1.8 - stageHeight / 10;
+      }
     }
   }
 }

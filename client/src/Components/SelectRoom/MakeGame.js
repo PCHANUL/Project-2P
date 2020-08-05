@@ -93,7 +93,6 @@ function MakeGame({ isMaking, makeRoomsClose }) {
   }
 
   return (
-    <div>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -113,12 +112,12 @@ function MakeGame({ isMaking, makeRoomsClose }) {
                   <h2 id="transition-modal-title">방만들기</h2>
                 </Grid>
                 <Grid>
-                  <IconButton aria-label="취소">
-                    <CancelIcon onClick={ () => {
+                  <IconButton onClick={ () => {
                       setGame('')
                       makeRoomsClose()
                       } 
-                    }/>
+                    }>
+                    <CancelIcon />
                   </IconButton>
                 </Grid>
             </Grid>
@@ -181,7 +180,6 @@ function MakeGame({ isMaking, makeRoomsClose }) {
           </Paper>
         </Fade>
       </Modal>
-    </div>
   );
 }
 

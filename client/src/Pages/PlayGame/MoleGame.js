@@ -17,6 +17,7 @@ import clicked from '../../images/clicked.png';
 import avatar from '../../images/bald.png'
 import avatar2 from '../../images/gas-mask.png'
 
+
 const styles = (theme) => ({
   Paper: {
     border: '20px solid #06cdd4',
