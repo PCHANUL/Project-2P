@@ -137,57 +137,17 @@ class NumsGame extends Component {
 
     this.numPad = [];
     
-    this.tileData = [
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji2,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-      {
-        img: emoji,
-        title: 'awef',
-      },
-    ]
+    let gifImages = [];
 
+    let getGifImages = require.context('../../images/emoji', false, /.*\.gif$/);
+    getGifImages.keys().forEach(function (key) {
+      gifImages.push(getGifImages(key));
+    })
+
+    this.tileData = []
+    gifImages.map((item) => {
+      this.tileData.push({ img: item })
+    })
 
     for (let i = 0; i < 14; i++) {
       this.numPad.push(
@@ -640,12 +600,9 @@ class NumsGame extends Component {
           {
             this.state.showEmojis
             ? <GridList cellHeight={180} className={classes.gridList}>
-                <GridListTile key="Subheader" cols={2} style={{ height: '40px' }}>
-                  <ListSubheader component="div">이모티콘</ListSubheader>
-                </GridListTile>
                 {
                   this.tileData.map((tile) => (
-                  <GridListTile key={tile.img} style={{ height: '100px', border: '1px solid #000' }} 
+                  <GridListTile key={tile.img} style={{ height: '100px'}} 
                     onClick={() => {
                       console.log('this.state.showEmojis: ', this.state.isActive);
                       if(this.state.isActive === false) {
@@ -654,7 +611,7 @@ class NumsGame extends Component {
                       }
                     }}
                   >
-                    <img src={tile.img} alt={tile.title} style={{ width: '70px', height: '70px', border: '1px solid #000' }} />
+                    <img src={tile.img} alt={tile.title} style={{ width: '70px', height: '70px'}} />
                   </GridListTile>
                   ))
                 }
