@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import io from 'socket.io-client';
 import PropTypes from 'prop-types';
 import cookie from 'react-cookies';
@@ -69,6 +70,7 @@ const styles = (theme) => ({
   rootroot: {
     position: 'fixed',
     right: '1%',
+    bottom: '100px',
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
@@ -139,13 +141,10 @@ class NumsGame extends Component {
     
     let gifImages = [];
 
-    let getGifImages = require.context('../../images/emoji', false, /.*\.gif$/);
-    getGifImages.keys().forEach(function (key) {
-      gifImages.push(getGifImages(key));
-    })
+    
+    this.tileData = [];
 
-    this.tileData = []
-    gifImages.map((item) => {
+    this.props.gifEmoji.map((item) => {
       this.tileData.push({ img: item })
     })
 
@@ -236,6 +235,11 @@ class NumsGame extends Component {
       } else {  //상대방 차례
         this.turnChange(false);
       }
+    });
+
+    socket.on('stop', () => {
+      console.log('stop');
+      clearInterval(this.timer);
     });
 
     socket.on('end', (winner) => {
@@ -628,4 +632,10 @@ NumsGame.propsTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(NumsGame);
+const mapReduxStateToReactProps = (state) => {
+  return {
+    gifEmoji: state.currentGame.gif
+  };
+};
+
+export default connect(mapReduxStateToReactProps)(withStyles(styles)(NumsGame));
