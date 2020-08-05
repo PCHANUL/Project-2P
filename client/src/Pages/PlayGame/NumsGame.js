@@ -9,23 +9,27 @@ import Paper from '@material-ui/core/Paper';
 import { 
   Grid, 
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow
+  Tooltip,
+  Fab,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { isDeleteExpression } from 'typescript';
-import BackspaceIcon from '@material-ui/icons/Backspace';
-
+import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import { KeyPad } from './keyPad';
 import hemmer from '../../images/hemmer.png';
 import clicked from '../../images/clicked.png';
 
 import avatar from '../../images/bald.png'
 import avatar2 from '../../images/gas-mask.png'
+import emoji from '../../images/emoji/1.gif'
+import emoji2 from '../../images/emoji/2.gif'
+
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import IconButton from '@material-ui/core/IconButton';
+import InfoIcon from '@material-ui/icons/Info';
 
 
 
@@ -58,6 +62,27 @@ const styles = (theme) => ({
     width: '100%',
     font: '5px'
   },
+  absolute: {
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(3),
+  },
+  rootroot: {
+    position: 'fixed',
+    right: '1%',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
+  },
+  gridList: {
+    width: 200,
+    height: 450,
+  },
+  icon: {
+    color: 'rgba(255, 255, 255, 0.54)',
+  },
 
 });
 
@@ -85,6 +110,15 @@ class NumsGame extends Component {
       board: true,
       myTurn : true,
       wrongInput: false,
+
+      open: false,
+      userAvatar: avatar,
+      rivalAvatar: avatar2,
+      showEmojis: false,
+      isActive: false,
+
+      warning: 0,
+      warningRival: 0,
     };
     this.canvas = null;
     this.ctx = null;
@@ -104,6 +138,56 @@ class NumsGame extends Component {
 
     this.numPad = [];
     
+    this.tileData = [
+      {
+        img: emoji,
+        title: 'awef',
+      },
+      {
+        img: emoji2,
+        title: 'awef',
+      },
+      {
+        img: emoji,
+        title: 'awef',
+      },
+      {
+        img: emoji,
+        title: 'awef',
+      },
+      {
+        img: emoji,
+        title: 'awef',
+      },
+      {
+        img: emoji,
+        title: 'awef',
+      },
+      {
+        img: emoji,
+        title: 'awef',
+      },
+      {
+        img: emoji,
+        title: 'awef',
+      },
+      {
+        img: emoji,
+        title: 'awef',
+      },
+      {
+        img: emoji,
+        title: 'awef',
+      },
+      {
+        img: emoji,
+        title: 'awef',
+      },
+      {
+        img: emoji,
+        title: 'awef',
+      },
+    ]
 
     // socket connection endpoint
     this.socket = io('http://localhost:3002');
@@ -176,21 +260,23 @@ class NumsGame extends Component {
         let a = !this.state.myTurn
         this.turnChange(a)
       }
+      if(e.keyCode === 69){
+        this.activeRivalEmoji(emoji2)
+      }
 
       // 처리된 데이터를 받는다.
       if(e.keyCode === 65){   // Rival data
-        this.setState({ board: false })
-        let input = { number: 1234, result: '1S 3B'}
-        this.setState({ RivalNums: [...this.state.RivalNums, input]})
-        this.out = true;
-        this.inputResult()
+        // let input = { number: 1234, result: '1S 3B'}
+        let input = { number: '----', result: '-- --'}
+        this.getRivalData(input)
       }
       if(e.keyCode === 83){   // My data
-        this.setState({ board: false })
         let input = { number: 1234, result: '1S 3B'}
-        this.setState({ myNums: [...this.state.myNums, input]})
-        this.result = true;
-        this.inputResult()
+        this.getMyData(input)
+      }
+      if(e.keyCode === 68){   // No data
+        let input = { number: '----', result: '-- --'}
+        this.getMyData(input)
       }
       
     });
@@ -240,6 +326,8 @@ class NumsGame extends Component {
     });
   }
 
+  
+
   componentWillUnmount() {
     this.numPad = [];
     this.socket.disconnect();
@@ -247,6 +335,7 @@ class NumsGame extends Component {
 
   eraseAll() {
     this.state.resultPad.map((item) => {
+      if(item === 0) item = 10
       this.numPad[item].removed()
     })
     this.setState({ resultPad: [] })
@@ -263,7 +352,8 @@ class NumsGame extends Component {
           if (clickedMole === 11) {
             let del = [...this.state.resultPad]
             let deleted = del.pop()
-            if(deleted){
+            if(typeof deleted === 'number'){
+              if(deleted === 0) deleted = 10
               this.numPad[deleted].removed();
               this.setState({ resultPad: [...del] })
             }
@@ -329,20 +419,41 @@ class NumsGame extends Component {
     return { number, strike, ball, out };
   }
 
+  // 상대방의 데이터 출력
+  getRivalData = async (input) => {
+    if(input.number === '----') this.setState({ warningRival: this.state.warningRival + 1})
+
+    await this.setState({ board: false })
+    await this.setState({ RivalNums: [...this.state.RivalNums, input]})
+    this.out = true;
+    this.inputResult()
+  }
+
+  // 유저의 데이터 출력
+  getMyData = async (input) => {
+    if(input.number === '----') this.setState({ warning: this.state.warning + 1})
+
+    await this.setState({ board: false })
+    await this.setState({ myNums: [...this.state.myNums, input]})
+    this.result = true;
+    this.inputResult()
+  }
+
+  // 처리된 결과값
   inputResult() {
     if (this.result) {
       let text = this.state.myNums[this.state.myNums.length - 1].result
       this.ctx.fillText(`${text}`, this.state.width / 4.5, this.state.height / 3)
-      setTimeout(() => {
-        this.setState({ board: true });
+      setTimeout(async () => {
+        await this.setState({ board: true });
         this.result = false;
       }, 2000)
     }
     if (this.out) {
       let text = this.state.RivalNums[this.state.RivalNums.length - 1].result
       this.ctx.fillText(`${text}`, this.state.width / 4.5, this.state.height / 3)
-      setTimeout(() => {
-        this.setState({ board: true });
+      setTimeout(async () => {
+        await this.setState({ board: true });
         this.out = false;
       }, 2000)
     }
@@ -401,7 +512,6 @@ class NumsGame extends Component {
     }
 
 
-
     // 클릭된 숫자 출력
     this.state.resultPad.map(( num, index ) => {
       let x = this.state.width / 6.5 + (this.state.width / 7) * (index)
@@ -420,36 +530,6 @@ class NumsGame extends Component {
     })
    
 
-
-    
-    // x = this.state.width / 5 + (this.state.width / 5) * (3)
-    // y = this.state.height / 2;
-
-    // this.ctx.fillStyle = '#fff'
-    // this.ctx.beginPath();
-    // this.ctx.arc(x, y, this.radius, 0, 2 * Math.PI);
-    // this.ctx.fill();
-
-    // // 텍스트
-    // this.ctx.fillStyle = '#000';
-    // this.ctx.font = `${this.radius}px serif`;
-    // this.ctx.fillText(`${6}`, x - this.radius/2.7, y + this.radius/2.7)
-
-
-
-    // this.defineRoundedRect(this.ctx, this.state.width/6, this.state.height / 1.15, this.radius * 7, this.radius * 2, this.radius);
-    // this.ctx.fillStyle = '#fff';
-    // this.ctx.shadowColor = '#c9c9c9';
-    // this.ctx.shadowBlur = 8;
-    // this.ctx.shadowOffsetY = -5;
-    // this.ctx.fill();
-    
-    // this.ctx.shadowBlur = 0;
-    // this.ctx.shadowOffsetY = 0;
-    // this.ctx.fillStyle = '#000';
-    // this.ctx.font = '30px serif';
-    // this.ctx.fillText('제출하기', this.state.width/3.5, this.state.height / 1.05)
-    
 
     // 마우스가 canvas에 들어온 경우 망치이미지 생성
     // if (this.cursorEnter) {
@@ -491,6 +571,20 @@ class NumsGame extends Component {
     }, 1000);
   }
 
+  activeEmoji(gif) {
+    this.setState({ userAvatar: gif });
+    setTimeout(() => {
+      this.setState({ userAvatar: avatar, isActive: !this.state.isActive });
+    }, 2500);
+  }
+
+  activeRivalEmoji(gif) {
+    this.setState({ rivalAvatar: gif });
+    setTimeout(() => {
+      this.setState({ rivalAvatar: avatar2 })
+    }, 2500)
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -512,10 +606,17 @@ class NumsGame extends Component {
               }
             </Typography>
             <Grid container direction='column' justify='center' alignItems='center'>
-              <img src={avatar2} className={classes.avatar}></img>
+              <img src={this.state.rivalAvatar} className={classes.avatar}></img>
               <Typography className={classes.pos} variant='h5' component='h2'>
                 {'Rival'}
               </Typography>
+              {
+                this.state.warningRival === 1
+                ? <div style={{backgroundColor: 'yellow', width: '20px', height: '30px', border: '3px solid #000'}} />
+                : this.state.warningRival === 2
+                  ? <div style={{backgroundColor: 'red', width: '20px', height: '30px', border: '3px solid #000'}} />
+                  : null
+              }
             </Grid>
           </Paper>
         </Grid>
@@ -540,7 +641,6 @@ class NumsGame extends Component {
               : this.state.myTurn ? '#0067c2' : '#d6d6d6'
             }`,
           }}> 
-            
               {
                 this.state.wrongInput
                 ? <Typography className={classes.pos} variant='h6'>
@@ -551,13 +651,52 @@ class NumsGame extends Component {
                   </Typography>
               }
             <Grid container direction='column' justify='center' alignItems='center'>
-              <img src={avatar} className={classes.avatar}></img>
+                <img src={this.state.userAvatar} className={classes.avatar}></img>
               <Typography className={classes.pos} variant='h5' component='h2'>
                 {'you'}
               </Typography>
+              {
+                this.state.warning === 1
+                ? <div style={{backgroundColor: 'yellow', width: '20px', height: '30px', border: '3px solid #000'}} />
+                : this.state.warning === 2
+                  ? <div style={{backgroundColor: 'red', width: '20px', height: '30px', border: '3px solid #000'}} />
+                  : null
+              }
             </Grid>
           </Paper>
         </Grid>
+        <Tooltip title='이모티콘' aria-label='add' onClick={() => this.setState({ showEmojis: !this.state.showEmojis })}>
+          <Fab color='secondary' className={this.props.classes.absolute}>
+            <EmojiEmotionsIcon />
+          </Fab>
+        </Tooltip>
+
+        <div className={classes.rootroot}>
+          {
+            this.state.showEmojis
+            ? <GridList cellHeight={180} className={classes.gridList}>
+                <GridListTile key="Subheader" cols={2} style={{ height: '40px' }}>
+                  <ListSubheader component="div">이모티콘</ListSubheader>
+                </GridListTile>
+                {
+                  this.tileData.map((tile) => (
+                  <GridListTile key={tile.img} style={{ height: '100px', border: '1px solid #000' }} 
+                    onClick={() => {
+                      console.log('this.state.showEmojis: ', this.state.isActive);
+                      if(this.state.isActive === false) {
+                        this.activeEmoji(tile.img)
+                        this.setState({ showEmojis: !this.state.showEmojis, isActive: !this.state.isActive })
+                      }
+                    }}
+                  >
+                    <img src={tile.img} alt={tile.title} style={{ width: '70px', height: '70px', border: '1px solid #000' }} />
+                  </GridListTile>
+                  ))
+                }
+              </GridList>
+            : null
+          }
+        </div>
       </Grid>
     );
   }

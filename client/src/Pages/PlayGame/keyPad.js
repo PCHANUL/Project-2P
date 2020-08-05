@@ -125,7 +125,6 @@ export class KeyPad {
         ctx.font = `${this.radius}px serif`;
         ctx.fillText(`${this.index}`, this.x - this.radius/2.7, this.y + this.radius/2.7)
       }
-
     } else {
       ctx.fillStyle = '#fff';
       ctx.shadowColor = '#c9c9c9';
