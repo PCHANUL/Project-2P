@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import * as actionTypes from '../../store/actions';
 
 import Card from '@material-ui/core/Card';
@@ -38,7 +39,7 @@ import Collapse from '@material-ui/core/Collapse';
 import { TextField } from '@material-ui/core';
 import { NaturePeopleOutlined } from '@material-ui/icons';
 
-import cookie from 'react-cookies'
+import cookie from 'react-cookies';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,9 +73,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function RoomList({ login, roomName, isWait, isLocked, isFull, selectRoom, selected }) {
+function RoomList({
+  login,
+  roomName,
+  isWait,
+  isLocked,
+  isFull,
+  selectRoom,
+  selected,
+  roomId,
+  gameCode,
+}) {
   const classes = useStyles();
   const history = useHistory();
+  const [password, setPassword] = React.useState('');
   const [spacing, setSpacing] = React.useState(2);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
@@ -89,6 +101,31 @@ function RoomList({ login, roomName, isWait, isLocked, isFull, selectRoom, selec
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const joinRoomHandler = async (roomId, gameCode, password) => {
+    axios({
+      method: 'post',
+      url: 'http://localhost:3001/rooms/joinroom',
+      data: {
+        roomId,
+        gameCode,
+        password,
+      },
+      withCredentials: true,
+    })
+      .then((res) => {
+        if (res.data.message) {
+          cookie.save('selectedRoom', roomName, { path: '/' });
+          history.push('./waitingroom');
+        } else {
+          // when there are more than 2 ppl in the room already
+          alert(res.data.error);
+        }
+      })
+      .catch((err) => {
+        alert('비밀번호가 틀렸습니다!');
+      });
   };
 
   return (
@@ -115,7 +152,7 @@ function RoomList({ login, roomName, isWait, isLocked, isFull, selectRoom, selec
             </Grid>
             <Grid item>
               <Grid item container direction='row' justify='center' alignItems='center'>
-                {isFull ? (
+                {isFull === 2 ? (
                   <div>
                     <Typography className={classes.count} variant='h5'>
                       <HowToRegIcon />
@@ -136,7 +173,6 @@ function RoomList({ login, roomName, isWait, isLocked, isFull, selectRoom, selec
                         variant='contained'
                         color='secondary'
                         onClick={() => {
-                          selectRoom(roomName);
                           handleExpandClick();
                           // history.push('./waitingroom')
                         }}
@@ -148,14 +184,11 @@ function RoomList({ login, roomName, isWait, isLocked, isFull, selectRoom, selec
                         variant='contained'
                         color='primary'
                         onClick={() => {
-                          selectRoom(roomName);
-                          cookie.save('selectedRoom', roomName, { path: '/' })
-
                           // 비밀번호가 있다면 구역이 확장된다
                           if (isLocked) {
                             handleExpandClick();
                           } else {
-                            history.push('./waitingroom');
+                            joinRoomHandler(roomId, gameCode, '');
                           }
                         }}
                       >
@@ -179,15 +212,18 @@ function RoomList({ login, roomName, isWait, isLocked, isFull, selectRoom, selec
                   autoComplete='current-password'
                   variant='outlined'
                   size='small'
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
                 />
               </Grid>
               <Grid item>
                 <Button
                   variant='contained'
                   color='primary'
-                  onClick={() => {
-                    selectRoom(roomName);
-                    // history.push('./waitingroom')
+                  onClick={(e) => {
+                    joinRoomHandler(roomId, gameCode, password);
                   }}
                 >
                   확인
@@ -211,8 +247,7 @@ const mapReduxStateToReactProps = (state) => {
 const mapReduxDispatchToReactProps = (dispatch) => {
   return {
     selectRoom: function (roomName) {
-      cookie.save('selectedRoom', roomName, { path: '/' })
-
+      cookie.save('selectedRoom', roomName, { path: '/' });
     },
   };
 };
