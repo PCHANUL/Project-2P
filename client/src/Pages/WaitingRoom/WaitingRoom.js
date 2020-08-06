@@ -34,6 +34,8 @@ const WaitingRoom = (props) => {
       return () => {
         props.leaveRoomHandler();
       };
+    } else {
+      socket.removeAllListeners();
     }
   }, []);
 
@@ -72,7 +74,6 @@ const socketSubscribe = (dispatch) => {
     cookie.remove('selectedRoom', { path: '/' });
     socket.emit('leave');
     socket.removeAllListeners();
-    dispatch({ type: actionTypes.LEAVE_ROOM });
     alert('호스트가 방에서 나갔습니다');
     setTimeout(() => window.location.replace('http://localhost:3000/selectRoom'), 2000);
   });
