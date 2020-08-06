@@ -22,10 +22,9 @@ const WaitingRoom = (props) => {
     if (!cookie.load('username')) {
       history.push('/');
     } else if (!cookie.load('selectedRoom')) {
-      history.push('/selectroom')
+      history.push('/selectroom');
     }
 
-    // roomname, username, avatar, isReady, gameCode
     props.enterChatroom(
       cookie.load('selectedRoom'),
       cookie.load('username'),
@@ -37,7 +36,7 @@ const WaitingRoom = (props) => {
       props.leaveRoomHandler();
     };
   }, []);
-  
+
   return (
     <div>
       {bothPlayersReady ? <ReadyProgress /> : null}

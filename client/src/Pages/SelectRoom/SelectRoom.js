@@ -68,6 +68,8 @@ function SelectRoom({ login, roomList, getRooms, makeRooms, isMaking }) {
     cookie.save('selectedGame', newValue, { path: '/' });
   };
 
+  const leaveRoomHandler = () => {};
+
   const emptyRoomList = (
     <Grid
       container
