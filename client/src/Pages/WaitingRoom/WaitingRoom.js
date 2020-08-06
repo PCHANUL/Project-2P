@@ -23,18 +23,18 @@ const WaitingRoom = (props) => {
       history.push('/');
     } else if (!cookie.load('selectedRoom')) {
       history.push('/selectroom');
+    } else if (!props.waitingRoom.joinedRoom) {
+      props.enterChatroom(
+        cookie.load('selectedRoom'),
+        cookie.load('username'),
+        cookie.load('avatarId'),
+        false,
+        cookie.load('selectedGame')
+      );
+      return () => {
+        props.leaveRoomHandler();
+      };
     }
-
-    props.enterChatroom(
-      cookie.load('selectedRoom'),
-      cookie.load('username'),
-      cookie.load('avatarId'),
-      false,
-      cookie.load('selectedGame')
-    );
-    return () => {
-      props.leaveRoomHandler();
-    };
   }, []);
 
   return (
@@ -68,6 +68,14 @@ const socketSubscribe = (dispatch) => {
   socket.on('readyState', (data) => {
     dispatch({ type: actionTypes.READY, payload: data });
   });
+  socket.on('deleteRoom', () => {
+    cookie.remove('selectedRoom', { path: '/' });
+    socket.emit('leave');
+    socket.removeAllListeners();
+    dispatch({ type: actionTypes.LEAVE_ROOM });
+    alert('호스트가 방에서 나갔습니다');
+    setTimeout(() => window.location.replace('http://localhost:3000/selectRoom'), 2000);
+  });
 };
 
 const mapReduxStateToReactProps = (state) => {
@@ -93,11 +101,12 @@ const mapReduxDispatchToReactProps = (dispatch) => {
       const userInfo = { username, avatar, isReady };
       const room = { gameCode, roomId: roomname };
       socket.emit('joinRoom', { userInfo, room });
+      dispatch({ type: 'JOINED_ROOM' });
     },
     leaveRoomHandler: () => {
       socket.emit('leave');
       socket.removeAllListeners();
-      dispatch({ type: actionTypes.LEAVE_ROOM });
+      setTimeout(() => dispatch({ type: actionTypes.LEAVE_ROOM }), 500);
     },
   };
 };
