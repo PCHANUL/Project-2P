@@ -316,7 +316,7 @@ class MoleGame extends Component {
         <Grid item>
           <Paper className={classes.root} style={{ marginRight: '40px' }}> 
             <Grid container direction='column' justify='center' alignItems='center'>
-              <img src='https://image.flaticon.com/icons/svg/3231/3231482.svg' className={classes.avatar}></img>
+              <img src={this.state.userAvatar} className={classes.avatar}></img>
               <Typography className={classes.pos} variant='h5' component='h2'>
                 {'you'}
               </Typography>
