@@ -22,8 +22,6 @@ import clicked from '../../images/clicked.png';
 
 import avatar from '../../images/bald.png'
 import avatar2 from '../../images/gas-mask.png'
-import emoji from '../../images/emoji/1.gif'
-import emoji2 from '../../images/emoji/2.gif'
 
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
