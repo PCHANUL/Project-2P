@@ -17,8 +17,6 @@ import clicked from '../../images/clicked.png';
 
 import avatar from '../../images/bald.png';
 import avatar2 from '../../images/gas-mask.png';
-// import emoji from '../../images/emoji/1.gif'
-// import emoji2 from '../../images/emoji/2.gif'
 
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -227,6 +225,9 @@ class NumsGame extends Component {
     socket.on('stop', () => {
       console.log('stop');
       clearInterval(this.timer);
+      setTimeout(() => {
+        clearInterval(this.timer);
+      }, 1);
     });
 
     socket.on('end', (winner) => {
@@ -499,7 +500,7 @@ class NumsGame extends Component {
         if (t) socket.emit('endTurn');
         clearInterval(this.timer);
       }
-    }, 100);
+    }, 1000);
   }
 
   activeEmoji(gif) {
