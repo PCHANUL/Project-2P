@@ -155,7 +155,12 @@ class MoleGame extends Component {
     });
 
     // socket connection
-    this.socket.emit('gameStart', cookie.load('username'), 'someRoomId');
+    this.socket.emit(
+      'gameStart',
+      cookie.load('username'),
+      cookie.load('selectedRoom'),
+      cookie.load('avatarId')
+    );
     this.socket.on('generateMole', (index) => {
       this.setState({ currentMole: this.state.currentMole + 1 });
       this.randomMole(index);
@@ -170,6 +175,7 @@ class MoleGame extends Component {
        *    }
        * }
        */
+      console.log(data);
       moles[data.index].hideMole();
       const [player1, player2] = Object.keys(data.score);
       if (player1 === cookie.load('username')) {
@@ -182,7 +188,7 @@ class MoleGame extends Component {
       // data = username
       this.setState({ winner: data });
     });
-    this.socket.on('init', ([usernames, currentMole, score]) => {
+    this.socket.on('init', ([usernames, currentMole, score, avatarIds]) => {
       const opponentUsername = usernames.filter((username) => cookie.load('username') !== username);
       const players = Object.keys(score);
       let myScore, opponentScore;
@@ -193,7 +199,14 @@ class MoleGame extends Component {
           opponentScore = score[player];
         }
       });
-      this.setState({ opponentUsername, currentMole, myScore, opponentScore });
+      this.setState({
+        opponentUsername,
+        currentMole,
+        myScore,
+        opponentScore,
+        userAvatar: avatarIds[cookie.load('username')],
+        rivalAvatar: avatarIds[opponentUsername],
+      });
     });
   }
 
@@ -207,7 +220,7 @@ class MoleGame extends Component {
       let clickedMole = moles[i].clicked(mouseX, mouseY, i, this.ctx);
       if (clickedMole) {
         const data = {
-          gameRoomId: 'someRoomId',
+          gameRoomId: cookie.load('selectedRoom'),
           currentMole: this.state.currentMole,
           username: cookie.load('username'),
           index: clickedMole,
@@ -270,7 +283,7 @@ class MoleGame extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, avatar } = this.props;
 
     return (
       <Grid container direction='row' justify='space-evenly' alignItems='center'>
@@ -279,7 +292,7 @@ class MoleGame extends Component {
         <Grid item>
           <Paper className={classes.root} style={{ marginLeft: '40px' }}>
             <Grid container direction='column' justify='center' alignItems='center'>
-              <img src={this.state.rivalAvatar} className={classes.avatar}></img>
+              <img src={avatar[this.state.rivalAvatar]} className={classes.avatar}></img>
               <Typography className={classes.pos} variant='h5' component='h2'>
                 {'Rival'}
               </Typography>
@@ -307,7 +320,7 @@ class MoleGame extends Component {
         <Grid item>
           <Paper className={classes.root} style={{ marginRight: '40px' }}>
             <Grid container direction='column' justify='center' alignItems='center'>
-              <img src={this.state.userAvatar} className={classes.avatar}></img>
+              <img src={avatar[this.state.userAvatar]} className={classes.avatar}></img>
               <Typography className={classes.pos} variant='h5' component='h2'>
                 {'you'}
               </Typography>
@@ -363,6 +376,7 @@ MoleGame.propsTypes = {
 
 const mapReduxStateToReactProps = (state) => {
   return {
+    avatar: state.login.avatar,
     gifEmoji: state.currentGame.gif,
   };
 };
