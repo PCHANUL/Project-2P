@@ -238,6 +238,9 @@ class NumsGame extends Component {
     socket.on('stop', () => {
       console.log('stop');
       clearInterval(this.timer);
+      setTimeout(() => {
+        clearInterval(this.timer);
+      }, 1);
     });
 
     socket.on('end', (winner) => {
@@ -493,7 +496,7 @@ class NumsGame extends Component {
         if(t) socket.emit('endTurn');
         clearInterval(this.timer)
       }
-    }, 100);
+    }, 1000);
   }
 
   activeEmoji(gif) {
