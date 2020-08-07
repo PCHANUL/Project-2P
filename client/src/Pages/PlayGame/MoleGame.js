@@ -15,9 +15,6 @@ import { Mole } from './mole';
 import hemmer from '../../images/hemmer.png';
 import clicked from '../../images/clicked.png';
 
-import avatar from '../../images/bald.png';
-import avatar2 from '../../images/gas-mask.png';
-
 const styles = (theme) => ({
   Paper: {
     border: '20px solid #06cdd4',
@@ -81,8 +78,8 @@ class MoleGame extends Component {
       currentMole: 0,
 
       // emoji
-      userAvatar: avatar,
-      rivalAvatar: avatar2,
+      userAvatar: '',
+      rivalAvatar: '',
       showEmojis: false,
       isActive: false,
     };
@@ -161,10 +158,12 @@ class MoleGame extends Component {
       cookie.load('selectedRoom'),
       cookie.load('avatarId')
     );
+
     this.socket.on('generateMole', (index) => {
       this.setState({ currentMole: this.state.currentMole + 1 });
       this.randomMole(index);
     });
+
     this.socket.on('updateScore', (data) => {
       /**
        * data = {
@@ -175,7 +174,6 @@ class MoleGame extends Component {
        *    }
        * }
        */
-      console.log(data);
       moles[data.index].hideMole();
       const [player1, player2] = Object.keys(data.score);
       if (player1 === cookie.load('username')) {
@@ -184,10 +182,12 @@ class MoleGame extends Component {
         this.setState({ myScore: data.score[player2], opponentScore: data.score[player1] });
       }
     });
+
     this.socket.on('gameover', (data) => {
       // data = username
       this.setState({ winner: data });
     });
+
     this.socket.on('init', ([usernames, currentMole, score, avatarIds]) => {
       const opponentUsername = usernames.filter((username) => cookie.load('username') !== username);
       const players = Object.keys(score);
@@ -204,9 +204,13 @@ class MoleGame extends Component {
         currentMole,
         myScore,
         opponentScore,
-        userAvatar: avatarIds[cookie.load('username')],
-        rivalAvatar: avatarIds[opponentUsername],
+        userAvatar: this.props.avatar[avatarIds[cookie.load('username')]],
+        rivalAvatar: this.props.avatar[avatarIds[opponentUsername]],
       });
+    });
+
+    this.socket.on('opponentGif', (gif) => {
+      this.activeRivalEmoji(gif);
     });
   }
 
@@ -267,24 +271,31 @@ class MoleGame extends Component {
   }
 
   activeEmoji(gif) {
+    const avatarBeforeChange = this.state.userAvatar;
+    const data = { gameRoomId: cookie.load('selectedRoom'), gif };
+    this.socket.emit('activateGif', data);
     this.setState({ userAvatar: gif });
     // this.socket.emit('sendEmoji', (JSON.stringify(gif)));
 
     setTimeout(() => {
-      this.setState({ userAvatar: avatar, isActive: !this.state.isActive });
+      this.setState({
+        userAvatar: avatarBeforeChange,
+        isActive: !this.state.isActive,
+      });
     }, 2500);
   }
 
   activeRivalEmoji(gif) {
+    const avatarBeforeChange = this.state.rivalAvatar;
+
     this.setState({ rivalAvatar: gif });
     setTimeout(() => {
-      this.setState({ rivalAvatar: avatar2 });
+      this.setState({ rivalAvatar: avatarBeforeChange });
     }, 2500);
   }
 
   render() {
     const { classes, avatar } = this.props;
-
     return (
       <Grid container direction='row' justify='space-evenly' alignItems='center'>
         {this.state.winner !== '' ? <Gameover winner={this.state.winner} /> : null}
@@ -292,7 +303,7 @@ class MoleGame extends Component {
         <Grid item>
           <Paper className={classes.root} style={{ marginLeft: '40px' }}>
             <Grid container direction='column' justify='center' alignItems='center'>
-              <img src={avatar[this.state.rivalAvatar]} className={classes.avatar}></img>
+              <img src={this.state.rivalAvatar} className={classes.avatar}></img>
               <Typography className={classes.pos} variant='h5' component='h2'>
                 {'Rival'}
               </Typography>
@@ -320,7 +331,7 @@ class MoleGame extends Component {
         <Grid item>
           <Paper className={classes.root} style={{ marginRight: '40px' }}>
             <Grid container direction='column' justify='center' alignItems='center'>
-              <img src={avatar[this.state.userAvatar]} className={classes.avatar}></img>
+              <img src={this.state.userAvatar} className={classes.avatar}></img>
               <Typography className={classes.pos} variant='h5' component='h2'>
                 {'you'}
               </Typography>
@@ -349,7 +360,6 @@ class MoleGame extends Component {
                   key={tile.img}
                   style={{ height: '100px' }}
                   onClick={() => {
-                    console.log('this.state.showEmojis: ', this.state.isActive);
                     if (this.state.isActive === false) {
                       this.activeEmoji(tile.img);
                       this.setState({
