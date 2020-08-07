@@ -1,14 +1,25 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import cookie from 'react-cookies'
 
-import { AppBar, Toolbar, Typography, Button, IconButton, withStyles } from '@material-ui/core';
-import { ArrowBack, ContactSupport, Menu } from '@material-ui/icons';
-
-import { Modal } from '@material-ui/core';
-import { withRouter } from 'react-router-dom';
-import useScrollTrigger from '@material-ui/core/useScrollTrigger';
-
 import Mypage from './Mypage';
+
+import { 
+  AppBar, 
+  Toolbar, 
+  Typography, 
+  Button, 
+  IconButton, 
+  withStyles,
+  Modal,
+  Grid
+} from '@material-ui/core';
+
+import { 
+  ArrowBack, 
+  ContactSupport, 
+  Menu 
+} from '@material-ui/icons';
 
 const axios = require('axios');
 
@@ -19,11 +30,18 @@ const styles = (theme) => ({
     width: "100%",
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    position: 'fixed',
+    right: '3%',
+    top: '2%',
   },
   title: {
     flexGrow: 1,
   },
+  gobackButton: {
+    position: 'fixed',
+    left: '3%',
+    top: '1%',
+  }
 });
 
 class Nav extends Component {
@@ -96,6 +114,20 @@ class Nav extends Component {
     this.setState({ open: !this.state.open })
   };
 
+  clickGoback = () => {
+    let location = this.props.history.location.pathname
+    if (location === '/selectroom') {
+      this.props.history.push('/selectgame');
+      cookie.remove('selectedGame', { path: '/' });
+    } else if (location === '/waitingroom') {
+      this.props.history.push('/selectroom');
+      cookie.remove('selectedRoom', { path: '/' });
+    } else if (location === '/playgame') {
+      this.props.history.push('/waitingroom');
+      cookie.remove('isPlaying', { path: '/' });
+    }
+  }
+
   render() {
     const { classes, history } = this.props;
 
@@ -106,66 +138,67 @@ class Nav extends Component {
               cookie.load('isPlaying')
               ? (   // 게임화면일때 
               <Toolbar>
-                <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' 
+                <IconButton 
+                  color='inherit' 
+                  className={classes.gobackButton} 
                   onClick={() => {
                     cookie.remove('isPlaying', { path: '/' })
                     history.push('/waitingroom')
-                  }}
-                >
+                }}>
                   <ArrowBack />
                 </IconButton>
               </Toolbar>
               ) : (   // 게임화면이 아닐때
-              <Toolbar>
-                <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' 
-                    onClick={() => {
-                      if(cookie.load('selectedGame') && cookie.load('selectedRoom')){
-                        cookie.remove('selectedRoom', { path: '/' })
-                      } else if(cookie.load('selectedGame')){
-                        cookie.remove('selectedGame', { path: '/' })
+                <Toolbar>
+                  { cookie.load('username')
+                    ?   // 로그인된 경우
+                    <div>
+                      { cookie.load('selectedGame')
+                        ?    // 게임을 선택한 경우
+                        <IconButton  
+                          color='inherit' 
+                          className={classes.gobackButton} 
+                          onClick={() => this.clickGoback()}
+                        >
+                          <ArrowBack />
+                        </IconButton>
+                        :   // 게임을 선택하지않은 경우
+                        null  
                       }
-                      history.goBack()
-                    }}
-                  >
-                    <ArrowBack />
-                  </IconButton>
-                  <Typography variant='h6' className={classes.title}></Typography>
-                    {
-                      cookie.load('username')
-                      ? <div>
-                          <Button color='inherit' onClick={async () => {
+                      <div className={classes.menuButton}>
+                        <Button 
+                          color='inherit' 
+                          onClick={async () => {
                             this.resData = await this.getData()
                             this.handleOpenClose()
-                          }}>
-                            Mypage
-                          </Button>
-                          <Button
+                        }}>
+                          Mypage
+                        </Button>
+                        <Button
                           color='inherit'
                           onClick={() => {
                             this.signout();
-                          }}
-                          > Logout
-                          </Button>
-                        </div>
-                      : <Button
-                          color='inherit'
-                          onClick={() => {
-                            history.push('/');
-                          }}
-                          >
-                            Login
+                        }}> 
+                          Logout
                         </Button>
-                      }
-                  <IconButton color='inherit'>
-                    <ContactSupport />
-                  </IconButton>
+                      </div>
+                    </div>
+                    :   // 로그인되지 않은 경우
+                    <Button
+                      color='inherit'
+                      className={classes.menuButton}
+                      onClick={() => {
+                        history.push('/');
+                      }}>
+                        Login
+                    </Button>
+                  }
                   <Modal open={this.state.open} onClose={this.handleOpenClose}>
                     <Mypage userData={this.resData} />
                   </Modal>
                 </Toolbar>
               )
             }
-          
         </AppBar>
       </div>
     );
