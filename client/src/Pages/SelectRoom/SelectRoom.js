@@ -197,6 +197,9 @@ const mapReduxDispatchToReactProps = (dispatch) => {
           const response = await axios({
             method: 'get',
             url: 'http://localhost:3001/rooms/roomlist',
+            params: {
+              gameCode: cookie.load('selectedGame'),
+            },
             withCredentials: true,
             params: {
               gameCode: cookie.load('selectedGame'),
