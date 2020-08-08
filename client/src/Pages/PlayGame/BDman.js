@@ -442,8 +442,7 @@ class Game extends Component {
     const { classes } = this.props;
     return (
       <Grid container direction='row' justify='space-evenly' alignItems='center'>
-        {/* {this.state.winner !== '' ? <Gameover winner={this.state.winner} /> : null} */}
-        <Gameover winner={this.state.winner} />
+        {this.state.winner !== '' ? <Gameover winner={this.state.winner} /> : null}
 
         <Grid item>
           <Paper 
