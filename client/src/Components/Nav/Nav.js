@@ -29,7 +29,6 @@ const styles = (theme) => ({
     position: 'fixed',
     right: '30px',
     top: '15px',
-    inner
   },
   title: {
     flexGrow: 1,
