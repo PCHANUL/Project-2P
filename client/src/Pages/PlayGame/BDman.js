@@ -97,7 +97,7 @@ class Game extends Component {
       rivalAvatar: avatar2,
       userAvatar: avatar,
     };
-    this.socket = socketio.connect('http://localhost:3000');
+    this.socket = socketio.connect('http://localhost:3005');
     //초기화
     this.canvas = null;
     this.ctx = null;
