@@ -37,7 +37,7 @@ class App extends Component {
       }
       const diff = Math.random() * 10;
       this.setState({ loading: Math.min(this.state.loading + diff, 100)})
-  }, 200);
+  }, 100);
   }
   componentDidMount() {
     if (!cookie.load('username')) {
@@ -92,16 +92,19 @@ class App extends Component {
                   }}
                 />
               </Grow>
-              <LinearProgress 
-                variant="determinate" 
-                value={this.state.loading} 
-                style={{
-                  position: 'fixed',
-                  top: '70%',
-                  left: '25%',
-                  width: '50%',
-                }}
-              />
+              
+              {/*  로딩바
+                <LinearProgress 
+                  variant="determinate" 
+                  value={this.state.loading} 
+                  style={{
+                    position: 'fixed',
+                    top: '70%',
+                    left: '25%',
+                    width: '50%',
+                  }}
+                /> 
+              */}
             </div>
         }
       </div>

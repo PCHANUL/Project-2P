@@ -27,8 +27,6 @@ const styles = (theme) => ({
     margin: theme.spacing(3, 3),
   },
   root: {
-    // width: theme.spacing(25),
-    // height: theme.spacing(20),
     padding: theme.spacing(4, 4, 2, 4),
     backgroundColor: 'transparent',
     border: '2px solid #636363',
@@ -102,7 +100,7 @@ class Game extends Component {
       rivalAvatar: 0,
 
       //game start
-      gameStart: false
+      gameStart: false,
     };
     this.socket = socketio.connect('http://localhost:3005');
     //초기화
@@ -152,6 +150,9 @@ class Game extends Component {
     this.props.gifEmoji.map((item) => {
       this.tileData.push({ img: item });
     });
+
+    // gif frame
+    this.frame = 0;
   }
 
   componentDidMount() {
@@ -282,7 +283,7 @@ class Game extends Component {
 
     // 발사
     this.canvas.addEventListener('mousedown', (e) => {
-      if (this.state.bullet > 0 && !this.state.isReload) {
+      if (this.state.bullet > 0 && !this.state.isReload && this.state.gameStart) {
         let bullet = new Bullet(
           this.state.width,
           this.state.height,
@@ -392,14 +393,22 @@ class Game extends Component {
     this.Rivalblock.draw(this.ctx, this.RivalPosX, this.RivalPosY);
 
     this.ctx.fillStyle = '#fff'
-    this.ctx.font = '30px sanseif'
-
-    if (this.state.isStarted) {
-      this.ctx.fillText('Go!', 100, 100)
-
-    } else {
-      this.ctx.fillText('Ready', 100, 100)
-
+    
+    if (this.state.gameStart && Math.floor(this.state.width/this.frame) !== 5) {
+      console.log('this.state.width/this.frame: ', this.state.width/this.frame);
+      this.ctx.font = `${ this.state.width/5 + this.state.width/this.frame }px sanseif`
+      this.ctx.fillText(
+        'Start!', 
+        this.state.width/3.8 - this.state.width/this.frame, 
+        this.state.height/2
+      )
+      this.frame += 0.5
+      
+    } else if (Math.floor(this.state.width/this.frame) !== 5) {
+      this.ctx.font = `${this.state.width/5}px sanseif`
+      this.ctx.fillText('Ready', this.state.width/3.8, this.state.height/2)
+      this.ctx.font = `${this.state.width/20}px sanseif`
+      this.ctx.fillText('방향키 - A / D, 발사 - 마우스클릭', this.state.width/5.5, this.state.height/1.8)
     }
     
     // 총알
@@ -500,6 +509,7 @@ class Game extends Component {
           >
             <Grid container direction='column' justify='center' alignItems='center'>
               <img 
+                alt='들어오는중'
                 src={this.state.rivalAvatar} 
                 style={{
                   width: this.state.width/2,
@@ -551,6 +561,7 @@ class Game extends Component {
           <Paper 
               className={classes.root} 
               style={{ 
+                marginTop: `${this.state.width/15}px`,
                 marginRight: '40px', 
                 width: `${this.state.width / 2}px`,
                 height: `${this.state.width / 1.2}px`,
@@ -558,6 +569,7 @@ class Game extends Component {
             >
             <Grid container direction='column' justify='center' alignItems='center'>
               <img 
+                alt='들어오는중'
                 src={this.state.userAvatar} 
                 style={{
                   width: this.state.width/2,
@@ -585,7 +597,8 @@ class Game extends Component {
           <Typography 
             className={classes.reloadText} 
             style={{
-              fontSize: `${this.state.width/15}px`
+              fontSize: `${this.state.width/15}px`,
+              height: `${this.state.width/15}px`,
             }}
           >
             {this.state.isReload
