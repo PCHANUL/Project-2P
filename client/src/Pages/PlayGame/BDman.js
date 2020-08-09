@@ -94,10 +94,17 @@ class Game extends Component {
       // emoji action
       showEmojis: false,
       isActive: false,
-      rivalAvatar: avatar2,
-      userAvatar: avatar,
+
+      // userInfo
+      userName: '',
+      rivalName: '',
+      userAvatar: 0,
+      rivalAvatar: 0,
+
+      //game start
+      gameStart: false
     };
-    this.socket = socketio.connect('http://localhost:3000');
+    this.socket = socketio.connect('http://localhost:3005');
     //초기화
     this.canvas = null;
     this.ctx = null;
@@ -152,8 +159,11 @@ class Game extends Component {
       this.socket.emit('joinRoom', {
         username: cookie.load('username'),
         room: cookie.load('selectedRoom'),
+        avatarId: cookie.load('avatarId'),
       });
     })();
+
+
     this.canvas = document.getElementById('canvas');
     this.ctx = this.canvas.getContext('2d');
 
@@ -181,53 +191,50 @@ class Game extends Component {
     document.addEventListener('keydown', (e) => {
       if (e.keyCode === 65) {
         // 왼쪽
-        console.log('left');
         this.socket.emit('moveLeft');
         this.blockPosX -= this.blockSizeX;
         // this.RivalPosX -= this.blockSizeX;
       } else if (e.keyCode === 68) {
         // 오른쪽
-        console.log('right');
         this.socket.emit('moveRight');
         this.blockPosX += this.blockSizeX;
         // this.RivalPosX += this.blockSizeX;
       } else if (e.keyCode === 82) {
         // 리로드
-        console.log('reload');
         this.setState({ isReload: true });
         setTimeout(() => {
           this.setState({ bullet: 10 });
           this.setState({ isReload: false });
         }, 2500);
       }
+    });
 
-      // Rival shot (mirror)
-      this.socket.on('rivalShot', (e) => {
-        if (e === 1) {
-          // right (this.aim === 1)
-          this.RivalMoveX = this.BulletSpeed * -1;
-          this.RivalMoveY = this.BulletSpeed;
-        } else if (e === 0) {
-          // center (this.aim === 0)
-          this.RivalMoveX = 0;
-          this.RivalMoveY = this.BulletSpeed * 2;
-        } else if (e === -1) {
-          // left (this.aim === -1)
-          this.RivalMoveX = this.BulletSpeed;
-          this.RivalMoveY = this.BulletSpeed;
-        }
-        let bullet = new Bullet(
-          this.state.width,
-          this.state.height,
-          this.BulletRadius,
-          this.RivalMoveX,
-          this.RivalMoveY,
-          this.RivalPosX,
-          this.RivalPosY + this.RivalSizeY,
-          this.RivalSizeX
-        );
-        this.RivalBullets.push(bullet);
-      });
+    // Rival shot (mirror)
+    this.socket.on('rivalShot', (e) => {
+      if (e === 1) {
+        // right (this.aim === 1)
+        this.RivalMoveX = this.BulletSpeed * -1;
+        this.RivalMoveY = this.BulletSpeed;
+      } else if (e === 0) {
+        // center (this.aim === 0)
+        this.RivalMoveX = 0;
+        this.RivalMoveY = this.BulletSpeed * 2;
+      } else if (e === -1) {
+        // left (this.aim === -1)
+        this.RivalMoveX = this.BulletSpeed;
+        this.RivalMoveY = this.BulletSpeed;
+      }
+      let bullet = new Bullet(
+        this.state.width,
+        this.state.height,
+        this.BulletRadius,
+        this.RivalMoveX,
+        this.RivalMoveY,
+        this.RivalPosX,
+        this.RivalPosY + this.RivalSizeY,
+        this.RivalSizeX
+      );
+      this.RivalBullets.push(bullet);
     });
 
     this.socket.on('moveLeft', () => {
@@ -239,9 +246,31 @@ class Game extends Component {
     this.socket.on('hit', (res) => {
       this.setState({ myScore: res });
     });
+    this.socket.on('start', (isStarted) => {
+      if (isStarted) {
+        this.setState({ gameStart: true });
+      }
+    });
     this.socket.on('end', (winner) => {
       this.setState({ winner: winner });
     });
+    this.socket.on('loadUsers', (data) => {
+      for(let key in data){
+        if(data[key].username === cookie.load('username')){
+          this.setState({ 
+            userAvatar: this.props.avatarImg[data[key].avatarId],
+            userName: data[key].username
+          })
+          this.userAvatarId = data[key].avatarId  // 아바타아이디 백업
+        } else {
+          this.setState({
+            rivalAvatar: this.props.avatarImg[data[key].avatarId],
+            rivalName: data[key].username
+          })
+          this.rivalAvatarId = data[key].avatarId   // 아바타아이디 백업
+        }
+      }
+    })
 
     this.socket.on('connectError', () => {
       // this.socket.disconnect();
@@ -328,11 +357,6 @@ class Game extends Component {
     this.setState({ width: this.canvas.width, height: this.canvas.height });
   }
 
-  // block 위치 재설정
-  initPos() {
-    this.blockPosX = this.blockPosInitX;
-    this.RivalPosX = this.RivalPosInitX;
-  }
   // 애니메이션 생성
   animate(t) {
     // 블록의 윈도우 충돌 핸들링
@@ -367,8 +391,19 @@ class Game extends Component {
     this.block.draw(this.ctx, this.blockPosX, this.blockPosY);
     this.Rivalblock.draw(this.ctx, this.RivalPosX, this.RivalPosY);
 
-    let response;
+    this.ctx.fillStyle = '#fff'
+    this.ctx.font = '30px sanseif'
 
+    if (this.state.isStarted) {
+      this.ctx.fillText('Go!', 100, 100)
+
+    } else {
+      this.ctx.fillText('Ready', 100, 100)
+
+    }
+    
+    // 총알
+    let response;
     if (this.bullets.length !== 0) {
       for (let i = 0; i < this.bullets.length; i++) {
         response = this.bullets[i].drawMyBullet(
@@ -384,10 +419,10 @@ class Game extends Component {
           this.bullets.splice(i, 1);
           if (response.result) this.setState({ rivalScore: this.state.rivalScore - 10 });
           console.log(this.state.myScore);
+          this.socket.emit('score', this.state.rivalScore)
         }
       }
     }
-
     if (this.RivalBullets.length !== 0) {
       for (let i = 0; i < this.RivalBullets.length; i++) {
         response = this.RivalBullets[i].drawRivalBullet(
@@ -406,15 +441,6 @@ class Game extends Component {
     // 잔상 남기는 구역설정
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
     this.ctx.fillRect(0, 0, this.state.width, this.state.height);
-
-    // 게임결과 출력시 화면 초기화
-    if (response) {
-      console.log(response);
-      this.socket.emit('score', this.state.rivalScore);
-      // this.Bullet.stoppp(true)
-      // this.initPos()
-      // socket.emit('start');
-    }
   }
 
   makeBullet() {
@@ -439,19 +465,25 @@ class Game extends Component {
     this.socket.emit('sendEmoji', JSON.stringify(gif));
 
     setTimeout(() => {
-      this.setState({ userAvatar: avatar, isActive: !this.state.isActive });
+      this.setState({ 
+        userAvatar: this.props.avatarImg[this.userAvatarId], 
+        isActive: !this.state.isActive 
+      });
     }, 2500);
   }
 
   activeRivalEmoji(gif) {
     this.setState({ rivalAvatar: gif });
     setTimeout(() => {
-      this.setState({ rivalAvatar: avatar2 });
+      this.setState({ 
+        rivalAvatar: this.props.avatarImg[this.rivalAvatarId], 
+      });
     }, 2500);
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, avatarImg } = this.props;
+    console.log(this.props)
     return (
       <Grid container direction='row' justify='space-evenly' alignItems='center'>
         {this.state.winner !== '' ? <Gameover winner={this.state.winner} /> : null}
@@ -480,7 +512,7 @@ class Game extends Component {
                   fontSize: `${this.state.width/15}px`
                 }}
               >
-                {'Rival'}
+                {this.state.rivalName}
               </Typography>
               <Typography 
                 className={classes.pos} 
@@ -538,7 +570,7 @@ class Game extends Component {
                   fontSize: `${this.state.width/15}px`
                 }}
               >
-                {cookie.load('username')}
+                {this.state.userName}
               </Typography>
               <Typography 
                 className={classes.pos} 
@@ -611,6 +643,7 @@ Game.propsTypes = {
 const mapReduxStateToReactProps = (state) => {
   return {
     gifEmoji: state.currentGame.gif,
+    avatarImg: state.login.avatar,
   };
 };
 export default connect(mapReduxStateToReactProps)(withStyles(styles)(Game));
