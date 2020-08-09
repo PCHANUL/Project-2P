@@ -1,11 +1,8 @@
 import * as actionTypes from '../actions';
 
-
-
-
 const initialState = {
   currentGame: 0,
-  gif: []
+  gif: [],
 };
 
 const req = require.context('../../images/emoji', false, /.*\.gif$/);

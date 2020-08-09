@@ -31,7 +31,6 @@ class App extends Component {
     }
 
     this.timer = setInterval(() => {
-      console.log('awef')
       if (this.state.loading === 100) {
         cookie.save('load', true, { path: '/' })
         clearInterval(this.timer)
