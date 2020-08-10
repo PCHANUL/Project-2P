@@ -676,7 +676,7 @@ class NumsGame extends Component {
               >
                 {this.state.userName}
               </Typography>
-              {this.state.warning === 0 ? (
+              {this.state.warning === 1 ? (
                 <div
                   style={{
                     backgroundColor: 'yellow',

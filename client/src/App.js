@@ -37,9 +37,12 @@ class App extends Component {
       }
       const diff = Math.random() * 10;
       this.setState({ loading: Math.min(this.state.loading + diff, 100)})
-  }, 200);
+  }, 100);
   }
   componentDidMount() {
+    let a = cookie.load('connect.sid')
+    console.log(a)
+
     if (!cookie.load('username')) {
       this.props.history.push('/');
     }
@@ -92,16 +95,6 @@ class App extends Component {
                   }}
                 />
               </Grow>
-              <LinearProgress 
-                variant="determinate" 
-                value={this.state.loading} 
-                style={{
-                  position: 'fixed',
-                  top: '70%',
-                  left: '25%',
-                  width: '50%',
-                }}
-              />
             </div>
         }
       </div>
